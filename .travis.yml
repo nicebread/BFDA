@@ -1,6 +1,9 @@
 language: r
+
+# http://docs.travis-ci.com/user/languages/r/
+
 sudo: required
-r_packages:
+r_binary_packages:
  - doParallel 
  - dplyr 
  - BayesFactor 

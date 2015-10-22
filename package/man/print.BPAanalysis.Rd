@@ -7,6 +7,10 @@
 \method{print}{BPAanalysis}(x, ..., digits = 1)
 }
 \arguments{
+\item{x}{A BPA-analysis object (which is return from \code{BPA.analysis})}
+
+\item{...}{(not used)}
+
 \item{digits}{Number of digits in display}
 }
 \description{

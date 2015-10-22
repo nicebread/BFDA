@@ -34,7 +34,8 @@ Simulate ... TODO
 }
 \examples{
 \dontrun{
-sim <- BPA.sim.ttest.2(d=0.5, n.min=20, n.max=300, boundary=Inf, stepsize=1, design="sequential", B=1000, verbose=TRUE, cores=2)
+sim <- BPA.sim.ttest.2(d=0.5, n.min=20, n.max=300, boundary=Inf,
+				stepsize=1, design="sequential", B=1000, verbose=TRUE, cores=2)
 save(sim, file="sim0.5.RData")
 BPA.analysis(sim)
 BPA.analysis(sim, boundary=6)

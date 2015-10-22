@@ -123,6 +123,7 @@ BPA.analysis <- function(BPA, n.max=NA, boundary=NA, verbose=TRUE, alpha=.05) {
 #' @method print BPAanalysis
 #' @param x A BPA-analysis object (which is return from \code{BPA.analysis})
 #' @param digits Number of digits in display
+#' @param ... (not used)
 print.BPAanalysis <- function(x, ..., digits=1) {
 with(x, {
 	print(data.frame(

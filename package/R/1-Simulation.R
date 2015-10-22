@@ -19,7 +19,8 @@
 #'
 #' @examples
 #' \dontrun{
-#' sim <- BPA.sim.ttest.2(d=0.5, n.min=20, n.max=300, boundary=Inf, stepsize=1, design="sequential", B=1000, verbose=TRUE, cores=2)
+#' sim <- BPA.sim.ttest.2(d=0.5, n.min=20, n.max=300, boundary=Inf, 
+#'				stepsize=1, design="sequential", B=1000, verbose=TRUE, cores=2)
 #' save(sim, file="sim0.5.RData")
 #' BPA.analysis(sim)
 #' BPA.analysis(sim, boundary=6)
@@ -38,8 +39,9 @@ BPA.sim.ttest.2 <- function(d, n.min=10, n.max=10000, design="sequential", bound
 		ns <- n.max
 	} else if (design == "sequential"){
 		if (is.na(stepsize)) {
-			# TODO: if n.max > 100 --> ns <- c(ns, seq())
-			ns <- c(seq(n.min, 95, by=5), seq(100, n.max, by=10))
+			ns <- seq(n.min, min(n.max, 100), by=1)
+			if (n.max > 100) ns <- c(ns, seq(105, min(n.max, 500), by=5))
+			if (n.max > 500) ns <- c(ns, seq(510, n.max, by=10))
 		} else {
 			ns <- seq(n.min, n.max, by=stepsize)
 		}
