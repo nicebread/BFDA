@@ -1,0 +1,10 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+.gitignore
+README.md
+LICENSE
+.DS_Store
+.git
+checks
+.Rapp.history
+.travis.yml

@@ -6,10 +6,10 @@
 \title{Plot a BPA object}
 \usage{
 plotBPA(BPA, boundary = 30, n.trajectories = 60, n.max = NA,
-  dens.amplification = NA, dens.right.amplification = NA, cat = 3,
-  bw = FALSE, dens.right.offset = 5, xlim = NA, ylim = NA,
-  xextension = 1.8, traj.selection = "proportional", yaxis.at = NA,
-  yaxis.labels = NA, forH1 = TRUE)
+  dens.amplification = 1, cat = 3, bw = FALSE, dens.right.offset = 5,
+  xlim = NA, ylim = NA, xextension = 1.8,
+  traj.selection = "proportional", yaxis.at = NA, yaxis.labels = NA,
+  forH1 = TRUE)
 }
 \arguments{
 \item{BPA}{A BPA simulation object}
@@ -20,9 +20,7 @@ plotBPA(BPA, boundary = 30, n.trajectories = 60, n.max = NA,
 
 \item{n.max}{Maximum sample size}
 
-\item{dens.amplification}{Amplification factor for upper and lower densities. If NA, the function automatically chooses a value.}
-
-\item{dens.right.amplification}{Amplification factor for right density (at n.max stops). If NA, the function automatically chooses a value.}
+\item{dens.amplification}{Amplification factor for all densities.}
 
 \item{cat}{how many BF categories should be colored in the right density? Either 3 or 6.}
 

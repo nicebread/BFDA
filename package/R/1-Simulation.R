@@ -14,7 +14,7 @@
 #' @param d The assumed true effect size. This can be a single number (this leads to a fixed assumed effect size, as in a classical power analysis) or a vector of numbers (e.g., \code{rnorm(100000, 0.5, 0.1)}). If it is a vector, the sampler draws a new effect size at each step. Hence, the provided distribution represents the uncertainty about the true effect size.
 #' @param stepsize The number with which participants are added to the sample. If NA, the sample is increased +1 until it's 100, and +10 from that size on.
 #' @param verbose Show output about progress?
-#' @param rs
+#' @param r r scale parameter for Bayes factor
 #' @param cores number of parallel processes. If cores==1, no parallel framework is used.
 #'
 #' @examples
@@ -26,7 +26,7 @@
 #' plot(sim, boundary=6)
 #' plot(sim, boundary=6, n.max=80)
 #'}
-BPA.sim.ttest.2 <- function(d, n.min=10, n.max=10000, design="sequential", boundary=10, B=1000, rs=1, stepsize=NA, verbose=TRUE, cores=1) {
+BPA.sim.ttest.2 <- function(d, n.min=10, n.max=10000, design="sequential", boundary=10, B=1000, r=1, stepsize=NA, verbose=TRUE, cores=1) {
 
 	# register CPU cores for parallel processing
 	registerDoParallel(cores=cores)
@@ -59,7 +59,7 @@ BPA.sim.ttest.2 <- function(d, n.min=10, n.max=10000, design="sequential", bound
 		res.counter <- 1
 
 		# res saves the statistics at each step
-		res <- matrix(NA, nrow=length(ns)*length(rs)*max_b, ncol=10, dimnames=list(NULL, c("d", "r", "boundary", "batch", "rep", "n", "logBF", "d.emp", "t.value", "p.value")))
+		res <- matrix(NA, nrow=length(ns)*max_b, ncol=10, dimnames=list(NULL, c("d", "r", "boundary", "batch", "rep", "n", "logBF", "d.emp", "t.value", "p.value")))
 
 		# fixed true ES? Simulate only one population
 		if (length(d) == 1) {
@@ -79,34 +79,31 @@ BPA.sim.ttest.2 <- function(d, n.min=10, n.max=10000, design="sequential", bound
 
 			maxsamp <- pop[sample(nrow(pop), n.max), ]
 
-			for (r in rs) {
+			# res0 keeps the accumulating sample variables from this specific run
+			res0 <- matrix(NA, nrow=length(ns), ncol=ncol(res), dimnames=dimnames(res))
 
-				# res0 keeps the accumulating sample variables from this specific run
-				res0 <- matrix(NA, nrow=length(ns), ncol=ncol(res), dimnames=dimnames(res))
+			# increase sample size up to n.max (or only use n.max if design=="fixed.n")
+			for (n in ns) {
+				samp <- maxsamp[1:n, ]
+				N <- nrow(samp)
+				t0 <- t.test(samp[, 1], samp[, 2], var.equal=TRUE)
 
-				# increase sample size up to n.max (or only use n.max if design=="fixed.n")
-				for (n in ns) {
-					samp <- maxsamp[1:n, ]
-					N <- nrow(samp)
-					t0 <- t.test(samp[, 1], samp[, 2], var.equal=TRUE)
+				logBF0 <- BayesFactor::ttest.tstat(t0$statistic, N, N, rscale=r)$bf
+				res0[which(ns == n), ] <- c(
+					d	= d1,
+					r 	= r,
+					boundary = boundary,
+					batch = batch,
+					rep	= b,
+					n	= N,
+					logBF	= logBF0,
+					d.emp	= 2*t0$statistic / sqrt(2*N-2),
+					t.value	= t0$statistic,
+					p.value	= t0$p.value)
 
-					logBF0 <- BayesFactor::ttest.tstat(t0$statistic, N, N, rscale=r)$bf
-					res0[which(ns == n), ] <- c(
-						d	= d1,
-						r 	= r,
-						boundary = boundary,
-						batch = batch,
-						rep	= b,
-						n	= N,
-						logBF	= logBF0,
-						d.emp	= 2*t0$statistic / sqrt(2*N-2),
-						t.value	= t0$statistic,
-						p.value	= t0$p.value)
-
-					# if boundary is hit: stop sampling in this trajectory
-					if (abs(logBF0) >= log(boundary)) {break;}
-				} 	# of n
-			} # of r's
+				# if boundary is hit: stop sampling in this trajectory
+				if (abs(logBF0) >= log(boundary)) {break;}
+			} 	# of n
 
 			res[res.counter:(res.counter+nrow(res0)-1), ] <- res0
 			res.counter <- res.counter + nrow(res0)

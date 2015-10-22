@@ -5,7 +5,7 @@
 \title{Simulate ... TODO}
 \usage{
 BPA.sim.ttest.2(d, n.min = 10, n.max = 10000, design = "sequential",
-  boundary = 10, B = 1000, rs = 1, stepsize = NA, verbose = TRUE,
+  boundary = 10, B = 1000, r = 1, stepsize = NA, verbose = TRUE,
   cores = 1)
 }
 \arguments{
@@ -21,7 +21,7 @@ BPA.sim.ttest.2(d, n.min = 10, n.max = 10000, design = "sequential",
 
 \item{B}{Number of bootstrap samples (should be dividable by getDoParWorkers())}
 
-\item{rs}{}
+\item{r}{r scale parameter for Bayes factor}
 
 \item{stepsize}{The number with which participants are added to the sample. If NA, the sample is increased +1 until it's 100, and +10 from that size on.}
 

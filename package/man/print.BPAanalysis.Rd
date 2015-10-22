@@ -2,10 +2,14 @@
 % Please edit documentation in R/2-Analysis.R
 \name{print.BPAanalysis}
 \alias{print.BPAanalysis}
+\title{Print a BPA analysis}
 \usage{
 \method{print}{BPAanalysis}(x, ..., digits = 1)
 }
 \arguments{
-\item{digit}{Number of digits in display}
+\item{digits}{Number of digits in display}
+}
+\description{
+Print a BPA analysis
 }
 

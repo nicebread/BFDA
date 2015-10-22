@@ -118,10 +118,10 @@ BPA.analysis <- function(BPA, n.max=NA, boundary=NA, verbose=TRUE, alpha=.05) {
 #
 #
 
-
+#' Print a BPA analysis
 #' @export
 #' @method print BPAanalysis
-#' @param digit Number of digits in display
+#' @param digits Number of digits in display
 print.BPAanalysis <- function(x, ..., digits=1) {
 with(x, {
 	print(data.frame(
