@@ -4,9 +4,11 @@ language: r
 
 sudo: required
 r_binary_packages:
- - doParallel 
+ - doparallel 
  - dplyr 
- - BayesFactor 
- - TeachingDemos 
  - scales
+ - teachingdemos  
+r_packages:
+ - BayesFactor  
+
 warnings_are_errors: false
