@@ -1,0 +1,48 @@
+setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA')
+# load all functions#
+setwd("/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package")#
+devtools::load_all()
+ls()
+setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA')
+setwd("/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package")#
+devtools::document()
+setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA')
+setwd("/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package")#
+devtools::document()
+setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA')
+setwd("/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package")#
+devtools::document()
+setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA')
+setwd("/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package")#
+devtools::document()
+setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA')
+setwd("/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package")#
+devtools::document()
+setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA')
+setwd("/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package")#
+devtools::load_all()
+setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA')
+setwd("/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package")#
+devtools::check(force_suggests=FALSE)
+setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA')
+setwd("/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package")#
+devtools::check(force_suggests=FALSE)
+setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA')
+setwd("/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package")#
+devtools::check(force_suggests=FALSE)
+setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA')
+setwd("/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package")#
+devtools::install()
+setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA')
+setwd("/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package")#
+devtools::document()
+setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA')
+setwd("/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package")#
+devtools::check(force_suggests=FALSE)
+setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA')
+# load all functions#
+setwd("/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package")#
+devtools::load_all()
+sim <- BPA.ttest.2(d=0.5, n.min=20, n.max=100, boundary=Inf, stepsize=1, design="sequential", B=100, verbose=TRUE, cores=2)
+sim <- BPA.sim.ttest.2(d=0.5, n.min=20, n.max=100, boundary=Inf, stepsize=1, design="sequential", B=100, verbose=TRUE, cores=2)
+library(doParallel)

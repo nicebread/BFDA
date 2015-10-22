@@ -1,0 +1,18 @@
+Encoding: UTF-8
+Package: BPA
+Type: Package
+Title: Bayesian Power Analysis
+Version: 0.1
+Date: 2015-10-21
+Author: Felix Schönbrodt
+Maintainer: Felix Schönbrodt <felix@nicebread.de>
+Depends:
+	doParallel,
+	dplyr
+Imports:
+	BayesFactor,
+	TeachingDemos,
+	scales
+Description: Compute and visualize power analyses for Bayes factors. Handles fixed-n and sequential designs.
+License: GPL (>= 2)
+LazyData: TRUE
