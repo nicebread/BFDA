@@ -7,7 +7,14 @@ r_binary_packages:
  - doparallel 
  - dplyr 
  - scales
- - teachingdemos  
+ - teachingdemos
+ - stringi
+ - coda
+ - mvtnorm
+ - stringr
+ - gtools
+ - matrixmodels
+ - rcppeigen
 r_packages:
  - BayesFactor  
 
