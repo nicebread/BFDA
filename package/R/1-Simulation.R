@@ -42,7 +42,7 @@ BPA.sim.ttest <- function(d, n.min=10, n.max=500, design="sequential", boundary=
 	if (ETA == TRUE) {
 		print("Estimating duration of full simulation:")
 		start.ETA <- Sys.time()
-		BPA.sim.ttest(d=d, n.min=n.min, n.max=n.max, design=design, boundary=boundary, B=5, stepsize=stepsize, verbose=FALSE, cores=cores, alternative=alternative, ETA=FALSE, ...)
+		BPA.sim.ttest(d=d, n.min=n.min, n.max=n.max, design=design, boundary=boundary, stepsize=stepsize, verbose=FALSE, cores=cores, alternative=alternative, ETA=FALSE, B=max(5, cores), ...)
 		end.ETA <- Sys.time()
 		print("A rough estimate of the necessary simulation time: ")
 		# 1.3 is an empirically derived correction factor, probably due to parallel overhead?
