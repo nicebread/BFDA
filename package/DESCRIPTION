@@ -8,11 +8,14 @@ Author: Felix Schönbrodt
 Maintainer: Felix Schönbrodt <felix@nicebread.de>
 Depends:
 	doParallel,
-	dplyr
+	dplyr,
+	ggplot2
 Imports:
 	BayesFactor,
 	TeachingDemos,
-	scales
+	scales,
+	reshape2,
+	sfsmisc
 Description: Compute and visualize power analyses for Bayes factors. Handles fixed-n and sequential designs.
 License: GPL (>= 2)
 LazyData: TRUE

@@ -105,18 +105,10 @@ BPA.analysis <- function(BPA, n.max=NA, boundary=NA, verbose=TRUE, alpha=.05) {
 	return(res)
 }
 
-# load("finalSims/sim.0.5.RData")
-#
-# # SBFunlimited design
-# BPA.analysis(sim)
-#
-# BPA.analysis(sim, boundary=6, n.max=80)
-#
-# a <- BPA.analysis(sim, boundary=10, n.max=50)
-#
-# BPA.analysis(sim, boundary=3, n.max=100)
-#
-#
+
+
+
+
 
 #' Print a BPA analysis
 #' @export

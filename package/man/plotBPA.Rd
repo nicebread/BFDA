@@ -6,13 +6,13 @@
 \title{Plot a BPA object}
 \usage{
 plotBPA(BPA, boundary = 30, n.trajectories = 60, n.max = NA,
-  dens.amplification = 1, cat = 3, bw = FALSE, dens.right.offset = 5,
-  xlim = NA, ylim = NA, xextension = 1.8,
+  dens.amplification = 1, cat = 3, bw = FALSE, dens.right.offset = 2,
+  xlim = NA, ylim = NA, xextension = 1.5,
   traj.selection = "proportional", yaxis.at = NA, yaxis.labels = NA,
-  forH1 = TRUE)
+  forH1 = TRUE, n.max.label.position = "dynamic")
 }
 \arguments{
-\item{BPA}{A BPA simulation object}
+\item{BPA}{A BPA simulation object, resulting from the \code{BPA.sim} function}
 
 \item{boundary}{The BF threshold where to stop (resp. its reciprocal)}
 
@@ -41,6 +41,8 @@ plotBPA(BPA, boundary = 30, n.trajectories = 60, n.max = NA,
 \item{yaxis.labels}{Labels of the ticks on the y-axis. If NA, they are defined automatically.}
 
 \item{forH1}{If TRUE, use the BF_10 labels, otherwise the BF_01 labels}
+
+\item{n.max.label.position}{"fixed": Always centered at BF=1. "dynamic": Centered on the the peak of the right density.}
 }
 \description{
 Plot a BPA object

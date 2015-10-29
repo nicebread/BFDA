@@ -11,4 +11,4 @@ An R package for Bayesian Power Analysis
 The current development version can be installed by:
 
     library(devtools)
-    install_github("nicebread/BPA")
+    install_github("nicebread/BPA", subdir="package")
