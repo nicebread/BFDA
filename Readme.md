@@ -4,7 +4,7 @@
 BFDA
 ===
 
-An R package for Bayesian Power Analysis
+An R package for Bayes Factor Design Analysis
 
 ## Installation
 

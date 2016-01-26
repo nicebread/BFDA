@@ -10,6 +10,7 @@
 #' @param forH1 If TRUE, use the BF_10 labels, otherwise the BF_01 labels
 #' @param dens.right.offset How much should the right density be moved to the right?
 #' @param dens.amplification Amplification factor for all densities.
+#' @param n.min Minimum sample size
 #' @param n.max Maximum sample size
 #' @param boundary The BF threshold where to stop (resp. its reciprocal)
 #' @param n.trajectories Number of demo trajectories
@@ -23,7 +24,7 @@
 #' @param traj.selection Should a fixed set of trajectories be shown ("fixed"), or a selection that reflects the proportional of each stopping category (upper/loewr/n.max hits; use "proportional").
 #' @param n.max.label.position "fixed": Always centered at BF=1. "dynamic": Centered on the the peak of the right density.
 #' @param cex.labels Zoom factor for axes labels
-#' @param cex.cex.annotations Zoom factor for annotations
+#' @param cex.annotations Zoom factor for annotations
 
 #forH1 = TRUE; boundary=6; n.trajectories=60; n.max=500; dens.amplification=NA; dens.right.amplification=NA; plotratio=NA; cat=3; dens.right.offset=2; xlim=NA; ylim=NA; load("finalSims/sim.0.5.RData")
 

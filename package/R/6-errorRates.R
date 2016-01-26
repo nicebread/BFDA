@@ -1,4 +1,5 @@
-# TODO: This function is a stub!
+# TODO: This function is a stub! DO NOT USE IT!
+#' @importFrom gridExtra grid.arrange
 errorRates <- function(BFDA.H1, BFDA.H0, n, criterion=c(1/3, 3), xlim=NA, noSplit=FALSE, cex=1.2, cex.axis=1) {
 
 	# BFDA.H1 <- BFDA.0.5
@@ -37,7 +38,6 @@ errorRates <- function(BFDA.H1, BFDA.H0, n, criterion=c(1/3, 3), xlim=NA, noSpli
 	
 	p1 <- ggplot(underH1, aes(x=n, y=FNE)) + geom_smooth(span=.2, se=FALSE, color="darkgreen") + theme_bw()
 	
-	library(gridExtra)
 	grid.arrange(p0, p1, pWE)
 }
 	

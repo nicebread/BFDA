@@ -7,15 +7,17 @@ Date: 2016-01-26
 Author: Felix Schönbrodt
 Maintainer: Felix Schönbrodt <felix@nicebread.de>
 Depends:
-	doParallel,
-	dplyr,
-	ggplot2
+    doParallel,
+    dplyr,
+    ggplot2
 Imports:
-	BayesFactor,
-	TeachingDemos,
-	scales,
-	reshape2,
-	sfsmisc
-Description: Compute and visualize design analyses for Bayes factors. Handles fixed-n and sequential designs.
+    BayesFactor,
+    TeachingDemos,
+    scales,
+    reshape2,
+    sfsmisc
+Description: Compute and visualize design analyses for Bayes factors. Handles
+    fixed-n and sequential designs.
 License: GPL (>= 2)
 LazyData: TRUE
+RoxygenNote: 5.0.1
