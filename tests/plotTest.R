@@ -1,80 +1,89 @@
-BPA.d.0.5one <- BPA.sim.ttest(d=0.5, n.min=20, n.max=300, boundary=Inf, design="sequential", B=100, verbose=TRUE, cores=2, rscale=1, alternative="directional", ETA=FALSE)
-
-BPA.d.0.5two <- BPA.sim.ttest(d=0.5, n.min=20, n.max=300, boundary=Inf, design="sequential", B=100, verbose=TRUE, cores=2, rscale=1, alternative="un", ETA=FALSE)
-
-
-# ---------------------------------------------------------------------
-# Simulate data
-BPA.d.0.5 <- BPA.sim.ttest(d=0.5, n.min=20, n.max=500, boundary=Inf, stepsize=1, design="sequential", B=10000, verbose=TRUE, cores=2, rscale=1)
-save(BPA.d.0.5, file="../finalSims/sim.0.5.RData")
-
-BPA.d.0.5.prior <- BPA.sim.ttest(d=rnorm(100000, 0.5, 0.1), n.min=20, n.max=500, boundary=Inf, stepsize=1, design="sequential", B=10000, verbose=TRUE, cores=2, rscale=1)
-save(BPA.d.0.5.prior, file="../finalSims/sim.0.5.prior.RData")
-
-BPA.d.0 <- BPA.sim.ttest(d=0, n.min=20, n.max=500, boundary=Inf, stepsize=1, design="sequential", B=10000, verbose=TRUE, cores=2, rscale=1)
-save(BPA.d.0, file="../finalSims/sim.0.RData")
-
-
-
-
-
-
-plot(BPA.d.0.5, boundar=Inf, n.max=70)
-
-load("../finalSims/sim0.5_step1.RData")
-plot(sim, n.max=40, boundary=70, dens.amplification=1, xextension=1.5)
-
-plot(sim, n.max=40, boundary=Inf)
-
-ind <- BPA.analysis(sim, n.max=4)
-
-plot(sim, n.max=35, boundary=4, dens.amplification=1)
-
-plot(sim, n.max=60, boundary=4, dens.amplification=1.5, n.trajectories=0)
-
-
-BPA.analysis(sim, n.max=60, boundary=4)
-plotSim(sim, n.max=30, boundary=Inf, traj.selection="fixed", xlim=c(20, 400))
-
-plotSim(sim, n.max=30, boundary=Inf, traj.selection="fixed", ylim=c(log(1/30), log(1010)))
-
-
 ## ======================================================================
 ## PLot the three plots for the paper
 ## ======================================================================
 
-# Figure 1: fixed-n
-load("../finalSims/sim0.5_step1.RData")
+# ---------------------------------------------------------------------
+#  Figure 1: fixed-n
+
+load("../finalSims/BPA.0.5.prior.RData")
+load("../finalSims/BPA.0.4.prior.RData")
+load("../finalSims/BPA.0.5.RData")
+load("../finalSims/BPA.0.RData")
+
+(a <- BPA.analysis(BPA.0.5, boundary=6, n.max=50))
+hist(a$endpoint.n)
+quantile(a$endpoint.n, prob=.75)
+
+BPA.analysis(BPA.0, boundary=6, n.max=50)
+
+
 pdf(file="Figure1.pdf", width=7, height=4, pointsize=10)
 
-plot(sim, n.max=60, boundary=Inf, traj.selection="prop", ylim=c(log(1/35), log(10000)), dens.amplification=0.5, xextension=1.8, yaxis.at=c(-log(30), -log(10), -log(3), log(1), log(3), log(10), log(30), log(100), log(1000), log(10000)), yaxis.labels=c("1/30", "1/10", "1/3", "1", "3", "10", "30", "100", "1000", "10000"))
+par(oma = c(0, 0, 4, 0), mar=c(4, 2.3, 1, 1))
 
+# create a layout with an empty column in the middle (relative width=1), 
+# and two columns left and right (relative width=7)
+l1 <- layout(matrix(1:6, ncol=3), widths = c(7, 1, 7), heights = c(4, 4), respect = FALSE)
+##  Draw Plots
+compDist(BPA.0.5.prior, BPA.0, n=20, boundary=log(c(1/3, 3)), xlim=c(log(1/10), log(90000)), noSplit=TRUE, cex=0.8)
+plot.new();plot.new(); # skip empty column in the middle
+compDist(BPA.0.5.prior, BPA.0, n=100, boundary=log(c(1/3, 3)), xlim=c(log(1/10), log(90000)), noSplit=TRUE, cex=0.8)
+
+##  Create an overall title.
+mtext("n = 20, d = 0.5", line=2, outer = TRUE, adj=0.2)
+mtext("n = 100, d = 0.5", line=2, outer = TRUE, adj=0.8)
 dev.off()
 
 
+# Comparison of fixed and diffused prior
 
-# Figure 2: unlimited SBF
+par(oma = c(0, 0, 4, 0), mar=c(4, 2.3, 1, 1))
+
+# create a layout with an empty column in the middle (relative width=1), 
+# and two columns left and right (relative width=7)
+l1 <- layout(matrix(1:6, ncol=3), widths = c(7, 1, 7), heights = c(4, 4), respect = FALSE)
+##  Draw Plots
+compDist(BPA.0.5, BPA.0, n=20, boundary=log(c(1/3, 3)), xlim=c(log(1/10), log(90000)), noSplit=TRUE, cex=0.8)
+plot.new();plot.new(); # skip empty column in the middle
+compDist(BPA.0.5.prior, BPA.0, n=20, boundary=log(c(1/3, 3)), xlim=c(log(1/10), log(90000)), noSplit=TRUE, cex=0.8)
+
+##  Create an overall title.
+mtext("n = 40, d = 0.5", line=2, outer = TRUE, adj=0.2)
+mtext("n = 40, d = N(0.5, SD=0.1)", line=2, outer = TRUE, adj=0.8)
+
+
+BPA.analysis(BPA.0.4.prior, boundary=6, n.max=100)
+SSD(BPA.0.5, power=.90)
+SSD(BPA.0.5.prior, power=.90)
+
+plot(BPA.0.5, boundary=10, n.max=NA)
+
+
+
+# ---------------------------------------------------------------------
+#  Figure 2: open-ended SBF
+
 pdf(file="Figure2.pdf", width=7, height=4, pointsize=10)
-plot(sim, n.max=NA, xlim=c(10, 240), boundary=6, traj.selection="fixed", xextension=1.8)
+plot(BPA.0.5.prior, n.max=NA, xlim=c(10, 180), boundary=6, xextension=2.2, dens.amplification=1.5, ylim=c(log(1/11), log(11)))
 dev.off()
 
 
 # Figure 3: SBF+maxN
 pdf(file="Figure3.pdf", width=7, height=4, pointsize=10)
-plot(sim, n.max=60, xlim=c(10, 240), boundary=10, traj.selection="fixed", xextension=0.8)
+plot(BPA.0.5.prior, n.max=60, boundary=6, traj.selection="fixed", xextension=1.5, cex.labels=1.1, cex.annotations=0.9)
 dev.off()
 
 
 
+power.NHST <- BPA.0.5.prior$sim %>% group_by(n) %>% summarise(sig.prop = sum(p.value <= .05)/n())
+print(power.NHST, n=Inf)
+
 # ---------------------------------------------------------------------
 # SSD plot test
 
-#load("../../finalSims/sim0.5_step1.RData")
-
-load("../finalSims/sim.0.5.prior.RData") #sim3
-
 # Correct sign of BF?
-SSD(sim3, power=.80, criterion=c(1/3, 3))
+SSD(BPA.0.5, power=.80, criterion=c(1/3, 3))
+SSD(BPA.0, alpha=.05, criterion=c(1/3, 3))
 
 
 # symmetric boundaries at 1/3 and 3
@@ -86,10 +95,6 @@ SSD(sim, power=.80, criterion=c(0.5, 10))
 # decrease Type-II errors with stronger
 SSD(sim, power=.80, criterion=c(1/4, 10))
 
-
-load("../finalSims/sim.0.RData")
-load("../finalSims/sim.0.3.RData")
-load("../finalSims/sim.0.5.prior.RData")
 
 SSD(sim, power=.50, criterion=c(1/3, 3))
 

@@ -3,7 +3,7 @@ Package: BPA
 Type: Package
 Title: Bayesian Power Analysis
 Version: 0.1
-Date: 2015-10-21
+Date: 2016-01-26
 Author: Felix Schönbrodt
 Maintainer: Felix Schönbrodt <felix@nicebread.de>
 Depends:
@@ -16,6 +16,6 @@ Imports:
 	scales,
 	reshape2,
 	sfsmisc
-Description: Compute and visualize power analyses for Bayes factors. Handles fixed-n and sequential designs.
+Description: Compute and visualize design analyses for Bayes factors. Handles fixed-n and sequential designs.
 License: GPL (>= 2)
 LazyData: TRUE

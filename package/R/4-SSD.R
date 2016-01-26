@@ -9,7 +9,8 @@
 #' @param criterion The critical boundary that defines the "success" of a study. This can be a single value, for example 1. In this case, all studies with BF < 1 are counted as "negative outcomes", and BF > 1 as positive outcomes (i.e., it quantifies the probability of getting a BF with the correct direction).
 #' @param power The desired rate of true-positive results (in case of reality=H1)
 #' @param alpha The desired rate of false-positive results (in case of reality=H0)
-SSD <- function(BPA, criterion=c(1/3, 3), power=0.90, alpha=.025) {
+#' @param plot Display plot? (TRUE/FALSE)
+SSD <- function(BPA, criterion=c(1/3, 3), power=0.90, alpha=.025, plot=TRUE) {
 	
 	# just in case: order criterion
 	criterion <- sort(criterion)
@@ -54,75 +55,98 @@ SSD <- function(BPA, criterion=c(1/3, 3), power=0.90, alpha=.025) {
 	inconclusive.results <- categories$inconclusive.results[which(categories$n == n.crit)[1]]
 	negative.results <- categories$negative.results[which(categories$n == n.crit)[1]]
 	
-	# ---------------------------------------------------------------------
-	# The plot
 	
-	if (length(logCriterion) == 1) {
-		colors <- c("green4", "red3")
-		color.labels <- c(
-			paste0("Posiive outcome with BF > ", round(criterion, 2)),
-			paste0("Negative outcome with BF < ", round(criterion, 2))
-		)
-	}
-	if (length(logCriterion) == 2) {
-		colors <- c("green4", "orange1", "red3")
-		color.labels <- c(
-			paste0("Positive with BF > ", round(criterion[2], 2)),
-			paste0("Inconclusive with ", round(criterion[1], 2), " < BF < ", round(criterion[2], 2)),
-			paste0("Negative with BF < ", round(criterion[1], 2))
-		)
-	}
+	# ---------------------------------------------------------------------
+	# The verbal output
 	
 	# If delta==0, show output for H0 studies, else: output for H1 studies
-	if (analysis.mode == "H0") {
-		# output for null effect
-		cat(paste0("A ", round(positive.results*100, 1), "% long-term rate of Type-I errors is achieved at n = ", n.crit, "\n",
-		"This setting implies long-term rates of:\n", 
-		"   ", 
-		ifelse(length(logCriterion) == 2, 
-			paste0(round(inconclusive.results*100, 1), "% inconclusive results and\n"),
-			""),
-		"   ", round(negative.results*100, 1), "% true-negative results."
-		))
-	} else {
-		# output for true effect
-		cat(paste0(round(positive.results*100, 1), "% power achieved at n = ", n.crit, "\n",
-		"This setting implies long-term rates of:\n", 
-		ifelse(length(logCriterion) == 2, 
-			paste0(round(inconclusive.results*100, 1), "% inconclusive results and\n"),
-			""),
-		"   ", round(negative.results*100, 1), "% false-negative results."
-		))
-	}	
-	
+		if (analysis.mode == "H0") {
+			# output for null effect
+			cat(paste0("A ", round(positive.results*100, 1), "% long-term rate of Type-I errors is achieved at n = ", n.crit, "\n",
+			"This setting implies long-term rates of:\n", 
+			"   ", 
+			ifelse(length(logCriterion) == 2, 
+				paste0(round(inconclusive.results*100, 1), "% inconclusive results and\n"),
+				""),
+			"   ", round(negative.results*100, 1), "% true-negative results."
+			))
+		} else {
+			# output for true effect
+			cat(paste0(round(positive.results*100, 1), "% power achieved at n = ", n.crit, "\n",
+			"This setting implies long-term rates of:\n", 
+			ifelse(length(logCriterion) == 2, 
+				paste0(round(inconclusive.results*100, 1), "% inconclusive results and\n"), ""),
+			"   ", round(negative.results*100, 1), "% false-negative results."
+			))
+		}	
 	
 	# ---------------------------------------------------------------------
 	# The plot
 	
-	# Compute some variables to allow stacked rects
-	categories$p_i <- categories$positive.results + categories$inconclusive.results
-	categories$n_next <- lead(categories$n)
-	cat2 <- reshape2::melt(categories, id.vars="n")	
-	cat2$n_next <- lead(cat2$n)
+	if (plot==TRUE) {
+		if (length(logCriterion) == 1) {
+			colors <- scales::alpha(c("green4", "red3"), alpha=0.5)
+			color.labels <- c(
+				paste0("Positive outcome with BF > ", round(criterion, 2)),
+				paste0("Negative outcome with BF < ", round(criterion, 2))
+			)
+		}
+		if (length(logCriterion) == 2) {
+			colors <- scales::alpha(c("green4", "orange1", "red3"), alpha=0.5)
+			color.labels <- c(
+				paste0("Positive with BF > ", round(criterion[2], 2)),
+				paste0("Inconclusive with ", round(criterion[1], 2), " < BF < ", round(criterion[2], 2)),
+				paste0("Negative with BF < ", round(criterion[1], 2))
+			)
+		}		
 	
-	p1 <- ggplot(categories, aes()) + geom_rect(aes(xmin=n, xmax=n_next, ymin=0, ymax=positive.results), fill=colors[1])
-	if (length(logCriterion) == 2) {
-		p1 <- p1 + geom_rect(aes(xmin=n, xmax=n_next, ymin=positive.results, ymax=p_i), fill=colors[2])
-	}
-	p1 <- p1 + geom_rect(aes(xmin=n, xmax=n_next, ymin=p_i, ymax=1), fill=colors[length(colors)])
+		# crop right side of plot where everything is green/ or red
+		if (analysis.mode == "H1") {
+			n.display.max <- which(categories$positive.results==1)[1]
+			if (!is.na(n.display.max)) categories <- categories[1:n.display.max, ]
+		}
+		if (analysis.mode == "H0") {
+			n.display.max <- which(categories$negative.results==1)[1]
+			if (!is.na(n.display.max)) categories <- categories[1:n.display.max, ]
+		}
+	
+		# Compute some variables to allow stacked rects
+		if (length(logCriterion) == 1) {
+			categories$p_i <- categories$positive.results
+		} else {
+			categories$p_i <- categories$positive.results + categories$inconclusive.results
+		}
+		categories$n_next <- lead(categories$n)
+		cat2 <- reshape2::melt(categories, id.vars="n")	
+		cat2$n_next <- lead(cat2$n)
+	
+		p1 <- ggplot(categories, aes()) + geom_rect(aes(xmin=n, xmax=n_next, ymin=0, ymax=positive.results), fill=colors[1])
+		if (length(logCriterion) == 2) {
+			p1 <- p1 + geom_rect(aes(xmin=n, xmax=n_next, ymin=positive.results, ymax=p_i), fill=colors[2], color=NA)
+		}
+		p1 <- p1 + geom_rect(aes(xmin=n, xmax=n_next, ymin=p_i, ymax=1), fill=colors[length(colors)])
 	
 	
-	p1 <- p1 + theme_bw() + scale_y_continuous(labels=scales::percent) + xlab("n") + ylab("% of studies") + scale_fill_manual("Study outcome", values=colors, labels=color.labels)
-	p1 <- p1 + annotate("segment", x=n.crit, xend=n.crit, y=0, yend=positive.results)
-	p1 <- p1 + annotate("segment", x=min(cat2$n), xend=n.crit, y=positive.results, yend=positive.results, linetype="dashed")
-	p1 <- p1 + annotate("point", x=n.crit, y=positive.results, size=3)
+		p1 <- p1 + theme_bw() + scale_y_continuous(labels=scales::percent) + xlab("n") + ylab("% of studies") + scale_fill_manual("Study outcome", values=colors, labels=color.labels)
+		p1 <- p1 + annotate("segment", x=n.crit, xend=n.crit, y=0, yend=positive.results)
+		p1 <- p1 + annotate("segment", x=min(cat2$n), xend=n.crit, y=positive.results, yend=positive.results, linetype="dashed")
+		p1 <- p1 + annotate("point", x=n.crit, y=positive.results, size=3)
 	
-	if (analysis.mode == "H1") {
-		p1 <- p1 + annotate("text", x=n.crit, y=positive.results, label=paste0(round(power*100), "% power achieved at n = ", n.crit), angle=90, size=3, hjust=1.1, vjust=1.5, fontface=2)
+		if (analysis.mode == "H1") {
+			p1 <- p1 + annotate("text", x=n.crit, y=positive.results, label=paste0(round(power*100), "% power achieved at n = ", n.crit), angle=90, size=3, hjust=1.1, vjust=1.5, fontface=2)
+		} else {
+			p1 <- p1 + annotate("text", x=n.crit, y=positive.results, label=paste0(round(alpha*100, 1), "% Type-I error rate achieved at n = ", n.crit), size=3, hjust=-0.1, vjust=-0.2, fontface=2)
+		}
+	
+		return(p1)
+	# of if plot==TRUE 
 	} else {
-		p1 <- p1 + annotate("text", x=n.crit, y=positive.results, label=paste0(round(alpha*100, 1), "% Type-I error rate achieved at n = ", n.crit), size=3, hjust=-0.1, vjust=-0.2, fontface=2)
+		return(list(
+			n.crit = n.crit,
+			positive.results = positive.results,			
+			inconclusive.results = inconclusive.results,			
+			negative.results = negative.results
+		))
 	}
-	
-	return(p1)
 }
 

@@ -1,6 +1,3 @@
-# TODO: add.density.at = c(20, 40, 60); NA = default = n.max
-# TODO: The right density gets larger with higher n.max - should be constant!!
-
 #' Plot a BPA object
 #' @aliases plot.BPA
 #' @export
@@ -25,27 +22,43 @@
 #' @param bw Black/white density on the right?
 #' @param traj.selection Should a fixed set of trajectories be shown ("fixed"), or a selection that reflects the proportional of each stopping category (upper/loewr/n.max hits; use "proportional").
 #' @param n.max.label.position "fixed": Always centered at BF=1. "dynamic": Centered on the the peak of the right density.
+#' @param cex.labels Zoom factor for axes labels
+#' @param cex.cex.annotations Zoom factor for annotations
 
 #forH1 = TRUE; boundary=6; n.trajectories=60; n.max=500; dens.amplification=NA; dens.right.amplification=NA; plotratio=NA; cat=3; dens.right.offset=2; xlim=NA; ylim=NA; load("finalSims/sim.0.5.RData")
 
-
-
-plotBPA <- function(BPA, boundary=30, n.trajectories=60, n.max=NA, dens.amplification=1, cat=3, bw=FALSE, dens.right.offset=2, xlim=NA, ylim=NA, xextension=1.5, traj.selection="proportional", yaxis.at=NA, yaxis.labels=NA, forH1=TRUE, n.max.label.position="dynamic") {
+plotBPA <- function(BPA, boundary=10, n.trajectories=60, n.min=NA, n.max=NA, dens.amplification=1, cat=3, bw=FALSE, dens.right.offset=2, xlim=NA, ylim=NA, xextension=1.5, traj.selection="proportional", yaxis.at=NA, yaxis.labels=NA, forH1=TRUE, n.max.label.position="dynamic", cex.labels=1, cex.annotations=0.85) {
 	sim <- BPA$sim
 	traj.selection <- match.arg(traj.selection, c("proportional", "fixed"))
 	n.max.label.position <- match.arg(n.max.label.position, c("dynamic", "fixed"))
+	
+	if (length(boundary) == 1) boundary <- sort(c(boundary, 1/boundary))
+	logBoundary <- log(boundary)
+	
 		
 	plotratio <- NA
 	# ---------------------------------------------------------------------
 	# Prepare data for plot
 
-	logBoundary <- log(boundary)
-	if (is.na(n.max)) {n.max.actual <- max(sim$n)} else {n.max.actual <- n.max}
+
+	if (is.na(n.max)) {
+		n.max.compute <- n.max <- max(sim$n) # n.max.compute stores the maximum n for computation, n.max the display n.max
+		if (!all(is.na(xlim))) {
+			n.max <- min(xlim[2], max(sim$n))
+		}
+	} else {
+		n.max.compute <- n.max
+		if (!all(is.na(xlim))) {
+			n.max <- min(xlim[2], n.max)
+		}		
+	}
+	if (is.na(n.min)) {n.min <- min(sim$n)}
+	
 		
-	indices <- BPA.analysis(BPA, boundary=boundary, n.max=n.max.actual, verbose=FALSE)
+	indices <- BPA.analysis(BPA, boundary=boundary, n.min=n.min, n.max=n.max.compute, verbose=FALSE)
 	
 	# reduce data frame to actually relevant data
-	sim <- sim %>% filter(n <= n.max.actual)
+	sim <- sim %>% filter(n >= n.min & n <= n.max)
 
 	# select some trajectories for displaying, relative for each stopping outcome
 	
@@ -64,16 +77,24 @@ plotBPA <- function(BPA, boundary=30, n.trajectories=60, n.max=NA, dens.amplific
 	# delete all points after first boundary hit
 	unNA <- function(x) {x[is.na(x)]=Inf; return(x)}
 	demo2 <- demo1 %>% group_by(id) %>% 
-		mutate(firstbreak=unNA(which(abs(logBF)>=logBoundary)[1])) %>% 
+		mutate(firstbreak=unNA(which(logBF >= logBoundary[2] | logBF <= logBoundary[1])[1])) %>% 
 		filter(row_number()<=firstbreak) %>% ungroup()
 
 	# "Land" all final points on the boundary (looks better in plot)
-	demo2$logBF[demo2$logBF > logBoundary] <- logBoundary
-	demo2$logBF[demo2$logBF < -logBoundary] <- -logBoundary
+	demo2$logBF[demo2$logBF > logBoundary[2]] <- logBoundary[2]
+	demo2$logBF[demo2$logBF < logBoundary[1]] <- logBoundary[1]
 
-	final_point_boundary <- demo2 %>% group_by(id) %>% filter(n == max(n), abs(logBF)==logBoundary)
-	final_point_n.max <- demo2 %>% filter(n == n.max.actual, logBF<logBoundary)
+	final_point_boundary <- demo2 %>% group_by(id) %>% filter(n == max(n), logBF==logBoundary[1] | logBF==logBoundary[2])
+	final_point_n.max <- demo2 %>% filter(n == n.max, logBF<logBoundary[2] & logBF > logBoundary[1])
 	
+	
+	# xlim: 1.5 times the boundary to leave space for densities and category labels
+	if (all(is.na(ylim))) ylim <- c(max(min(sim$logBF), logBoundary[1])*1.7, min(max(sim$logBF), logBoundary[2])*1.7)*1.1		
+	if (all(is.na(xlim))) {
+		xlim <- c(min(sim$n), max(sim$n))
+	}
+	
+		
 	# stop();
 	# indices$d.top <- density(runif(10000, 20, 40))
 	# indices$d.bottom <- density(runif(10000, 20, 30))
@@ -92,6 +113,7 @@ plotBPA <- function(BPA, boundary=30, n.trajectories=60, n.max=NA, dens.amplific
 		# normalize density to area 1
 		dens.top$y <- dens.top$y/d.top.area		
 		dens.top$y <- dens.top$y*indices$upper.hit.frac	# weigh density
+		dens.top <- dens.top[dens.top$x < n.max, ]
 		#sum(diff(dens.top$x)*dens.top$y)
 	} else {dens.top <- NULL}
 
@@ -103,6 +125,7 @@ plotBPA <- function(BPA, boundary=30, n.trajectories=60, n.max=NA, dens.amplific
 		# normalize density to area 1
 		dens.bottom$y <- dens.bottom$y/d.bottom.area
 		dens.bottom$y <- dens.bottom$y*indices$lower.hit.frac # weigh density
+		dens.bottom <- dens.bottom[dens.bottom$x < n.max, ]
 		#sum(diff(dens.bottom$x)*dens.bottom$y)
 	} else {dens.bottom <- NULL}
 
@@ -120,13 +143,6 @@ plotBPA <- function(BPA, boundary=30, n.trajectories=60, n.max=NA, dens.amplific
 	# 
 	#stop()
 	
-	
-	# xlim: 1.5 times the boundary to leave space for densities and category labels
-	if (all(is.na(ylim))) ylim <- c(max(min(sim$logBF), -logBoundary)*1.7, min(max(sim$logBF), logBoundary)*1.7)*1.1		
-	if (all(is.na(xlim))) {
-		xlim <- c(min(sim$n), max(sim$n))
-	}
-
 	
 	# automatic labeling of y-axis
 	if (all(is.na(yaxis.at))) {
@@ -157,8 +173,8 @@ plotBPA <- function(BPA, boundary=30, n.trajectories=60, n.max=NA, dens.amplific
 	plot(NA, xlim=c(xlim[1], xlim[2]*xextension), ylim=ylim, xlab="", ylab="", bty="n", axes=FALSE)
 	
 	# nice labels
-	mtext("Sample size", side=1, line=2.5, cex=1.2)						# xlab
-	mtext(expression(Bayes~factor~(BF[10])), side=2, line=3, cex=1.2)	# ylab
+	mtext("Sample size", side=1, line=2.5, cex=cex.labels)						# xlab
+	mtext(expression(Bayes~factor~(BF[10])), side=2, line=3, cex=cex.labels)	# ylab
 	
 	# axes
 	# set scale ticks
@@ -172,9 +188,9 @@ plotBPA <- function(BPA, boundary=30, n.trajectories=60, n.max=NA, dens.amplific
 	}
 	
 	# BF-boundaries
-	if (is.finite(boundary)) {
-		lines(x=c(xlim[1], n.max.actual), y=c(-logBoundary, -logBoundary), lty="solid", lwd=1.2)
-		lines(x=c(xlim[1], n.max.actual), y=c(+logBoundary, +logBoundary), lty="solid", lwd=1.2)
+	if (all(is.finite(boundary))) {
+		lines(x=c(xlim[1], n.max), y=c(logBoundary[1], logBoundary[1]), lty="solid", lwd=cex.labels)
+		lines(x=c(xlim[1], n.max), y=c(logBoundary[2], logBoundary[2]), lty="solid", lwd=cex.labels)
 	}
 	
 	## Annotation: horizontal lines at BF categories
@@ -199,13 +215,8 @@ plotBPA <- function(BPA, boundary=30, n.trajectories=60, n.max=NA, dens.amplific
 	
 	
 	if (!is.null(c(dens.bottom$y, dens.top$y))) {
-		#highest.dens.y <- max(c(dens.bottom$y, dens.top$y), na.rm=TRUE)
-		#dens.amp <- ((logBoundary/2)/(highest.dens.y))*dens.amplification
 		dens.amp <- 30*dens.amplification
 	} else {
-		# highest.dens.x <- max(dens.right$y, na.rm=TRUE)
-# 		dens.amp <- ((diff(xlim)/3)/highest.dens.x)*dens.amplification
-# 		print(paste0(highest.dens.x, " : ", dens.amp, " : ", round(integrate.xy(indices$d.right$x, indices$d.right$y*dens.amp)), " : ", round(integrate.xy(indices$d.right$x, indices$d.right$y))))
 		dens.amp <- 300*dens.amplification
 	}
 
@@ -213,15 +224,15 @@ plotBPA <- function(BPA, boundary=30, n.trajectories=60, n.max=NA, dens.amplific
 	# Upper density
 	if (!is.null(dens.top)) {
 		poly.top <- rbind(data.frame(x=dens.top$x[1], y=0), dens.top, data.frame(x=max(dens.top$x), y=0))
-		polygon(poly.top$x, (poly.top$y)*dens.amp + logBoundary, col="grey80")
-		lines(dens.top$x, (dens.top$y)*dens.amp + logBoundary, col="grey30")
+		polygon(poly.top$x, (poly.top$y)*dens.amp + logBoundary[2], col="grey80")
+		lines(dens.top$x, (dens.top$y)*dens.amp + logBoundary[2], col="grey30")
 	}
 
 	# Lower density
 	if (!is.null(dens.bottom)) {
 		poly.bottom <- rbind(data.frame(x=dens.bottom$x[1], y=0), dens.bottom, data.frame(x=max(dens.bottom$x), y=0))
-		polygon(poly.bottom$x, -(poly.bottom$y)*dens.amp - logBoundary, col="grey80")
-		lines(dens.bottom$x, -(dens.bottom$y)*dens.amp - logBoundary, col="grey30")
+		polygon(poly.bottom$x, -(poly.bottom$y)*dens.amp + logBoundary[1], col="grey80")
+		lines(dens.bottom$x, -(dens.bottom$y)*dens.amp + logBoundary[1], col="grey30")
 	}
 
 
@@ -239,9 +250,9 @@ plotBPA <- function(BPA, boundary=30, n.trajectories=60, n.max=NA, dens.amplific
 		}
 
 		if (bw==TRUE & cat==6) 
-			colors <- c("grey60", "grey80", "grey60", "grey80", "grey60", "grey80")
+			colors <- c("grey80", "grey65", "grey50", "grey35", "grey20", "grey10")
 		if (bw==TRUE & cat==3) 
-			colors <- c("grey60", "grey80", "grey60")
+			colors <- c("grey80", "grey50", "grey10")
 		if (bw==FALSE & cat==6) 
 			colors <- c("green4", "olivedrab3", "orange1", "darkorange2", "orangered2", "red3")
 		if (bw==FALSE & cat==3) 
@@ -257,7 +268,7 @@ plotBPA <- function(BPA, boundary=30, n.trajectories=60, n.max=NA, dens.amplific
 				poly <- rbind(data.frame(x=min(poly$x), y=0), poly, data.frame(x=max(poly$x), y=0))
 				
 				# flip x and y axis: the density (y) is plotted on the plot's x axis
-				polygon(x=poly$y*dens.amp + n.max.actual + dens.right.offset*(strheight("X")/asp), y=poly$x, col=colors[i], border=NA) 
+				polygon(x=poly$y*dens.amp + n.max + dens.right.offset*(strheight("X")/asp), y=poly$x, col=colors[i], border=NA) 
 				
 				if (stoppingBF.perc[i] >= 1) {
 					# find the point in the density which splits the area into two equal halves				
@@ -266,59 +277,59 @@ plotBPA <- function(BPA, boundary=30, n.trajectories=60, n.max=NA, dens.amplific
 					Y <- poly$x[median.area.pos]				
 					
 					# shadowtext adds a white contour around the characters
-					TeachingDemos::shadowtext(x=n.max.actual + dens.right.offset*(strheight("X")/asp) + X*dens.amp, y=Y, labels=paste0(stoppingBF.perc[i], "%"), bg="white", col="black", adj=-0.3, cex=0.8, r=0.1)
+					TeachingDemos::shadowtext(x=n.max + dens.right.offset*(strheight("X")/asp) + X*dens.amp, y=Y, labels=paste0(stoppingBF.perc[i], "%"), bg="white", col="black", adj=-0.3, cex=cex.annotations, r=0.1)
 				}
 			}
 		} # of i
 
 		# draw the right density
 		if (!is.null(dens.right)) {
-			lines(dens.right$y*dens.amp + n.max.actual + dens.right.offset*(strheight("X")/asp), dens.right$x, col="grey30")
+			lines(dens.right$y*dens.amp + n.max + dens.right.offset*(strheight("X")/asp), dens.right$x, col="grey30")
 		}	
 	
 		# n.max boundary
-		if (!is.na(n.max)) {lines(x=rep(n.max, 2), y=c(-logBoundary, logBoundary), lty="solid", lwd=1.2)}
+		if (!is.na(n.max)) {lines(x=rep(n.max, 2), y=c(logBoundary[1], logBoundary[2]), lty="solid", lwd=cex.labels)}
 	
 		# add final points at n.max hit
-		points(final_point_n.max$n, final_point_n.max$logBF, pch=16, cex=.8)
+		points(final_point_n.max$n, final_point_n.max$logBF, pch=16, cex=cex.annotations)
 	} # of if (indices$n.max.hit.frac > 0)
 
 
 	# add final points at boundary hit
-	points(final_point_boundary$n, final_point_boundary$logBF, pch=16, cex=.8)
+	points(final_point_boundary$n, final_point_boundary$logBF, pch=16, cex=cex.annotations)
 	
 
-	if (!is.null(dens.right)) {
-		xmax <- n.max.actual + dens.right.offset*(strheight("X")/asp) + max(dens.right$y)*dens.amp + strwidth("XXXXXXXXX")
+	if (!is.null(dens.right) & indices$n.max.hit.frac > 0.005) {
+		xmax <- n.max + dens.right.offset*(strheight("X")/asp) + max(dens.right$y)*dens.amp + strwidth("XXXXXX")
 	} else {
-		xmax <- n.max.actual + dens.right.offset*(strheight("X")/asp)
+		xmax <- n.max + strheight("X")/asp
 	}
 
 	par(xpd=NA)	# allow drawing outside the plot
 	if (inside(labels.y[8], ylim))
-		text(xmax, labels.y[8], bquote(Very~strong~H[.(ifelse(forH1==TRUE,0,1))]), adj=c(0, 0.5), cex=.8)
+		text(xmax, labels.y[8], bquote(Very~strong~H[.(ifelse(forH1==TRUE,0,1))]), adj=c(0, 0.5), cex=cex.annotations)
 	if (inside(labels.y[7], ylim))
-		text(xmax, labels.y[7], bquote(Strong~H[.(ifelse(forH1==TRUE,0,1))]), adj=c(0, 0.5), cex=.8)
+		text(xmax, labels.y[7], bquote(Strong~H[.(ifelse(forH1==TRUE,0,1))]), adj=c(0, 0.5), cex=cex.annotations)
 	if (inside(labels.y[6], ylim))
-		text(xmax, labels.y[6], bquote(Moderate~H[.(ifelse(forH1==TRUE,0,1))]), adj=c(0, 0.5), cex=.8)
+		text(xmax, labels.y[6], bquote(Moderate~H[.(ifelse(forH1==TRUE,0,1))]), adj=c(0, 0.5), cex=cex.annotations)
 	if (inside(labels.y[5], ylim))
-		text(xmax, labels.y[5], bquote(Anecdotal~H[.(ifelse(forH1==TRUE,0,1))]), adj=c(0, 0.5), cex=.8)
+		text(xmax, labels.y[5], bquote(Anecdotal~H[.(ifelse(forH1==TRUE,0,1))]), adj=c(0, 0.5), cex=cex.annotations)
 	if (inside(labels.y[1], ylim))
-		text(xmax, labels.y[1], bquote(Very~strong~H[.(ifelse(forH1==TRUE,1,0))]), adj=c(0, 0.5), cex=.8)
+		text(xmax, labels.y[1], bquote(Very~strong~H[.(ifelse(forH1==TRUE,1,0))]), adj=c(0, 0.5), cex=cex.annotations)
 	if (inside(labels.y[2], ylim))
-		text(xmax, labels.y[2], bquote(Strong~H[.(ifelse(forH1==TRUE,1,0))]), adj=c(0, 0.5), cex=.8)
+		text(xmax, labels.y[2], bquote(Strong~H[.(ifelse(forH1==TRUE,1,0))]), adj=c(0, 0.5), cex=cex.annotations)
 	if (inside(labels.y[3], ylim))
-		text(xmax, labels.y[3], bquote(Moderate~H[.(ifelse(forH1==TRUE,1,0))]), adj=c(0, 0.5), cex=.8)
+		text(xmax, labels.y[3], bquote(Moderate~H[.(ifelse(forH1==TRUE,1,0))]), adj=c(0, 0.5), cex=cex.annotations)
 	if (inside(labels.y[4], ylim))
-		text(xmax, labels.y[4], bquote(Anecdotal~H[.(ifelse(forH1==TRUE,1,0))]), adj=c(0, 0.5), cex=.8)
+		text(xmax, labels.y[4], bquote(Anecdotal~H[.(ifelse(forH1==TRUE,1,0))]), adj=c(0, 0.5), cex=cex.annotations)
 	par(xpd=TRUE)
 	
 	
 	# Write labels of stopping percentages
-	TeachingDemos::shadowtext(col="black", bg="white", x=xlim[1], y=logBoundary, label=bquote(paste(.(round(indices$upper.hit.frac*100)), "% stopped at ", H[1], " boundary")), cex=.8, adj=c(-0.1, -0.3))
-	TeachingDemos::shadowtext(col="black", bg="white", x=xlim[1], y=-logBoundary, label=bquote(paste(.(round(indices$lower.hit.frac*100)), "% stopped at ", H[0], " boundary")), cex=.8, adj=c(-0.1, 1.3))
+	TeachingDemos::shadowtext(col="black", bg="white", x=xlim[1], y=logBoundary[2], label=bquote(paste(.(round(indices$upper.hit.frac*100)), "% stopped at ", H[1], " boundary")), cex=cex.annotations, adj=c(-0.1, -0.3))
+	TeachingDemos::shadowtext(col="black", bg="white", x=xlim[1], y=logBoundary[1], label=bquote(paste(.(round(indices$lower.hit.frac*100)), "% stopped at ", H[0], " boundary")), cex=cex.annotations, adj=c(-0.1, 1.3))
 	
-	if (indices$n.max.hit.frac > 0.005 & is.finite(boundary)) {		
+	if (indices$n.max.hit.frac > 0.005 & all(is.finite(boundary))) {		
 		if (n.max.label.position == "dynamic") {
 			# find maximum of dens.right; center the label on this point
 			Y <- dens.right$x[which.max(dens.right$y)]
@@ -326,7 +337,7 @@ plotBPA <- function(BPA, boundary=30, n.trajectories=60, n.max=NA, dens.amplific
 			Y <- log(1)
 		}
 		
-		TeachingDemos::shadowtext(col="black", bg="white", x=n.max.actual, y=Y, label=bquote(paste(.(round(indices$n.max.hit.frac*100)), "% stopped at ", n[max], " boundary")), cex=.8, srt=90, adj=c(0.5, 1.3))
+		TeachingDemos::shadowtext(col="black", bg="white", x=n.max, y=Y, label=bquote(paste(.(round(indices$n.max.hit.frac*100)), "% stopped at ", n[max], " boundary")), cex=cex.annotations, srt=90, adj=c(0.5, 1.3))
 	}
 }
 

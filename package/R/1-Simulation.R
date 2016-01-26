@@ -214,22 +214,3 @@ Simulated true effect size (", ifelse(d.VAR > 0, "random", "fixed"), "): d=", ro
 #save(sim, file="../../finalSims/sim.0b.RData")
 
 
-
-
-# ---------------------------------------------------------------------
-# Some plausibility checks
-
-# At each cross-sectional cut, the success rate (via p values) should equal the calculated power
-# This is only valid in the fixed-ES case!
-# library(pwr)
-#
-# power.comparison <- data.frame()
-# for (n in seq(min(sim$n), max(sim$n), by=10)) {
-# 	print(n)
-# 	power.analytically <- pwr.t.test(d=sim$d[1], n=n)$power
-# 	power.sim <- sum(sim$p.value[sim$n==n]<.05)/length(sim$p.value[sim$n==n])
-# 	power.comparison <- rbind(power.comparison, data.frame(power.analytically, power.sim))
-# }
-#
-# plot(power.comparison, pch=21)
-# abline(a=0, b=1, lty="dotted")
