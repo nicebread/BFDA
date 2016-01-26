@@ -1,29 +1,29 @@
 # TODO: This function is a stub!
-errorRates <- function(BPA.H1, BPA.H0, n, criterion=c(1/3, 3), xlim=NA, noSplit=FALSE, cex=1.2, cex.axis=1) {
+errorRates <- function(BFDA.H1, BFDA.H0, n, criterion=c(1/3, 3), xlim=NA, noSplit=FALSE, cex=1.2, cex.axis=1) {
 
-	# BPA.H1 <- BPA.0.5
-	# BPA.H0 <- BPA.0
+	# BFDA.H1 <- BFDA.0.5
+	# BFDA.H0 <- BFDA.0
 	# criterion = c(1/6, 6)
 	
 	# just in case: order criterion
 	criterion <- sort(criterion)
 	logCriterion <- log(criterion)
 
-	n.max <- min(max(BPA.H1$sim$n), max(BPA.H0$sim$n))
-	BPA.H1$sim <- BPA.H1$sim %>% filter(n <= n.max)
-	BPA.H0$sim <- BPA.H0$sim %>% filter(n <= n.max)
+	n.max <- min(max(BFDA.H1$sim$n), max(BFDA.H0$sim$n))
+	BFDA.H1$sim <- BFDA.H1$sim %>% filter(n <= n.max)
+	BFDA.H0$sim <- BFDA.H0$sim %>% filter(n <= n.max)
 
 	# ---------------------------------------------------------------------
 	# Plot: x-axis = n, y-axis = error rate, fixed boundary
 	
 	# WE = weak evidence
-	underH1 <- BPA.H1$sim %>% group_by(n) %>% summarize(
+	underH1 <- BFDA.H1$sim %>% group_by(n) %>% summarize(
 		FNE = sum(logBF < logCriterion[1])/n(),
 		WE  = sum(logBF > logCriterion[1] & logBF < logCriterion[2])/n(),
 		CE  = sum(logBF > logCriterion[2])/n()
 	)
 	
-	underH0 <- BPA.H0$sim %>% group_by(n) %>% summarize(
+	underH0 <- BFDA.H0$sim %>% group_by(n) %>% summarize(
 		FPE = sum(logBF > logCriterion[2])/n(),
 		WE  = sum(logBF > logCriterion[1] & logBF < logCriterion[2])/n(),
 		CE  = sum(logBF < logCriterion[1])/n()

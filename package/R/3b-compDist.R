@@ -1,10 +1,10 @@
-#' Plot a BPA object for fixed n: Two densities for H1 and H0
+#' Plot a BFDA object for fixed n: Two densities for H1 and H0
 #' @export
 #' @importFrom scales alpha
 
 # TODO: Add link to proper function name
-#' @param BPA.H1 A BPA simulation object for H1, resulting from the \code{BPA.sim} function
-#' @param BPA.H0 A BPA simulation object for H0, resulting from the \code{BPA.sim} function
+#' @param BFDA.H1 A BFDA simulation object for H1, resulting from the \code{BFDA.sim} function
+#' @param BFDA.H0 A BFDA simulation object for H0, resulting from the \code{BFDA.sim} function
 #' @param n Fixed n at which BF distribution is evaluated
 #' @param boundary Critical BF boundaries for H0 and H1
 #' @param xlim limits on xaxis
@@ -13,11 +13,11 @@
 #' @param cex.axis Zoom factor for tick labels
 #' @param bw Black/white color scheme? (default:FALSE)
 
-compDist <- function(BPA.H1, BPA.H0, n, boundary=c(1/3, 3), xlim=NA, noSplit=FALSE, cex=1.2, cex.axis=1, bw=FALSE) {
+compDist <- function(BFDA.H1, BFDA.H0, n, boundary=c(1/3, 3), xlim=NA, noSplit=FALSE, cex=1.2, cex.axis=1, bw=FALSE) {
 
 	N <- n	# rename, otherwise dplyr breaks ...
-	logBF.H0 <-  BPA.H0$sim %>% filter(n==N) %>% .$logBF
-	logBF.H1 <-  BPA.H1$sim %>% filter(n==N) %>% .$logBF
+	logBF.H0 <-  BFDA.H0$sim %>% filter(n==N) %>% .$logBF
+	logBF.H1 <-  BFDA.H1$sim %>% filter(n==N) %>% .$logBF
 	allBF <- c(logBF.H0, logBF.H1)
 	MAX <- quantile(allBF, prob=.95)
 	

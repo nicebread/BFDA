@@ -5,39 +5,39 @@
 #' @export
 #' @importFrom reshape2 melt
 # TODO: Add link to proper function name
-#' @param BPA A BPA simulation object, resulting from the \code{BPA.sim} function
+#' @param BFDA A BFDA simulation object, resulting from the \code{BFDA.sim} function
 #' @param criterion The critical boundary that defines the "success" of a study. This can be a single value, for example 1. In this case, all studies with BF < 1 are counted as "negative outcomes", and BF > 1 as positive outcomes (i.e., it quantifies the probability of getting a BF with the correct direction).
 #' @param power The desired rate of true-positive results (in case of reality=H1)
 #' @param alpha The desired rate of false-positive results (in case of reality=H0)
 #' @param plot Display plot? (TRUE/FALSE)
-SSD <- function(BPA, criterion=c(1/3, 3), power=0.90, alpha=.025, plot=TRUE) {
+SSD <- function(BFDA, criterion=c(1/3, 3), power=0.90, alpha=.025, plot=TRUE) {
 	
 	# just in case: order criterion
 	criterion <- sort(criterion)
 	logCriterion <- log(criterion)
 	
 	# determine the mode: H1 or H0-mode?
-	analysis.mode <- ifelse(all(BPA$sim$d == 0), "H0", "H1")
+	analysis.mode <- ifelse(all(BFDA$sim$d == 0), "H0", "H1")
 	
 	# sanity check: only valid, if same numbers of replications at each n.
-	var.ns <- BPA$sim %>% group_by(n) %>% summarize(ns=n()) %>% summarise(var(.$ns))
-	if (var.ns>0) {stop("Not numbers of replications at each n - consider setting boundary=Inf in your BPA.sim function.")}
+	var.ns <- BFDA$sim %>% group_by(n) %>% summarize(ns=n()) %>% summarise(var(.$ns))
+	if (var.ns>0) {stop("Not numbers of replications at each n - consider setting boundary=Inf in your BFDA.sim function.")}
 	
 	# categorize trajectories according to critical boundary
 	if (length(logCriterion) == 1 && logCriterion == 1) {
-		categories <- BPA$sim %>% group_by(n) %>% summarize(
+		categories <- BFDA$sim %>% group_by(n) %>% summarize(
 			BF.positive = sum(logBF > 1)/n(),
 			BF.negative = sum(logBF < 1)/n()
 		)
 	}
 	if (length(logCriterion) == 1) {
-		categories <- BPA$sim %>% group_by(n) %>% summarize(
+		categories <- BFDA$sim %>% group_by(n) %>% summarize(
 			positive.results = sum(logBF > logCriterion)/n(),
 			negative.results = sum(logBF <= logCriterion)/n()
 		)
 	}
 	if (length(logCriterion) == 2) {
-		categories <- BPA$sim %>% group_by(n) %>% summarize(
+		categories <- BFDA$sim %>% group_by(n) %>% summarize(
 			positive.results = sum(logBF > logCriterion[2])/n(),
 			inconclusive.results = sum(logBF <= logCriterion[2] & logBF > logCriterion[1])/n(),
 			negative.results = sum(logBF <= logCriterion[1])/n()

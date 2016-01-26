@@ -1,5 +1,5 @@
-errorCalibration <- function(BPA.H1, BPA.H0, alpha=.05) {
-	sim <- BPA$sim
+errorCalibration <- function(BFDA.H1, BFDA.H0, alpha=.05) {
+	sim <- BFDA$sim
 	if (is.na(n.max)) n.max <- max(sim$n)
 	if (is.na(n.min)) n.min <- min(sim$n)
 	if (all(is.na(boundary))) boundary <- max(sim$boundary)
@@ -67,7 +67,7 @@ errorCalibration <- function(BPA.H1, BPA.H0, alpha=.05) {
 	# Output
 
 	res <- list(
-		settings = BPA$settings,
+		settings = BFDA$settings,
 		d.top=d.top,
 		d.bottom = d.bottom,
 		d.right = d.right,
@@ -92,6 +92,6 @@ errorCalibration <- function(BPA.H1, BPA.H0, alpha=.05) {
 		n.max.hit.H0 = sum(n.max.hit$logBF < log(1/3))/all.traj.n
 	)
 	
-	class(res) <- "BPAanalysis"
+	class(res) <- "BFDAanalysis"
 	return(res)
 }

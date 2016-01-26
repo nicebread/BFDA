@@ -1,9 +1,9 @@
 # make sure that the id is really unique!
-#' Analyze aBPA.sim object
+#' Analyze aBFDA.sim object
 #'
-#' @param BPA The result object from a BPA.sim function
-#' @param n.min What is the minimum n that is sampled before optional stopping is started? Defaults to the smallest n in the BPA object
-#' @param n.max What is the minimum n that is sampled before optional stopping is started? Defaults to the largest n in the BPA object.
+#' @param BFDA The result object from a BFDA.sim function
+#' @param n.min What is the minimum n that is sampled before optional stopping is started? Defaults to the smallest n in the BFDA object
+#' @param n.max What is the minimum n that is sampled before optional stopping is started? Defaults to the largest n in the BFDA object.
 #' @param boundary At which BF boundary should trajectories stop? Either a single number (then the reciprocal is taken as the other boundary), or a vector of two numbers for lower and upper boundary.
 #' @param verbose Print information about analysis?
 #' @param alpha For a frequentist analysis in the fixed-n case: Use this alpha level.
@@ -12,10 +12,10 @@
 #'
 #' @examples
 #' \dontrun{
-#' BPA.analysis(sim, boundary=6, n.max=80)
+#' BFDA.analysis(sim, boundary=6, n.max=80)
 #' }
-BPA.analysis <- function(BPA, n.min=NA, n.max=NA, boundary=NA, verbose=TRUE, alpha=.05) {
-	sim <- BPA$sim
+BFDA.analysis <- function(BFDA, n.min=NA, n.max=NA, boundary=NA, verbose=TRUE, alpha=.05) {
+	sim <- BFDA$sim
 	if (is.na(n.max)) n.max <- max(sim$n)
 	if (is.na(n.min)) n.min <- min(sim$n)
 	if (all(is.na(boundary))) boundary <- max(sim$boundary)
@@ -83,7 +83,7 @@ BPA.analysis <- function(BPA, n.min=NA, n.max=NA, boundary=NA, verbose=TRUE, alp
 	# Output
 
 	res <- list(
-		settings = BPA$settings,
+		settings = BFDA$settings,
 		d.top=d.top,
 		d.bottom = d.bottom,
 		d.right = d.right,
@@ -108,7 +108,7 @@ BPA.analysis <- function(BPA, n.min=NA, n.max=NA, boundary=NA, verbose=TRUE, alp
 		n.max.hit.H0 = sum(n.max.hit$logBF < log(1/3))/all.traj.n
 	)
 	
-	class(res) <- "BPAanalysis"
+	class(res) <- "BFDAanalysis"
 	return(res)
 }
 
@@ -117,13 +117,13 @@ BPA.analysis <- function(BPA, n.min=NA, n.max=NA, boundary=NA, verbose=TRUE, alp
 
 
 
-#' Print a BPA analysis
+#' Print a BFDA analysis
 #' @export
-#' @method print BPAanalysis
-#' @param x A BPA-analysis object (which is return from \code{BPA.analysis})
+#' @method print BFDAanalysis
+#' @param x A BFDA-analysis object (which is return from \code{BFDA.analysis})
 #' @param digits Number of digits in display
 #' @param ... (not used)
-print.BPAanalysis <- function(x, ..., digits=1) {
+print.BFDAanalysis <- function(x, ..., digits=1) {
 with(x, {
 	print(data.frame(
 		outcome = c("Studies terminating at n.max", "Studies terminating at a boundary", "--> Terminating at H1 boundary", "--> Terminating at H0 boundary"),

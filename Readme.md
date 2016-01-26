@@ -1,7 +1,7 @@
-[![Build Status](https://travis-ci.org/nicebread/BPA.svg?branch=master)](https://travis-ci.org/nicebread/BPA)
+[![Build Status](https://travis-ci.org/nicebread/BFDA.svg?branch=master)](https://travis-ci.org/nicebread/BFDA)
 
 
-BPA
+BFDA
 ===
 
 An R package for Bayesian Power Analysis
@@ -11,4 +11,4 @@ An R package for Bayesian Power Analysis
 The current development version can be installed by:
 
     library(devtools)
-    install_github("nicebread/BPA", subdir="package")
+    install_github("nicebread/BFDA", subdir="package")

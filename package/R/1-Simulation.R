@@ -21,15 +21,15 @@
 #'
 #' @examples
 #' \dontrun{
-#' sim <- BPA.sim.ttest(d=0.5, n.min=20, n.max=300, boundary=Inf, 
+#' sim <- BFDA.sim.ttest(d=0.5, n.min=20, n.max=300, boundary=Inf, 
 #'				stepsize=1, design="sequential", B=1000, verbose=TRUE, cores=2)
 #' save(sim, file="sim0.5.RData")
-#' BPA.analysis(sim)
-#' BPA.analysis(sim, boundary=6)
+#' BFDA.analysis(sim)
+#' BFDA.analysis(sim, boundary=6)
 #' plot(sim, boundary=6)
 #' plot(sim, boundary=6, n.max=80)
 #'}
-BPA.sim.ttest <- function(d, n.min=10, n.max=500, design="sequential", boundary=Inf, B=1000, stepsize=NA, alternative=c("directional", "undirected"), verbose=TRUE, cores=1, ETA=TRUE, ...) {
+BFDA.sim.ttest <- function(d, n.min=10, n.max=500, design="sequential", boundary=Inf, B=1000, stepsize=NA, alternative=c("directional", "undirected"), verbose=TRUE, cores=1, ETA=TRUE, ...) {
 
 	alternative <- match.arg(alternative, c("directional", "undirected"))
 	if (d==0 & alternative == "directional") {
@@ -43,7 +43,7 @@ BPA.sim.ttest <- function(d, n.min=10, n.max=500, design="sequential", boundary=
 		print("Estimating duration of full simulation:")
 		start.ETA <- Sys.time()
 		testRuns <- max(5, cores)
-		BPA.sim.ttest(d=d, n.min=n.min, n.max=n.max, design=design, boundary=boundary, stepsize=stepsize, verbose=FALSE, cores=cores, alternative=alternative, ETA=FALSE, B=testRuns, ...)
+		BFDA.sim.ttest(d=d, n.min=n.min, n.max=n.max, design=design, boundary=boundary, stepsize=stepsize, verbose=FALSE, cores=cores, alternative=alternative, ETA=FALSE, B=testRuns, ...)
 		end.ETA <- Sys.time()
 		print("A rough estimate of the necessary simulation time: ")
 		# 1.3 is an empirically derived correction factor, probably due to parallel overhead?
@@ -164,15 +164,15 @@ BPA.sim.ttest <- function(d, n.min=10, n.max=500, design="sequential", boundary=
 		),
 		sim=sim
 	)
-	class(res) <- "BPA"
+	class(res) <- "BFDA"
 	return(res)
 }
 
 
 
 #' @export
-#' @method print BPA
-print.BPA <- function(x, ...) {
+#' @method print BFDA
+print.BFDA <- function(x, ...) {
 
 d.VAR <- var(x$sim$d)
 if (d.VAR > 0) {
@@ -194,23 +194,23 @@ Simulated true effect size (", ifelse(d.VAR > 0, "random", "fixed"), "): d=", ro
 
 
 
-# sim <- BPA.sim.ttest(d=0.5, n.min=20, n.max=300, boundary=Inf, stepsize=1, design="sequential", B=1000, verbose=TRUE, cores=2)
+# sim <- BFDA.sim.ttest(d=0.5, n.min=20, n.max=300, boundary=Inf, stepsize=1, design="sequential", B=1000, verbose=TRUE, cores=2)
 # save(sim, file="sim.0.5.RData")
 #
-# sim <- BPA.ttest.2(d=rnorm(100000, 0.5, 0.1), n.min=20, n.max=1000, boundary=Inf, stepsize=NA, design="sequential", B=10000, verbose=TRUE, cores=2)
+# sim <- BFDA.ttest.2(d=rnorm(100000, 0.5, 0.1), n.min=20, n.max=1000, boundary=Inf, stepsize=NA, design="sequential", B=10000, verbose=TRUE, cores=2)
 # save(sim, file="sim.prior.0.5.RData")
 #
-# sim <- BPA.ttest.2(d=0, n.min=20, n.max=1000, boundary=Inf, stepsize=NA, design="sequential", B=10000, verbose=TRUE, cores=2)
+# sim <- BFDA.ttest.2(d=0, n.min=20, n.max=1000, boundary=Inf, stepsize=NA, design="sequential", B=10000, verbose=TRUE, cores=2)
 # save(sim, file="sim.0.RData")
 
-# sim <- BPA.ttest.2(d=0.5, n.min=20, n.max=400, boundary=Inf, stepsize=2, design="sequential", B=5000, verbose=TRUE, cores=2)
+# sim <- BFDA.ttest.2(d=0.5, n.min=20, n.max=400, boundary=Inf, stepsize=2, design="sequential", B=5000, verbose=TRUE, cores=2)
 # save(sim, file="sim.0.5.step2RData")
 
 
 # ---------------------------------------------------------------------
 #
 
-#sim <- BPA.sim.ttest(d=0, n.min=20, n.max=500, boundary=Inf, stepsize=NA, design="sequential", B=1000, verbose=TRUE, cores=2)
+#sim <- BFDA.sim.ttest(d=0, n.min=20, n.max=500, boundary=Inf, stepsize=NA, design="sequential", B=1000, verbose=TRUE, cores=2)
 #save(sim, file="../../finalSims/sim.0b.RData")
 
 

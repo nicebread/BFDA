@@ -1,7 +1,7 @@
 Encoding: UTF-8
-Package: BPA
+Package: BFDA
 Type: Package
-Title: Bayesian Power Analysis
+Title: Bayes Factor Design Analysis
 Version: 0.1
 Date: 2016-01-26
 Author: Felix Schönbrodt

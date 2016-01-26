@@ -1,12 +1,12 @@
-#' Plot a BPA object
-#' @aliases plot.BPA
+#' Plot a BFDA object
+#' @aliases plot.BFDA
 #' @export
 #' @importFrom scales alpha
 #' @importFrom TeachingDemos shadowtext
 #' @importFrom sfsmisc integrate.xy
 
 # TODO: Add link to proper function name
-#' @param BPA A BPA simulation object, resulting from the \code{BPA.sim} function
+#' @param BFDA A BFDA simulation object, resulting from the \code{BFDA.sim} function
 #' @param forH1 If TRUE, use the BF_10 labels, otherwise the BF_01 labels
 #' @param dens.right.offset How much should the right density be moved to the right?
 #' @param dens.amplification Amplification factor for all densities.
@@ -27,8 +27,8 @@
 
 #forH1 = TRUE; boundary=6; n.trajectories=60; n.max=500; dens.amplification=NA; dens.right.amplification=NA; plotratio=NA; cat=3; dens.right.offset=2; xlim=NA; ylim=NA; load("finalSims/sim.0.5.RData")
 
-plotBPA <- function(BPA, boundary=10, n.trajectories=60, n.min=NA, n.max=NA, dens.amplification=1, cat=3, bw=FALSE, dens.right.offset=2, xlim=NA, ylim=NA, xextension=1.5, traj.selection="proportional", yaxis.at=NA, yaxis.labels=NA, forH1=TRUE, n.max.label.position="dynamic", cex.labels=1, cex.annotations=0.85) {
-	sim <- BPA$sim
+plotBFDA <- function(BFDA, boundary=10, n.trajectories=60, n.min=NA, n.max=NA, dens.amplification=1, cat=3, bw=FALSE, dens.right.offset=2, xlim=NA, ylim=NA, xextension=1.5, traj.selection="proportional", yaxis.at=NA, yaxis.labels=NA, forH1=TRUE, n.max.label.position="dynamic", cex.labels=1, cex.annotations=0.85) {
+	sim <- BFDA$sim
 	traj.selection <- match.arg(traj.selection, c("proportional", "fixed"))
 	n.max.label.position <- match.arg(n.max.label.position, c("dynamic", "fixed"))
 	
@@ -55,7 +55,7 @@ plotBPA <- function(BPA, boundary=10, n.trajectories=60, n.min=NA, n.max=NA, den
 	if (is.na(n.min)) {n.min <- min(sim$n)}
 	
 		
-	indices <- BPA.analysis(BPA, boundary=boundary, n.min=n.min, n.max=n.max.compute, verbose=FALSE)
+	indices <- BFDA.analysis(BFDA, boundary=boundary, n.min=n.min, n.max=n.max.compute, verbose=FALSE)
 	
 	# reduce data frame to actually relevant data
 	sim <- sim %>% filter(n >= n.min & n <= n.max)
@@ -343,7 +343,7 @@ plotBPA <- function(BPA, boundary=10, n.trajectories=60, n.min=NA, n.max=NA, den
 
 
 #' @export
-plot.BPA <- function(x, ...) {
-	plotBPA(x, ...)
+plot.BFDA <- function(x, ...) {
+	plotBFDA(x, ...)
 }
 
