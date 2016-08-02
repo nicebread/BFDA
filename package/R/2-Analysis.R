@@ -1,5 +1,5 @@
 # make sure that the id is really unique!
-#' Analyze aBFDA.sim object
+#' Analyze a BFDA.sim object
 #'
 #' @param BFDA The result object from a BFDA.sim function
 #' @param n.min What is the minimum n that is sampled before optional stopping is started? Defaults to the smallest n in the BFDA object

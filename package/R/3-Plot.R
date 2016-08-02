@@ -21,14 +21,15 @@
 #' @param yaxis.at Positions of the ticks on the y-axis. If NA, they are defined automatically.
 #' @param yaxis.labels Labels of the ticks on the y-axis. If NA, they are defined automatically.
 #' @param bw Black/white density on the right?
-#' @param traj.selection Should a fixed set of trajectories be shown ("fixed"), or a selection that reflects the proportional of each stopping category (upper/loewr/n.max hits; use "proportional").
+#' @param traj.selection Should a fixed set of trajectories be shown ("fixed"), or a selection that reflects the proportional of each stopping category (upper/lower/n.max hits; use "proportional").
 #' @param n.max.label.position "fixed": Always centered at BF=1. "dynamic": Centered on the the peak of the right density.
 #' @param cex.labels Zoom factor for axes labels
 #' @param cex.annotations Zoom factor for annotations
+#' @param ... Additional parameters passed through to the base plot function
 
 #forH1 = TRUE; boundary=6; n.trajectories=60; n.max=500; dens.amplification=NA; dens.right.amplification=NA; plotratio=NA; cat=3; dens.right.offset=2; xlim=NA; ylim=NA; load("finalSims/sim.0.5.RData")
 
-plotBFDA <- function(BFDA, boundary=10, n.trajectories=60, n.min=NA, n.max=NA, dens.amplification=1, cat=3, bw=FALSE, dens.right.offset=2, xlim=NA, ylim=NA, xextension=1.5, traj.selection="proportional", yaxis.at=NA, yaxis.labels=NA, forH1=TRUE, n.max.label.position="dynamic", cex.labels=1, cex.annotations=0.85) {
+plotBFDA <- function(BFDA, boundary=10, n.trajectories=60, n.min=NA, n.max=NA, dens.amplification=1, cat=3, bw=FALSE, dens.right.offset=2, xlim=NA, ylim=NA, xextension=1.5, traj.selection="proportional", yaxis.at=NA, yaxis.labels=NA, forH1=TRUE, n.max.label.position="dynamic", cex.labels=1, cex.annotations=0.85, ...) {
 	sim <- BFDA$sim
 	traj.selection <- match.arg(traj.selection, c("proportional", "fixed"))
 	n.max.label.position <- match.arg(n.max.label.position, c("dynamic", "fixed"))
@@ -171,7 +172,7 @@ plotBFDA <- function(BFDA, boundary=10, n.trajectories=60, n.min=NA, n.max=NA, d
 	labels.y <- c(4, 2.86, 1.7, .55, -.55, -1.7, -2.85, -4)
 	
 	par(mar=c(5, 5, 4, 6), xpd=TRUE)
-	plot(NA, xlim=c(xlim[1], xlim[2]*xextension), ylim=ylim, xlab="", ylab="", bty="n", axes=FALSE)
+	plot(NA, xlim=c(xlim[1], xlim[2]*xextension), ylim=ylim, xlab="", ylab="", bty="n", axes=FALSE, ...)
 	
 	# nice labels
 	mtext("Sample size", side=1, line=2.5, cex=cex.labels)						# xlab

@@ -1,6 +1,6 @@
 #' SSD = sample size determination
 #' @details
-#' Finds the optimal sample size to achieve desired level of power.
+#' Finds the optimal fixed sample size to achieve desired level of power.
 
 #' @export
 #' @importFrom reshape2 melt

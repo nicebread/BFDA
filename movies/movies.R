@@ -23,6 +23,7 @@ makeMovie <- function(BFDA, n.start, n.stop, by, fname="d0.5", fps=15, ...) {
 }
 
 load("../finalSims/BFDA.0.5.RData")
+load("../finalSims/BFDA.0.5.prior.RData")
 
 makeMovie(sim, n.start=30, n.stop=300, by=1, fname="d0.5", fps=10, boundary=Inf, xlim=c(10, 300), ylim=c(log(1/40), 25), xextension=1.6, yaxis.at=c(-log(30), -log(10), -log(3), log(1), log(3), log(10), log(30), log(100), log(1000), log(10000)), yaxis.labels=c("1/30", "1/10", "1/3", "1", "3", "10", "30", "100", "1000", "10000"))
 
@@ -31,3 +32,9 @@ makeMovie(sim, n.start=30, n.stop=250, by=1, fname="d0.5.bound10", fps=10, bound
 
 # GIF animation (less pictures)
 makeMovie(BFDA.0.5, n.start=30, n.stop=170, by=3, fname="GIF1", fps=10, boundary=10, xlim=c(10, 270), ylim=c(log(1/40), log(40)), traj.selection="fixed", dens.amplification=1.7, xextension=1.2, n.max.label.position="fixed", dens.right.offset=2, cex.labels=1.1, cex.annotations=0.95)
+
+
+
+makeMovie(BFDA.0.5.prior, n.start=30, n.stop=100, by=1, fname="d0.5.asymbound", fps=10, boundary=c(1/5, 30), xlim=c(10, 270), ylim=c(log(1/40), log(40)), traj.selection="fixed", dens.amplification=1.7, xextension=1.2, n.max.label.position="fixed", dens.right.offset=2)
+
+makeMovie(BFDA.0.5.prior, n.start=100, n.stop=320, by=1, fname="d0.5.asymbound.part2", fps=10, boundary=c(1/5, 30), xlim=c(10, 320), ylim=c(log(1/40), log(40)), traj.selection="fixed", dens.amplification=1.7, xextension=1.2, n.max.label.position="fixed", dens.right.offset=2)
