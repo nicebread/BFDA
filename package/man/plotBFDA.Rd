@@ -10,7 +10,7 @@ plotBFDA(BFDA, boundary = 10, n.trajectories = 60, n.min = NA,
   dens.right.offset = 2, xlim = NA, ylim = NA, xextension = 1.5,
   traj.selection = "proportional", yaxis.at = NA, yaxis.labels = NA,
   forH1 = TRUE, n.max.label.position = "dynamic", cex.labels = 1,
-  cex.annotations = 0.85)
+  cex.annotations = 0.85, ...)
 }
 \arguments{
 \item{BFDA}{A BFDA simulation object, resulting from the \code{BFDA.sim} function}
@@ -37,7 +37,7 @@ plotBFDA(BFDA, boundary = 10, n.trajectories = 60, n.min = NA,
 
 \item{xextension}{How much reltive space should be on the rights side of the plot? You can adjust this to change the distance of the BF category labels from the plot.}
 
-\item{traj.selection}{Should a fixed set of trajectories be shown ("fixed"), or a selection that reflects the proportional of each stopping category (upper/loewr/n.max hits; use "proportional").}
+\item{traj.selection}{Should a fixed set of trajectories be shown ("fixed"), or a selection that reflects the proportional of each stopping category (upper/lower/n.max hits; use "proportional").}
 
 \item{yaxis.at}{Positions of the ticks on the y-axis. If NA, they are defined automatically.}
 
@@ -50,6 +50,8 @@ plotBFDA(BFDA, boundary = 10, n.trajectories = 60, n.min = NA,
 \item{cex.labels}{Zoom factor for axes labels}
 
 \item{cex.annotations}{Zoom factor for annotations}
+
+\item{...}{Additional parameters passed through to the base plot function}
 }
 \description{
 Plot a BFDA object

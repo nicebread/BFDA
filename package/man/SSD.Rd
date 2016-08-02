@@ -22,6 +22,6 @@ SSD(BFDA, criterion = c(1/3, 3), power = 0.9, alpha = 0.025,
 SSD = sample size determination
 }
 \details{
-Finds the optimal sample size to achieve desired level of power.
+Finds the optimal fixed sample size to achieve desired level of power.
 }
 

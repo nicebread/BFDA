@@ -2,6 +2,9 @@ language: r
 
 # http://docs.travis-ci.com/user/languages/r/
 
+before_install:
+ - cd package
+
 sudo: required
 r_binary_packages:
  - doparallel 

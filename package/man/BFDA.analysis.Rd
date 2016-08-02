@@ -2,7 +2,7 @@
 % Please edit documentation in R/2-Analysis.R
 \name{BFDA.analysis}
 \alias{BFDA.analysis}
-\title{Analyze aBFDA.sim object}
+\title{Analyze a BFDA.sim object}
 \usage{
 BFDA.analysis(BFDA, n.min = NA, n.max = NA, boundary = NA,
   verbose = TRUE, alpha = 0.05)
@@ -21,7 +21,7 @@ BFDA.analysis(BFDA, n.min = NA, n.max = NA, boundary = NA,
 \item{alpha}{For a frequentist analysis in the fixed-n case: Use this alpha level.}
 }
 \description{
-Analyze aBFDA.sim object
+Analyze a BFDA.sim object
 }
 \examples{
 \dontrun{
