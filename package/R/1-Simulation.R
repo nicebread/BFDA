@@ -32,7 +32,7 @@
 BFDA.sim.ttest <- function(d, n.min=10, n.max=500, design="sequential", boundary=Inf, B=1000, stepsize=NA, alternative=c("directional", "undirected"), verbose=TRUE, cores=1, ETA=TRUE, ...) {
 
 	alternative <- match.arg(alternative, c("directional", "undirected"))
-	if (d==0 & alternative == "directional") {
+	if (d[1]==0 & alternative == "directional") {
 		warning("Effect size is zero --> alternative is set to undirected!")
 		alternative <- "undirected"
 	}
