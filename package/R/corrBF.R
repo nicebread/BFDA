@@ -2,7 +2,6 @@
 ## Wagenmakers, E. J., Verhagen, J., & Ly, A. (2016). How to quantify the evidence for the absence of a correlation. Behavior Research Methods, 1–14. http://doi.org/10.3758/s13428-015-0593-0
 
 
-
 ###############################################################################
 ### Compute Bayes factors for Pearson's correlation coefficient
 ### 
@@ -361,3 +360,7 @@ countNonNAEntries <- function(x, y){
 	sum(xCheck*yCheck)
 }
 
+
+# alpha parameter in functions corresponds to beta* prior width in JASP
+corBF2sided <- bf10JeffreysIntegrate
+corBF1sided <- bfPlus0JeffreysIntegrate

@@ -41,10 +41,7 @@ BFDA.sim <- function(expected.ES, type=c("t.between", "t.paired", "correlation")
 	freq.test.function <- get(paste0("freq.test.", type))
 
 	alternative <- match.arg(alternative, c("directional", "undirected"))
-	if (expected.ES[1]==0 & alternative == "directional") {
-		warning("Effect size is zero --> alternative is set to undirected!")
-		alternative <- "undirected"
-	}
+
 	design <- match.arg(design, c("sequential", "fixed.n"))
 	type <- match.arg(type, c("t.between", "t.paired", "correlation"))
 	
@@ -184,7 +181,7 @@ Stopping boundary (evidential threshold): ", x$settings$boundary, "
 Minimum n: ", x$settings$n.min, "
 Maximum n: ", x$settings$n.max, "
 Design: ", x$settings$design, "
-Simulated true effect size (", ifelse(ES.VAR > 0, "random", "fixed"), "): d=", round(mean(x$sim$true.ES), 1), QU
+Simulated true effect size (", ifelse(ES.VAR > 0, "random", "fixed"), "): ", round(mean(x$sim$true.ES), 1), QU
 ))
 }
 
@@ -217,3 +214,6 @@ Simulated true effect size (", ifelse(ES.VAR > 0, "random", "fixed"), "): d=", r
 
 #compDist(sim1, sim0, n=50)
 #SSD(sim1, power=.80)
+
+
+#sim1 <- BFDA.sim(expected.ES=0.21, type="correlation", n.min=20, n.max=100, boundary=Inf, stepsize=NA, design="sequential", B=10, verbose=TRUE, cores=1, ETA=FALSE)

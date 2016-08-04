@@ -11,7 +11,7 @@
 #' @param alpha The desired rate of false-positive results (in case of reality=H0)
 #' @param plot Display plot? (TRUE/FALSE)
 SSD <- function(BFDA, boundary=c(1/3, 3), power=0.90, alpha=.025, plot=TRUE) {
-	stop()
+
 	# just in case: order boundary
 	boundary <- sort(boundary)
 	logBoundary <- log(boundary)

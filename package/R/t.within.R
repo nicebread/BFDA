@@ -60,5 +60,5 @@ BF.test.t.paired <- function(SAMP, alternative="directional", freq.test=NULL, ..
 	})
 	
 	# returns the log(BF10)
-	return(t1)
+	return(log(t1))
 }

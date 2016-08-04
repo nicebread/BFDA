@@ -59,7 +59,7 @@ freq.test.correlation <- function(SAMP, alternative="directional") {
 	return(list(
 		statistic = t1$statistic,
 		p.value = t1$p.value,
-		emp.ES = 2*t1$statistic / sqrt(2*nrow(SAMP)-2)
+		emp.ES = t1$estimate
 	))
 }
 
@@ -69,16 +69,11 @@ freq.test.correlation <- function(SAMP, alternative="directional") {
 BF.test.correlation <- function(SAMP, alternative="directional", freq.test=NULL, ...) {
 
 	if (alternative=="directional") {
-		nullInterval <- c(0, Inf)
+		t1 <- corBF1sided(nrow(SAMP), freq.test$emp.ES, ...)
 	} else {
-		nullInterval <- NULL
+		t1 <- corBF2sided(nrow(SAMP), freq.test$emp.ES, ...)
 	}
-
-	# suppress the "t is large; approximation invoked" message
-	suppressMessages({
-		t1 <- BayesFactor::ttest.tstat(freq.test$statistic, nrow(SAMP), nrow(SAMP), nullInterval=nullInterval, simple=TRUE, ...)
-	})
 	
 	# returns the log(BF10)
-	return(t1)
+	return(log(t1))
 }
