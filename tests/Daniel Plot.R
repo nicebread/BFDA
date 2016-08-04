@@ -1,11 +1,11 @@
 print(Sys.time())
 library(reshape2)
 
-sim0.7 <- BFDA.sim.ttest(d=0.7, n.min=10, n.max=250, boundary=Inf, stepsize=5, alternative="undirected", design="sequential", B=1000, verbose=TRUE, cores=2, r=sqrt(2)/2)
+sim0.7 <- BFDA.sim(d=0.7, n.min=10, n.max=250, boundary=Inf, stepsize=5, alternative="undirected", design="sequential", B=1000, verbose=TRUE, cores=2, r=sqrt(2)/2)
 
 #load("../finalSims/BFDA.0.5.RData")
 
-BFDA.analysis(sim0.7, boundary=6, n.max=200)
+BFDA.analyze(sim0.7, boundary=6, n.max=200)
 
 sim <- sim0.7$sim
 

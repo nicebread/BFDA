@@ -4,13 +4,12 @@
 \alias{SSD}
 \title{SSD = sample size determination}
 \usage{
-SSD(BFDA, criterion = c(1/3, 3), power = 0.9, alpha = 0.025,
-  plot = TRUE)
+SSD(BFDA, boundary = c(1/3, 3), power = 0.9, alpha = 0.025, plot = TRUE)
 }
 \arguments{
 \item{BFDA}{A BFDA simulation object, resulting from the \code{BFDA.sim} function}
 
-\item{criterion}{The critical boundary that defines the "success" of a study. This can be a single value, for example 1. In this case, all studies with BF < 1 are counted as "negative outcomes", and BF > 1 as positive outcomes (i.e., it quantifies the probability of getting a BF with the correct direction).}
+\item{boundary}{The critical boundary that defines the "success" of a study. This can be a single value, for example 1. In this case, all studies with BF < 1 are counted as "negative outcomes", and BF > 1 as positive outcomes (i.e., it quantifies the probability of getting a BF with the correct direction).}
 
 \item{power}{The desired rate of true-positive results (in case of reality=H1)}
 

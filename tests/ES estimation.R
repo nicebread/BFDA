@@ -1,8 +1,8 @@
 load("../finalSims/BFDA.0.5.prior.RData")
 
-BFDA.analysis(BFDA.0.5.prior, boundary=6)
+BFDA.analyze(BFDA.0.5.prior, boundary=6)
 
-BFDA.analysis(BFDA.0.5.prior, boundary=10, n.max=200)
+BFDA.analyze(BFDA.0.5.prior, boundary=10, n.max=200)
 
 
 

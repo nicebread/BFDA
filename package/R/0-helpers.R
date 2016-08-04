@@ -1,13 +1,6 @@
 # does a value lie in between two others?
 inside <- function(x, R) Vectorize({x >= R[1] & x <= R[2]})
 
-# get population with a specific standardized mean differences
-get_population <- function(n, d, SD=1) {
-	x <- rnorm(n, 0, SD)
-	y <- rnorm(n, 0, SD) - d
-	return(cbind(x, y))
-}
-
 
 drawpoly <- function(dens, from, to, ...) {
 	poly <- data.frame(x=dens$x, y=dens$y)
@@ -28,3 +21,5 @@ f2 <- function(x, digits=2, prepoint=0, skipZero=FALSE) {
 		gsub("0.", zero, sprintf(paste("%",prepoint,".",digits,"f",sep=""), x) , fixed=TRUE)
 	}
 }
+
+

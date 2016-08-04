@@ -10,11 +10,11 @@ load("../finalSims/BFDA.0.4.prior.RData")
 load("../finalSims/BFDA.0.5.RData")
 load("../finalSims/BFDA.0.RData")
 
-(a <- BFDA.analysis(BFDA.0.5, boundary=6, n.max=50))
+(a <- BFDA.analyze(BFDA.0.5, boundary=6, n.max=50))
 hist(a$endpoint.n)
 quantile(a$endpoint.n, prob=.75)
 
-BFDA.analysis(BFDA.0, boundary=6, n.max=50)
+BFDA.analyze(BFDA.0, boundary=6, n.max=50)
 
 
 pdf(file="Figure1.pdf", width=7, height=4, pointsize=10)
@@ -52,7 +52,7 @@ mtext("n = 40, d = 0.5", line=2, outer = TRUE, adj=0.2)
 mtext("n = 40, d = N(0.5, SD=0.1)", line=2, outer = TRUE, adj=0.8)
 
 
-BFDA.analysis(BFDA.0.4.prior, boundary=6, n.max=100)
+BFDA.analyze(BFDA.0.4.prior, boundary=6, n.max=100)
 SSD(BFDA.0.5, power=.90)
 SSD(BFDA.0.5.prior, power=.90)
 

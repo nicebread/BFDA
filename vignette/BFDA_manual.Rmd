@@ -1,0 +1,60 @@
+---
+title: "Bayes factor design analysis"
+author: "Felix Schönbrodt"
+date: "4 August 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+	# load all functions
+	devtools::load_all("../package")
+```
+
+## Simulating hypothetical studies for a prospective design analysis
+
+As we do not know in advance whether H1 or H0 provide a better predictive performance of real world data, we want to evaluate the performance of a design under *both* hypotheses. Hence, we have to simulate a "H1 world" and a "H0 world":
+
+```{r sim, cache=TRUE, results='hide'}
+sim.H1 <- BFDA.sim(expected.ES=0.5, type="t.between", n.min=20, n.max=300, alternative="directional", boundary=Inf, B=1000, verbose=TRUE, cores=2)
+
+sim.H0 <- BFDA.sim(expected.ES=0, type="t.between", n.min=20, n.max=300, alternative="undirected", boundary=Inf, B=1000, verbose=TRUE, cores=2)
+
+sim.H1$sim %>% filter(n==100)
+```
+
+Let's go through the most important parameters (for a full list of options, see `?BFDA.sim`):
+
+- `expected.ES`: The assumed effect size (ES). In classical power analysis, this is a fixed number. Here, you can also provide a vector, which quantifies the uncertainty about the true ES. For example: `expected.ES=rnorm(100000, 0.5, 0.1)`. If a vector is provided, a new ES is drawn from this vector for each simulated study. The **metric** for `expected.ES` depends on the type of design (see net bullet point):
+	- `type = "t.between` or `type = "t.paired`": expected.ES has to be provided as Cohen's *d*
+	- `type = "correlation"`: expected.ES has to be provided as correlation
+- `type`: Type of design. Currently, 3 designs are implemented: A between-group t-test ("t.between"), a paired t-test ("t.paired"), and correlations ("correlation")
+- `B`: Number of simulated studies. Aim for B >= 10,000 for stable results (in this document we use B=1000 to save some time).
+- `cores`: Multicore support. Add as many cores as you have to speed up computations.
+
+By default, a full sequential design without evidential stopping threshold is simulated. That means, ...
+That allows to extract ...
+
+## Analyze the simulations ##
+
+Next, we can retrieve summary statistics from our simulations. For these summaries, we can define evidential thresholds ("How"), minimal and maximal sample sizes
+
+For example, we can get the operational characteristics of a fixed-n design by using the same sample size for n.min and n.max
+```{r analyze}
+BFDA.analyze(sim.H1, n.min=50, n.max=50, boundary=6)
+BFDA.analyze(sim.H0, n.min=50, n.max=50, boundary=6)
+```
+
+
+## Including Plots
+
+### Compare distributions of BFs for a fixed *n*
+
+```{r compDist}
+compDist(BFDA.H1=sim.H1, BFDA.H0=sim.H0, n=50, boundary=c(1/6, 6), xlim=c(1/11, 31))
+```
+
+### Sample size determination
+
+```{r SSD}
+SSD(sim.H1, boundary=c(1/6, 6), power=.95)
+```

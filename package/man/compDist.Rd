@@ -4,7 +4,7 @@
 \alias{compDist}
 \title{Plot a BFDA object for fixed n: Two densities for H1 and H0}
 \usage{
-compDist(BFDA.H1, BFDA.H0, n, boundary = c(1/3, 3), xlim = NA,
+compDist(BFDA.H1, BFDA.H0, n, boundary = c(1/6, 6), xlim = NA,
   noSplit = FALSE, cex = 1.2, cex.axis = 1, bw = FALSE)
 }
 \arguments{

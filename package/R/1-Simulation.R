@@ -1,5 +1,3 @@
-# source("1-Simulation.R", echo=TRUE)
-
 #' Simulate ... TODO
 #' @export
 #' @import BayesFactor
@@ -11,45 +9,57 @@
 #' @param boundary The Bayes factor (resp. its reciprocal) where the run is stopped as well. For a fixed-n design, set it to Inf
 #' @param B Number of bootstrap samples (should be dividable by getDoParWorkers())
 #' @param design "fixed.n" or "sequential". If design=="fixed.n", \code{n.min} and \code{boundary} are irrelevant, and all samples are drawn with n=n.max.
-#' @param d The assumed true effect size. This can be a single number (this leads to a fixed assumed effect size, as in a classical power analysis) or a vector of numbers (e.g., \code{rnorm(100000, 0.5, 0.1)}). If it is a vector, the sampler draws a new effect size at each step. Hence, the provided distribution represents the uncertainty about the true effect size.
+#' @param expected.ES The assumed true effect size. This can be a single number (this leads to a fixed assumed effect size, as in a classical power analysis) or a vector of numbers (e.g., \code{rnorm(100000, 0.5, 0.1)}). If it is a vector, the sampler draws a new effect size at each step. Hence, the provided distribution represents the uncertainty about the true effect size.
+#' @param type Either "between-t-test", "within-t-test", or "correlation"
 #' @param stepsize The number with which participants are added to the sample. If NA, the sample is increased +1 until it's 100, and +10 from that size on.
 #' @param verbose Show output about progress?
 #' @param cores number of parallel processes. If cores==1, no parallel framework is used.
 #' @param alternative One of c("directional", "undirected") for directed (one-sided) or undirected (two-sided) hypothesis tests.
 #' @param ETA Compute an estimate of the full simulation time? This adds some overhead to the simulation, so turn off for actual simulations.
-#' @param ... Further parameters passed to the BF function
+#' @param options.sample Further parameters passed to the data generating function (depending on the \code{type} of design). NOT IMPLEMENTED YET
+#' @param ... Further parameters passed to the BF.test function
 #'
 #' @examples
 #' \dontrun{
-#' sim <- BFDA.sim.ttest(d=0.5, n.min=20, n.max=300, boundary=Inf, 
+#' sim <- BFDA.sim(expected.ES=0.5, n.min=20, n.max=300, boundary=Inf, 
 #'				stepsize=1, design="sequential", B=1000, verbose=TRUE, cores=2)
 #' save(sim, file="sim0.5.RData")
-#' BFDA.analysis(sim)
-#' BFDA.analysis(sim, boundary=6)
+#' BFDA.analyze(sim)
+#' BFDA.analyze(sim, boundary=6)
 #' plot(sim, boundary=6)
 #' plot(sim, boundary=6, n.max=80)
 #'}
-BFDA.sim.ttest <- function(d, n.min=10, n.max=500, design="sequential", boundary=Inf, B=1000, stepsize=NA, alternative=c("directional", "undirected"), verbose=TRUE, cores=1, ETA=TRUE, ...) {
+
+
+BFDA.sim <- function(expected.ES, type=c("t.between", "t.paired", "correlation"), n.min=10, n.max=500, design=c("sequential", "fixed.n"), boundary=Inf, B=1000, stepsize=NA, alternative=c("directional", "undirected"), verbose=TRUE, cores=1, ETA=FALSE, options.sample=list(paired.cor=0.3), ...) {
+	
+	# link to test specific functions
+	# get() can reference a function by its (string) name
+	sample.function <- get(paste0("sample.", type))
+	select.function <- get(paste0("select.", type))
+	BF.test.function <- get(paste0("BF.test.", type))
+	freq.test.function <- get(paste0("freq.test.", type))
 
 	alternative <- match.arg(alternative, c("directional", "undirected"))
-	if (d[1]==0 & alternative == "directional") {
+	if (expected.ES[1]==0 & alternative == "directional") {
 		warning("Effect size is zero --> alternative is set to undirected!")
 		alternative <- "undirected"
 	}
 	design <- match.arg(design, c("sequential", "fixed.n"))
+	type <- match.arg(type, c("t.between", "t.paired", "correlation"))
 	
-	# Estimate the expected time for simulation
-	if (ETA == TRUE) {
-		print("Estimating duration of full simulation:")
-		start.ETA <- Sys.time()
-		testRuns <- max(5, cores)
-		BFDA.sim.ttest(d=d, n.min=n.min, n.max=n.max, design=design, boundary=boundary, stepsize=stepsize, verbose=FALSE, cores=cores, alternative=alternative, ETA=FALSE, B=testRuns, ...)
-		end.ETA <- Sys.time()
-		print("A rough estimate of the necessary simulation time: ")
-		# 1.3 is an empirically derived correction factor, probably due to parallel overhead?
-		print((end.ETA-start.ETA)*(B/testRuns)*1.3)
-		print("Now starting main simulation.")
-	}
+	# # Estimate the expected time for simulation
+	# if (ETA == TRUE) {
+	# 	print("Estimating duration of full simulation:")
+	# 	start.ETA <- Sys.time()
+	# 	testRuns <- max(5, cores)
+	# 	BFDA.sim(expected.ES=expected.ES, type=type, n.min=n.min, n.max=n.max, design=design, boundary=boundary, stepsize=stepsize, verbose=FALSE, cores=cores, alternative=alternative, ETA=FALSE, B=testRuns, ...)
+	# 	end.ETA <- Sys.time()
+	# 	print("A rough estimate of the necessary simulation time: ")
+	# 	# 1.3 is an empirically derived correction factor, probably due to parallel overhead?
+	# 	print((end.ETA-start.ETA)*(B/testRuns)*1.3)
+	# 	print("Now starting main simulation.")
+	# }
 
 	# register CPU cores for parallel processing
 	registerDoParallel(cores=cores)	
@@ -82,57 +92,44 @@ BFDA.sim.ttest <- function(d, n.min=10, n.max=500, design="sequential", boundary
 		res.counter <- 1
 
 		# res saves the statistics at each step
-		res <- matrix(NA, nrow=length(ns)*max_b, ncol=8, dimnames=list(NULL, c("id", "d", "boundary", "n", "logBF", "d.emp", "t.value", "p.value")))
+		res <- matrix(NA, nrow=length(ns)*max_b, ncol=8, dimnames=list(NULL, c("id", "true.ES", "boundary", "n", "logBF", "emp.ES", "statistic", "p.value")))
 
-		# fixed true ES? Simulate only one population
-		if (length(d) == 1) {
-			pop <- get_population(1000000, d)
-			d1 <- d
-		}
-
+		# run max_b iterations in each parallel worker
 		for (b in 1:max_b) {
-			# random true ES? Draw a new population at each step
-			if (length(d) > 1) {
-				d1 <- d[sample.int(length(d), 1)]
-				pop <- get_population(1000000, d1)
-			}
+			# Draw a new maximum sample at each step
+			# If expected.ES has more than 1 value: draw a random value
+			expected.ES.1 <- expected.ES[sample.int(length(expected.ES), 1)]
+			maxsamp <- sample.function(n.max, expected.ES.1, options.sample)
 
 			if (verbose==TRUE)
-				print(paste0(Sys.time(), ": batch = ", batch, "; d = ", round(d1, 2), "; Rep = ", b, "/", round(B/getDoParWorkers())))
-
-			maxsamp <- pop[sample(nrow(pop), n.max), ]
+				print(paste0(Sys.time(), ": batch = ", batch, "; true.ES = ", round(expected.ES.1, 2), "; Rep = ", b, "/", round(B/getDoParWorkers())))			
 
 			# res0 keeps the accumulating sample variables from this specific run
 			res0 <- matrix(NA, nrow=length(ns), ncol=ncol(res), dimnames=dimnames(res))
 
 			# increase sample size up to n.max (or only use n.max if design=="fixed.n")
 			for (n in ns) {
-				samp <- maxsamp[1:n, ]
+				samp <- select.function(maxsamp, n)
 				N <- nrow(samp)
-				t0 <- t.test(samp[, 1], samp[, 2], var.equal=TRUE)
-
-				if (alternative=="directional") {
-					nullInterval <- c(0, Inf)
-				} else {
-					nullInterval <- NULL
-				}
 				
-				# suppress the "t is large; approximation invoked" message
-				suppressMessages({
-					logBF0 <- BayesFactor::ttest.tstat(t0$statistic, N, N, nullInterval=nullInterval, ...)$bf
-				})
+				# do the frequentist test
+				freq.test <- freq.test.function(samp, alternative)
+
+				# do the BF test; supply freq.test to access t.value for faster computation
+				logBF <- BF.test.function(samp, alternative, freq.test, ...)
+					
 				res0[which(ns == n), ] <- c(
-					id	= batch*10^(floor(log(max_b, base=10))+2) + b,		# id is a unique id for each trajectory
-					d	= d1,
+					id		= batch*10^(floor(log(max_b, base=10))+2) + b,		# id is a unique id for each trajectory
+					true.ES	= expected.ES.1,
 					boundary = boundary,
-					n	= N,
-					logBF	= logBF0,
-					d.emp	= 2*t0$statistic / sqrt(2*N-2),
-					t.value	= t0$statistic,
-					p.value	= t0$p.value)
+					n		= N,
+					logBF	= logBF,
+					emp.ES	= freq.test$emp.ES,
+					statistic = freq.test$statistic,
+					p.value	= freq.test$p.value)
 
 				# if boundary is hit: stop sampling in this trajectory
-				if (abs(logBF0) >= log(boundary)) {break;}
+				if (abs(logBF) >= log(boundary)) {break;}
 			} 	# of n
 
 			res[res.counter:(res.counter+nrow(res0)-1), ] <- res0
@@ -144,7 +141,7 @@ BFDA.sim.ttest <- function(d, n.min=10, n.max=500, design="sequential", boundary
 
 	# reduce columns
 	sim <- data.frame(sim)
-	sim <- sim %>% filter(!is.na(d))
+	sim <- sim %>% filter(!is.na(true.ES))
 
 	if (verbose==TRUE) {
 		end <- Sys.time()
@@ -174,9 +171,9 @@ BFDA.sim.ttest <- function(d, n.min=10, n.max=500, design="sequential", boundary
 #' @method print BFDA
 print.BFDA <- function(x, ...) {
 
-d.VAR <- var(x$sim$d)
-if (d.VAR > 0) {
-	QU <- paste0("; 25%/75% quantile = [", round(quantile(x$sim$d, prob=.25), 2), "; ", round(quantile(x$sim$d, prob=.75), 2), "]")
+ES.VAR <- var(x$sim$true.ES)
+if (ES.VAR > 0) {
+	QU <- paste0("; 25%/75% quantile = [", round(quantile(x$sim$true.ES, prob=.25), 2), "; ", round(quantile(x$sim$true.ES, prob=.75), 2), "]")
 } else {QU <- ""}
 
 cat(paste0("
@@ -187,14 +184,14 @@ Stopping boundary (evidential threshold): ", x$settings$boundary, "
 Minimum n: ", x$settings$n.min, "
 Maximum n: ", x$settings$n.max, "
 Design: ", x$settings$design, "
-Simulated true effect size (", ifelse(d.VAR > 0, "random", "fixed"), "): d=", round(mean(x$sim$d), 1), QU
+Simulated true effect size (", ifelse(ES.VAR > 0, "random", "fixed"), "): d=", round(mean(x$sim$true.ES), 1), QU
 ))
 }
 
 
 
 
-# sim <- BFDA.sim.ttest(d=0.5, n.min=20, n.max=300, boundary=Inf, stepsize=1, design="sequential", B=1000, verbose=TRUE, cores=2)
+# sim <- BFDA.sim(d=0.5, n.min=20, n.max=300, boundary=Inf, stepsize=1, design="sequential", B=1000, verbose=TRUE, cores=2)
 # save(sim, file="sim.0.5.RData")
 #
 # sim <- BFDA.ttest.2(d=rnorm(100000, 0.5, 0.1), n.min=20, n.max=1000, boundary=Inf, stepsize=NA, design="sequential", B=10000, verbose=TRUE, cores=2)
@@ -210,7 +207,13 @@ Simulated true effect size (", ifelse(d.VAR > 0, "random", "fixed"), "): d=", ro
 # ---------------------------------------------------------------------
 #
 
-#sim <- BFDA.sim.ttest(d=0, n.min=20, n.max=500, boundary=Inf, stepsize=NA, design="sequential", B=1000, verbose=TRUE, cores=2)
+#sim <- BFDA.sim(d=0, n.min=20, n.max=500, boundary=Inf, stepsize=NA, design="sequential", B=1000, verbose=TRUE, cores=2)
 #save(sim, file="../../finalSims/sim.0b.RData")
 
 
+# sim1 <- BFDA.sim(expected.ES=0.5, type="t.between", n.min=20, n.max=100, boundary=Inf, stepsize=NA, design="sequential", B=10, verbose=TRUE, cores=1, ETA=FALSE)
+
+#sim0 <- BFDA.sim(expected.ES=0, type="between", n.min=20, n.max=100, boundary=Inf, stepsize=NA, design="sequential", B=10, verbose=TRUE, cores=1, ETA=FALSE)
+
+#compDist(sim1, sim0, n=50)
+#SSD(sim1, power=.80)

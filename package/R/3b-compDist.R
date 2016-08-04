@@ -13,7 +13,10 @@
 #' @param cex.axis Zoom factor for tick labels
 #' @param bw Black/white color scheme? (default:FALSE)
 
-compDist <- function(BFDA.H1, BFDA.H0, n, boundary=c(1/3, 3), xlim=NA, noSplit=FALSE, cex=1.2, cex.axis=1, bw=FALSE) {
+compDist <- function(BFDA.H1, BFDA.H0, n, boundary=c(1/6, 6), xlim=NA, noSplit=FALSE, cex=1.2, cex.axis=1, bw=FALSE) {
+
+	boundary <- log(boundary)
+	xlim <- log(xlim)
 
 	N <- n	# rename, otherwise dplyr breaks ...
 	logBF.H0 <-  BFDA.H0$sim %>% filter(n==N) %>% .$logBF
@@ -58,7 +61,7 @@ compDist <- function(BFDA.H1, BFDA.H0, n, boundary=c(1/3, 3), xlim=NA, noSplit=F
 	# set scale ticks
 	axis(1, at = xaxis.at[inside(xaxis.at, c(-Inf, xlim[2]))],  labels=xaxis.labels[inside(xaxis.at, c(-Inf, xlim[2]))], las=1, cex.axis=cex.axis)	
 	
-	abline(v=c(boundary), lty="dashed")
+	abline(v=boundary, lty="dashed")
 	abline(v=log(1), lty="dotted")
 
 	# Get the axis ranges, draw y-axis with arrow
@@ -111,7 +114,7 @@ compDist <- function(BFDA.H1, BFDA.H0, n, boundary=c(1/3, 3), xlim=NA, noSplit=F
 
 	# set scale ticks
 	axis(1, at = xaxis.at[inside(xaxis.at, c(-Inf, xlim[2]))],  labels=xaxis.labels[inside(xaxis.at, c(-Inf, xlim[2]))], las=1, cex.axis=cex.axis)
-	abline(v=c(boundary), lty="dashed")
+	abline(v=boundary, lty="dashed")
 	abline(v=log(1), lty="dotted")
 
 

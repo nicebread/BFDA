@@ -7,7 +7,7 @@
 \method{print}{BFDAanalysis}(x, ..., digits = 1)
 }
 \arguments{
-\item{x}{A BFDA-analysis object (which is return from \code{BFDA.analysis})}
+\item{x}{A BFDA-analysis object (which is return from \code{BFDA.analyze})}
 
 \item{...}{(not used)}
 

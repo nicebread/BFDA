@@ -1,0 +1,13 @@
+base
+devtools
+foreach
+iterators
+doParallel
+dplyr
+ggplot2
+coda
+Matrix
+BayesFactor
+rmarkdown
+BFDA
+hypergeo

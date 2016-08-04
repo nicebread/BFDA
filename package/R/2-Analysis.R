@@ -12,9 +12,9 @@
 #'
 #' @examples
 #' \dontrun{
-#' BFDA.analysis(sim, boundary=6, n.max=80)
+#' BFDA.analyze(sim, boundary=6, n.max=80)
 #' }
-BFDA.analysis <- function(BFDA, n.min=NA, n.max=NA, boundary=NA, verbose=TRUE, alpha=.05) {
+BFDA.analyze <- function(BFDA, n.min=NA, n.max=NA, boundary=NA, verbose=TRUE, alpha=.05) {
 	sim <- BFDA$sim
 	if (is.na(n.max)) n.max <- max(sim$n)
 	if (is.na(n.min)) n.min <- min(sim$n)
@@ -120,7 +120,7 @@ BFDA.analysis <- function(BFDA, n.min=NA, n.max=NA, boundary=NA, verbose=TRUE, a
 #' Print a BFDA analysis
 #' @export
 #' @method print BFDAanalysis
-#' @param x A BFDA-analysis object (which is return from \code{BFDA.analysis})
+#' @param x A BFDA-analysis object (which is return from \code{BFDA.analyze})
 #' @param digits Number of digits in display
 #' @param ... (not used)
 print.BFDAanalysis <- function(x, ..., digits=1) {
