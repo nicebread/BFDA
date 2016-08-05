@@ -15,9 +15,9 @@ output: html_document
 As we do not know in advance whether H1 or H0 provide a better predictive performance of real world data, we want to evaluate the performance of a design under *both* hypotheses. Hence, we have to simulate a "H1 world" and a "H0 world":
 
 ```{r sim, cache=TRUE, results='hide'}
-sim.H1 <- BFDA.sim(expected.ES=0.5, type="t.between", n.min=20, n.max=300, alternative="directional", boundary=Inf, B=1000, verbose=TRUE, cores=2, rscale=1)
+sim.H1 <- BFDA.sim(expected.ES=0.5, type="t.between", n.min=20, n.max=300, alternative="directional", boundary=Inf, B=1000, verbose=TRUE, cores=2)
 
-sim.H0 <- BFDA.sim(expected.ES=0, type="t.between", n.min=20, n.max=300, alternative="directional", boundary=Inf, B=1000, verbose=TRUE, cores=2, rscale=1)
+sim.H0 <- BFDA.sim(expected.ES=0, type="t.between", n.min=20, n.max=300, alternative="directional", boundary=Inf, B=1000, verbose=TRUE, cores=2)
 ```
 
 Let's go through the most important parameters (for a full list of options, see `?BFDA.sim`):
@@ -30,9 +30,11 @@ Let's go through the most important parameters (for a full list of options, see 
 - `alternative`: Either "directional" for directed hypotheses (default) or "undirected" for two-sided tests
 - `B`: Number of simulated studies. Aim for B >= 10,000 for stable results (in this document we use B=1000 to save some time).
 - `cores`: Multicore support. Add as many cores as you have to speed up computations.
-- `rscale` is an additional parameter that is passed through to the function calculating the BF.
+
 
 The simulations of the "H1 world" and a "H0 world" should have the same parameters (alternative, rscale, boundary, n.min) except the `expected.ES` (in the actual data analysis, we will apply the same test to the data set, regardless whether data came from H0 or H1 (what we don't know anyway.)).
+
+The BFDA uses the BayesFactor package to compute between and paired t-test. By default, it uses an rscale of sqrt(2)/2 for the JZS prior on effect sizes under H1. For correlations, it uses the code provided by Wagenmakers, E. J., Verhagen, J., & Ly, A. (2016). How to quantify the evidence for the absence of a correlation. Behavior Research Methods, 1–14. http://doi.org/10.3758/s13428-015-0593-0 (see https://osf.io/cabmf/).
 
 By default, a full sequential design without evidential stopping threshold is simulated. That means, ...
 That allows to extract ...

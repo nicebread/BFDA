@@ -22,4 +22,7 @@ f2 <- function(x, digits=2, prepoint=0, skipZero=FALSE) {
 	}
 }
 
-
+versionCheck <- function(BFDA) {
+	if (is.null(BFDA$settings$packageVersion) || BFDA$settings$packageVersion != packageVersion("BFDA"))
+		warning(paste0("The current BFDAP package version (", packageVersion("BFDA"), ") does not match the version under which the BFDA object was created (", BFDA$settings$packageVersion, "). Proceed with caution; results could be wrong! Consider running the BFDA.sim function again with the current package version."))
+}

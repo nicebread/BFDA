@@ -154,7 +154,9 @@ BFDA.sim <- function(expected.ES, type=c("t.between", "t.paired", "correlation")
 			design	= design,
 			boundary= boundary,
 			alternative = alternative,
-			extra = list(...)
+			type=type,
+			extra = list(...),
+			packageVersion = packageVersion("BFDA")
 		),
 		sim=sim
 	)
@@ -168,52 +170,32 @@ BFDA.sim <- function(expected.ES, type=c("t.between", "t.paired", "correlation")
 #' @method print BFDA
 print.BFDA <- function(x, ...) {
 
-ES.VAR <- var(x$sim$true.ES)
-if (ES.VAR > 0) {
-	QU <- paste0("; 25%/75% quantile = [", round(quantile(x$sim$true.ES, prob=.25), 2), "; ", round(quantile(x$sim$true.ES, prob=.75), 2), "]")
-} else {QU <- ""}
+	versionCheck(x)
 
-cat(paste0("
-Bayesian Power Analysis
+	ES.VAR <- var(x$sim$true.ES)
+	if (ES.VAR > 0) {
+		QU <- paste0("; 25%/75% quantile = [", round(quantile(x$sim$true.ES, prob=.25), 2), "; ", round(quantile(x$sim$true.ES, prob=.75), 2), "]")
+	} else {QU <- ""}
+	
+	ES.type <- switch(x$settings$type,
+		"t.between" = "Cohen's d",
+		"t.paired" = "Cohen's d",
+		"correlation" = "correlation",
+		{paste0("ERROR: Test type ", x$settings$type, " not recognized.")}	#default
+	)
+	
+
+	cat(paste0("
+Bayes Factor Design Analysis
 --------------------------------	
 Number of simulations: ", length(unique(x$sim$id)), "
 Stopping boundary (evidential threshold): ", x$settings$boundary, "
+H1: ", x$settings$alternative, "
 Minimum n: ", x$settings$n.min, "
 Maximum n: ", x$settings$n.max, "
 Design: ", x$settings$design, "
-Simulated true effect size (", ifelse(ES.VAR > 0, "random", "fixed"), "): ", round(mean(x$sim$true.ES), 1), QU
-))
+Simulated true effect size (", ifelse(ES.VAR > 0, "random", "fixed"), "): ", ES.type, " = ", round(mean(x$sim$true.ES), 3), QU,
+"\n"
+	))
 }
 
-
-
-
-# sim <- BFDA.sim(d=0.5, n.min=20, n.max=300, boundary=Inf, stepsize=1, design="sequential", B=1000, verbose=TRUE, cores=2)
-# save(sim, file="sim.0.5.RData")
-#
-# sim <- BFDA.ttest.2(d=rnorm(100000, 0.5, 0.1), n.min=20, n.max=1000, boundary=Inf, stepsize=NA, design="sequential", B=10000, verbose=TRUE, cores=2)
-# save(sim, file="sim.prior.0.5.RData")
-#
-# sim <- BFDA.ttest.2(d=0, n.min=20, n.max=1000, boundary=Inf, stepsize=NA, design="sequential", B=10000, verbose=TRUE, cores=2)
-# save(sim, file="sim.0.RData")
-
-# sim <- BFDA.ttest.2(d=0.5, n.min=20, n.max=400, boundary=Inf, stepsize=2, design="sequential", B=5000, verbose=TRUE, cores=2)
-# save(sim, file="sim.0.5.step2RData")
-
-
-# ---------------------------------------------------------------------
-#
-
-#sim <- BFDA.sim(d=0, n.min=20, n.max=500, boundary=Inf, stepsize=NA, design="sequential", B=1000, verbose=TRUE, cores=2)
-#save(sim, file="../../finalSims/sim.0b.RData")
-
-
-# sim1 <- BFDA.sim(expected.ES=0.5, type="t.between", n.min=20, n.max=100, boundary=Inf, stepsize=NA, design="sequential", B=10, verbose=TRUE, cores=1, ETA=FALSE)
-
-#sim0 <- BFDA.sim(expected.ES=0, type="between", n.min=20, n.max=100, boundary=Inf, stepsize=NA, design="sequential", B=10, verbose=TRUE, cores=1, ETA=FALSE)
-
-#compDist(sim1, sim0, n=50)
-#SSD(sim1, power=.80)
-
-
-#sim1 <- BFDA.sim(expected.ES=0.21, type="correlation", n.min=20, n.max=100, boundary=Inf, stepsize=NA, design="sequential", B=10, verbose=TRUE, cores=1, ETA=FALSE)

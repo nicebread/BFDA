@@ -5,7 +5,7 @@
 \title{Analyze a BFDA.sim object}
 \usage{
 BFDA.analyze(BFDA, n.min = NA, n.max = NA, boundary = NA,
-  verbose = TRUE, alpha = 0.05)
+  design = c("sequential", "fixed"), verbose = TRUE, alpha = 0.05)
 }
 \arguments{
 \item{BFDA}{The result object from a BFDA.sim function}

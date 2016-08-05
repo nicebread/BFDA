@@ -14,9 +14,16 @@
 #' \dontrun{
 #' BFDA.analyze(sim, boundary=6, n.max=80)
 #' }
-BFDA.analyze <- function(BFDA, n.min=NA, n.max=NA, boundary=NA, verbose=TRUE, alpha=.05) {
+BFDA.analyze <- function(BFDA, n.min=NA, n.max=NA, boundary=NA, design=c("sequential", "fixed"), verbose=TRUE, alpha=.05) {
+	
+	# some preliminary checks
+	versionCheck(BFDA)
+	design <- match.arg(design, c("sequential", "fixed"))
+	if (design=="fixed" & !is.na(n.min)) stop("If design='fixed' you have to specify n.max (not n.min).")
+	
+	# set variables
 	sim <- BFDA$sim
-	if (is.na(n.max)) n.max <- max(sim$n)
+	if (is.na(n.max) | is.infinite(n.max)) n.max <- max(sim$n)
 	if (is.na(n.min)) n.min <- min(sim$n)
 	if (all(is.na(boundary))) boundary <- max(sim$boundary)
 		

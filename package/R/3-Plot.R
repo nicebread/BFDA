@@ -57,7 +57,7 @@ plotBFDA <- function(BFDA, boundary=10, n.trajectories=60, n.min=NA, n.max=NA, d
 	if (is.na(n.min)) {n.min <- min(sim$n)}
 	
 		
-	indices <- BFDA.analyze(BFDA, boundary=boundary, n.min=n.min, n.max=n.max.compute, verbose=FALSE)
+	indices <- BFDA.analyze(BFDA, boundary=boundary, design="sequential", n.min=n.min, n.max=n.max.compute, verbose=FALSE)
 	
 	# reduce data frame to actually relevant data
 	sim <- sim %>% filter(n >= n.min & n <= n.max)
