@@ -62,7 +62,7 @@ SSD <- function(BFDA, boundary=c(1/3, 3), power=0.90, alpha=.025, plot=TRUE) {
 	# If delta==0, show output for H0 studies, else: output for H1 studies
 		if (analysis.mode == "H0") {
 			# output for null effect
-			cat(paste0("A ", round(positive.results*100, 1), "% long-term rate of Type-I errors is achieved at n = ", n.crit, "\n",
+			cat(paste0("A <= ", round(alpha*100, 1), "% (actual: ", round(positive.results*100, 1), "%) long-term rate of Type-I errors is achieved at n = ", n.crit, "\n",
 			"This setting implies long-term rates of:\n", 
 			"   ", 
 			ifelse(length(logBoundary) == 2, 
@@ -72,7 +72,7 @@ SSD <- function(BFDA, boundary=c(1/3, 3), power=0.90, alpha=.025, plot=TRUE) {
 			))
 		} else {
 			# output for true effect
-			cat(paste0(round(positive.results*100, 1), "% power achieved at n = ", n.crit, "\n",
+			cat(paste0("A >= ", round(power*100, 1), "% (actual: ", round(positive.results*100, 1), "%) power achieved at n = ", n.crit, "\n",
 			"This setting implies long-term rates of:\n", 
 			ifelse(length(logBoundary) == 2, 
 				paste0(round(inconclusive.results*100, 1), "% inconclusive results and\n"), ""),
@@ -133,7 +133,7 @@ SSD <- function(BFDA, boundary=c(1/3, 3), power=0.90, alpha=.025, plot=TRUE) {
 		p1 <- p1 + annotate("point", x=n.crit, y=positive.results, size=3)
 	
 		if (analysis.mode == "H1") {
-			p1 <- p1 + annotate("text", x=n.crit, y=positive.results, label=paste0(round(power*100), "% power achieved at n = ", n.crit), angle=90, size=3, hjust=1.1, vjust=1.5, fontface=2)
+			p1 <- p1 + annotate("text", x=n.crit, y=positive.results, label=paste0(round(power*100, 1), "% power achieved at n = ", n.crit), angle=90, size=3, hjust=1.1, vjust=1.5, fontface=2)
 		} else {
 			p1 <- p1 + annotate("text", x=n.crit, y=positive.results, label=paste0(round(alpha*100, 1), "% Type-I error rate achieved at n = ", n.crit), size=3, hjust=-0.1, vjust=-0.2, fontface=2)
 		}

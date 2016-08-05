@@ -25,7 +25,7 @@ Analyze a BFDA.sim object
 }
 \examples{
 \dontrun{
-BFDA.analyze(sim, boundary=6, n.max=80)
+BFDA.analyze(sim, design="sequential", boundary=6, n.max=80)
 }
 }
 

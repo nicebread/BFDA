@@ -2,7 +2,8 @@
 
 S3method(plot,BFDA)
 S3method(print,BFDA)
-S3method(print,BFDAanalysis)
+S3method(print,BFDAanalysisFixed)
+S3method(print,BFDAanalysisSequential)
 export(BFDA.analyze)
 export(BFDA.sim)
 export(SSD)

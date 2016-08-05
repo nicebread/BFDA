@@ -12,14 +12,29 @@
 #'
 #' @examples
 #' \dontrun{
-#' BFDA.analyze(sim, boundary=6, n.max=80)
+#' BFDA.analyze(sim, design="sequential", boundary=6, n.max=80)
 #' }
 BFDA.analyze <- function(BFDA, n.min=NA, n.max=NA, boundary=NA, design=c("sequential", "fixed"), verbose=TRUE, alpha=.05) {
-	
+
 	# some preliminary checks
-	versionCheck(BFDA)
+	versionCheck(BFDA)	
 	design <- match.arg(design, c("sequential", "fixed"))
 	if (design=="fixed" & !is.na(n.min)) stop("If design='fixed' you have to specify n.max (not n.min).")
+	if (design=="fixed") n.min <- n.max
+		
+	if (length(boundary) == 1) boundary <- sort(c(boundary, 1/boundary))
+		
+	if (design=="sequential") {
+		return(do.call("BFDA.analyze.sequential", as.list(environment())))
+	}
+	if (design=="fixed") {
+		return(do.call("BFDA.analyze.fixed", as.list(environment())))
+	}
+}
+
+
+
+BFDA.analyze.sequential <- function(BFDA, n.min=NA, n.max=NA, design="sequential", boundary=NA, verbose=TRUE, alpha=.05) {
 	
 	# set variables
 	sim <- BFDA$sim
@@ -38,9 +53,10 @@ BFDA.analyze <- function(BFDA, n.min=NA, n.max=NA, boundary=NA, design=c("sequen
 		
 	if (n.max > max(sim$n)) warning(paste0("Error: The selected n.max (", n.max, ") for analysis is larger than the largest n (", max(sim$n), ") in the simulation stage. Cannot produce a meaningful analysis."))
 
+
 	# For the densities: Data frames of stopping times / stopping BFs
 	n.max.hit <- sim %>% group_by(id) %>% filter(n == n.max, max(logBF) <= logBoundary[2] & min(logBF) >= logBoundary[1])
-
+	
 	# reduce to *first* break of a boundary
 	boundary.hit <- sim %>% group_by(id) %>%
 		filter(logBF>=logBoundary[2] | logBF<=logBoundary[1]) %>%
@@ -115,7 +131,7 @@ BFDA.analyze <- function(BFDA, n.min=NA, n.max=NA, boundary=NA, design=c("sequen
 		n.max.hit.H0 = sum(n.max.hit$logBF < log(1/3))/all.traj.n
 	)
 	
-	class(res) <- "BFDAanalysis"
+	class(res) <- "BFDAanalysisSequential"
 	return(res)
 }
 
@@ -126,12 +142,13 @@ BFDA.analyze <- function(BFDA, n.min=NA, n.max=NA, boundary=NA, design=c("sequen
 
 #' Print a BFDA analysis
 #' @export
-#' @method print BFDAanalysis
+#' @method print BFDAanalysisSequential
 #' @param x A BFDA-analysis object (which is return from \code{BFDA.analyze})
 #' @param digits Number of digits in display
 #' @param ... (not used)
-print.BFDAanalysis <- function(x, ..., digits=1) {
+print.BFDAanalysisSequential <- function(x, ..., digits=1) {
 with(x, {
+	
 	print(data.frame(
 		outcome = c("Studies terminating at n.max", "Studies terminating at a boundary", "--> Terminating at H1 boundary", "--> Terminating at H0 boundary"),
 		percentage = paste0(c(round(n.max.hit.frac*100, digits), round(boundary.hit.frac*100, digits), round(upper.hit.frac*100, digits), round(lower.hit.frac*100, digits)), "%")))
@@ -161,3 +178,51 @@ with(x, {
 	}
 })	
 }
+
+
+
+
+
+BFDA.analyze.fixed <- function(BFDA, n.min=NA, n.max=NA, design="fixed", boundary=NA, verbose=TRUE, alpha=.05) {
+	# set variables
+	sim <- BFDA$sim
+	if (is.na(n.max) | is.infinite(n.max)) n.max <- max(sim$n)
+	n.min <- n.max
+		
+	# reduce simulation to relevant data
+	n.max.hit <- sim %>% filter(n == n.max)
+
+	if (n.max > max(n.max.hit$n)) warning(paste0("Error: The selected n.max (", n.max, ") for analysis is larger than the largest n (", max(n.max.hit$n), ") in the simulation stage. Cannot produce a meaningful analysis."))
+
+	# ---------------------------------------------------------------------
+	# Output
+
+	res <- list(
+		settings = BFDA$settings,
+		boundary = boundary,
+		n.max.hit.logBF = n.max.hit$logBF
+	)
+	
+	class(res) <- "BFDAanalysisFixed"
+	return(res)
+}
+
+
+
+
+
+
+#' Print a BFDA analysis
+#' @export
+#' @method print BFDAanalysisFixed
+#' @param x A BFDA-analysis object (which is return from \code{BFDA.analyze})
+#' @param digits Number of digits in display
+#' @param ... (not used)
+print.BFDAanalysisFixed <- function(x, ..., digits=1) {
+	with(x, {
+		cat(paste0(
+			round(sum(n.max.hit.logBF > log(max(boundary)))*100/length(n.max.hit.logBF), digits), "% showed evidence for H1 (BF > ", round(max(boundary), 4), ")\n", 
+			round(sum(n.max.hit.logBF < log(max(boundary)) & n.max.hit.logBF > log(min(boundary)))*100/length(n.max.hit.logBF), digits), "% were inconclusive (", round(min(boundary), 4), " < BF < ", round(max(boundary), 4), ")\n", 
+			round(sum(n.max.hit.logBF < log(min(boundary)))*100/length(n.max.hit.logBF), digits), "% showed evidence for H0 (BF < ", round(min(boundary), 4), ")\n"
+			))
+})}

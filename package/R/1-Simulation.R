@@ -133,7 +133,7 @@ BFDA.sim <- function(expected.ES, type=c("t.between", "t.paired", "correlation")
 			res.counter <- res.counter + nrow(res0)
 		}  # of b's
 
-		return(res)
+		return(res)		
 	} # of %dopar%
 
 	# reduce columns

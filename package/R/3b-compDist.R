@@ -15,7 +15,7 @@
 
 compDist <- function(BFDA.H1, BFDA.H0, n, boundary=c(1/6, 6), xlim=NA, noSplit=FALSE, cex=1.2, cex.axis=1, bw=FALSE) {
 
-	boundary <- log(boundary)
+	logBoundary <- log(boundary)
 	xlim <- log(xlim)
 
 	N <- n	# rename, otherwise dplyr breaks ...
@@ -61,7 +61,7 @@ compDist <- function(BFDA.H1, BFDA.H0, n, boundary=c(1/6, 6), xlim=NA, noSplit=F
 	# set scale ticks
 	axis(1, at = xaxis.at[inside(xaxis.at, c(-Inf, xlim[2]))],  labels=xaxis.labels[inside(xaxis.at, c(-Inf, xlim[2]))], las=1, cex.axis=cex.axis)	
 	
-	abline(v=boundary, lty="dashed")
+	abline(v=logBoundary, lty="dashed")
 	abline(v=log(1), lty="dotted")
 
 	# Get the axis ranges, draw y-axis with arrow
@@ -77,12 +77,12 @@ compDist <- function(BFDA.H1, BFDA.H0, n, boundary=c(1/6, 6), xlim=NA, noSplit=F
 		colors <- c("grey80", "grey50", "grey10")
 	}
 	
-	drawpoly(dens.H1, -Inf, boundary[1], col=scales::alpha(colors[3], 0.4))	
-	if (length(boundary) == 2) {
-		drawpoly(dens.H1, boundary[1], boundary[2], col=scales::alpha(colors[2], 0.4))
-		drawpoly(dens.H1, boundary[2], Inf, col=scales::alpha(colors[1], 0.4))
+	drawpoly(dens.H1, -Inf, logBoundary[1], col=scales::alpha(colors[3], 0.4))	
+	if (length(logBoundary) == 2) {
+		drawpoly(dens.H1, logBoundary[1], logBoundary[2], col=scales::alpha(colors[2], 0.4))
+		drawpoly(dens.H1, logBoundary[2], Inf, col=scales::alpha(colors[1], 0.4))
 	} else {
-		drawpoly(dens.H1, boundary[1], Inf, col=scales::alpha(colors[1], 0.4))
+		drawpoly(dens.H1, logBoundary[1], Inf, col=scales::alpha(colors[1], 0.4))
 	}
 	
 
@@ -114,18 +114,18 @@ compDist <- function(BFDA.H1, BFDA.H0, n, boundary=c(1/6, 6), xlim=NA, noSplit=F
 
 	# set scale ticks
 	axis(1, at = xaxis.at[inside(xaxis.at, c(-Inf, xlim[2]))],  labels=xaxis.labels[inside(xaxis.at, c(-Inf, xlim[2]))], las=1, cex.axis=cex.axis)
-	abline(v=boundary, lty="dashed")
+	abline(v=logBoundary, lty="dashed")
 	abline(v=log(1), lty="dotted")
 
 
 	# The densities
 	lines(dens.H0)
-	drawpoly(dens.H0, -Inf, boundary[1], col=scales::alpha(colors[1], 0.4))	
-	if (length(boundary) == 2) {
-		drawpoly(dens.H0, boundary[1], boundary[2], col=scales::alpha(colors[2], 0.4))
-		drawpoly(dens.H0, boundary[2], Inf, col=scales::alpha(colors[3], 0.4))
+	drawpoly(dens.H0, -Inf, logBoundary[1], col=scales::alpha(colors[1], 0.4))	
+	if (length(logBoundary) == 2) {
+		drawpoly(dens.H0, logBoundary[1], logBoundary[2], col=scales::alpha(colors[2], 0.4))
+		drawpoly(dens.H0, logBoundary[2], Inf, col=scales::alpha(colors[3], 0.4))
 	} else {
-		drawpoly(dens.H0, boundary[1], Inf, col=scales::alpha(colors[3], 0.4))
+		drawpoly(dens.H0, logBoundary[1], Inf, col=scales::alpha(colors[3], 0.4))
 	}
 }
 
