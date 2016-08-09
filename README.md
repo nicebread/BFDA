@@ -1,4 +1,6 @@
-# BFDA Bayes factor design analysis
+[![Build Status](https://travis-ci.org/nicebread/BFDA.svg?branch=master)](https://travis-ci.org/nicebread/BFDA)
+
+# BFDA Bayes factor design analysis #
 
 ### Installation
 
