@@ -1,5 +1,5 @@
 ## Correlation BF code from https://osf.io/cabmf/
-## Wagenmakers, E. J., Verhagen, J., & Ly, A. (2016). How to quantify the evidence for the absence of a correlation. Behavior Research Methods, 1–14. http://doi.org/10.3758/s13428-015-0593-0
+## Wagenmakers, E. J., Verhagen, J., & Ly, A. (2016). How to quantify the evidence for the absence of a correlation. Behavior Research Methods, 1-14. http://doi.org/10.3758/s13428-015-0593-0
 
 
 ###############################################################################

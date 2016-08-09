@@ -53,6 +53,6 @@ BFDA.analyze(corr.H0, n.min=50, n.max=50, boundary=6)
 # ---------------------------------------------------------------------
 # check timings
 
-corr.H0 <- BFDA.sim(expected.ES=0, type="correlation", n.min=20, n.max=1000, boundary=Inf, stepsize=10, design="sequential", B=1000, verbose=TRUE, cores=1, ETA=FALSE)
+corr.H0a <- BFDA.sim(expected.ES=0, type="correlation", n.min=20, n.max=1000, boundary=Inf, stepsize=10, design="sequential", B=1000, verbose=TRUE, cores=1, ETA=FALSE)
 
-corr.H0 <- BFDA.sim(expected.ES=0, type="correlation", n.min=20, n.max=1000, boundary=Inf, stepsize=10, design="sequential", B=1000, verbose=TRUE, cores=4, ETA=FALSE)
+corr.H0b <- BFDA.sim(expected.ES=0, type="correlation", n.min=20, n.max=1000, boundary=Inf, stepsize=10, design="sequential", B=1000, verbose=TRUE, cores=4, ETA=FALSE)
