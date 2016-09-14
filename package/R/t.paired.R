@@ -8,7 +8,7 @@
 # get two samples with a specific standardized mean differences
 # ES = dz (standardized difference scores)
 sample.t.paired <- function(n, ES, options.sample=NULL) {
-	rnorm(n, ES, SD=1)
+	rnorm(n, ES, sd=1)
 }
 
 # ---------------------------------------------------------------------
@@ -39,7 +39,7 @@ freq.test.t.paired <- function(SAMP, alternative="directional") {
 	return(list(
 		statistic = t1$statistic,
 		p.value = t1$p.value,
-		emp.ES = t1$statistic / sqrt(nrow(SAMP))
+		emp.ES = t1$statistic / sqrt(length(SAMP))
 	))
 }
 
@@ -56,7 +56,7 @@ BF.test.t.paired <- function(SAMP, alternative="directional", freq.test=NULL, ..
 
 	# suppress the "t is large; approximation invoked" message
 	suppressMessages({
-		t1 <- BayesFactor::ttest.tstat(freq.test$statistic, n1=nrow(SAMP), n2=0, nullInterval=nullInterval, simple=TRUE, ...)
+		t1 <- BayesFactor::ttest.tstat(freq.test$statistic, n1=length(SAMP), n2=0, nullInterval=nullInterval, simple=TRUE, ...)
 	})
 	
 	# returns the log(BF10)

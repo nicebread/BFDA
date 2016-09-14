@@ -8,8 +8,8 @@
 # get two samples with a specific standardized mean differences
 # ES = Cohen's d
 sample.t.between <- function(n, ES, options.sample=NULL) {
-	x <- rnorm(n, 0, 1)
-	y <- rnorm(n, 0, 1) - ES
+	x <- rnorm(n, mean=0, sd=1)
+	y <- rnorm(n, mean=0, sd=1) - ES
 	return(cbind(x, y))
 }
 

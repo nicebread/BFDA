@@ -2,7 +2,9 @@
 .Rproj
 .Rhistory
 .RData
-.Rapp
+.Rapp*
+.DS*
 FS_*
+
 
 *.RData

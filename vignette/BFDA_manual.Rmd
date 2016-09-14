@@ -185,6 +185,3 @@ BFDA.analyze(sim.H0, design="sequential", n.min=20, n.max=n_q80, boundary=10)
 In this design analysis for the *SBF+maxN* design, we can see that, although we apply for `r n_q80` participants in each group, we can expect to stop with 45 participants or less with a 50% chance, if H1 is true. The false negative rate is virtually 0%. That means, if the effect exists in the expected size, this design virtually guarantees to detect it.
 
 Under H0, at least half of the studies will have to use the full requested sample of 86 participants. We have a 2.2% false positive error rate, and 35.6% of all studies will correctly stop at the H0 boundary. The remaining 62.2% of all studies will remain inconclusive with respect to the desired evidential threshold of $BF_{10}$ <= 1/10. However, the Bayes factor of these studies can still be interpreted in size and direction.
-
-
-In the grant application, you can write that the study has a 80% chance to provide compelling evidence either for or against the focal hypothesis. You could also mention that studies failing to reach the threshold for compelling evidence are not necessarily a "failure", but that their BF can still be interpreted, and in XX% of all cases will point into the correct direction.

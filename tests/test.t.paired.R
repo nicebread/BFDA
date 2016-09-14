@@ -1,0 +1,1 @@
+sim <- BFDA.sim(expected.ES = 0.666, type = "t.paired")

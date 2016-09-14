@@ -31,7 +31,7 @@
 #'}
 
 
-BFDA.sim <- function(expected.ES, type=c("t.between", "t.paired", "correlation"), n.min=10, n.max=500, design=c("sequential", "fixed.n"), boundary=Inf, B=1000, stepsize=NA, alternative=c("directional", "undirected"), verbose=TRUE, cores=1, ETA=FALSE, options.sample=list(paired.cor=0.3), ...) {
+BFDA.sim <- function(expected.ES, type=c("t.between", "t.paired", "correlation"), n.min=10, n.max=500, design=c("sequential", "fixed.n"), boundary=Inf, B=1000, stepsize=NA, alternative=c("directional", "undirected"), verbose=TRUE, cores=1, ETA=FALSE, options.sample=list(), ...) {
 	
 	# link to test specific functions
 	# get() can reference a function by its (string) name
@@ -107,19 +107,18 @@ BFDA.sim <- function(expected.ES, type=c("t.between", "t.paired", "correlation")
 			# increase sample size up to n.max (or only use n.max if design=="fixed.n")
 			for (n in ns) {
 				samp <- select.function(maxsamp, n)
-				N <- nrow(samp)
 				
 				# do the frequentist test
 				freq.test <- freq.test.function(samp, alternative)
 
 				# do the BF test; supply freq.test to access t.value for faster computation
-				logBF <- BF.test.function(samp, alternative, freq.test, ...)
+				logBF <- BF.test.function(samp, alternative, freq.test)
 					
 				res0[which(ns == n), ] <- c(
 					id		= batch*10^(floor(log(max_b, base=10))+2) + b,		# id is a unique id for each trajectory
 					true.ES	= expected.ES.1,
 					boundary = boundary,
-					n		= N,
+					n		= n,
 					logBF	= logBF,
 					emp.ES	= freq.test$emp.ES,
 					statistic = freq.test$statistic,
