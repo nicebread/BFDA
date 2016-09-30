@@ -139,7 +139,7 @@ install_github(&quot;nicebread/BFDA&quot;, subdir=&quot;package&quot;)</code></p
 <ol style="list-style-type: decimal">
 <li>Simulate many hypothetical studies, both under H1 and under H0, using the function <code>BFDA.sim</code></li>
 <li>Analyze the simulated studies, using the function <code>BFDA.analyze</code></li>
-<li>Plot the simulated studies (<code>plot</code>, <code>SSD</code>, <code>compDist</code>)</li>
+<li>Plot the simulated studies (<code>plot</code>, <code>SSD</code>, <code>evDens</code>)</li>
 <li>Tune your design in a way that you achieve the desired goals with adequate probability (<code>SSD</code>)</li>
 </ol>
 <p>To summarize, the general workflow is (here shown without parameters; these are discussed later):</p>
@@ -226,8 +226,8 @@ sim.H0 &lt;- BFDA.sim(expected.ES=0, type=&quot;t.between&quot;, n.min=20, n.max
 <h2>3. Plots the design analysis</h2>
 <div id="compare-distributions-of-bfs-for-a-fixed-n" class="section level3">
 <h3>Compare distributions of BFs for a fixed <em>n</em></h3>
-<pre class="r"><code>compDist(BFDA.H1=sim.H1, BFDA.H0=sim.H0, n=50, boundary=c(1/6, 6), xlim=c(1/11, 31))</code></pre>
-<p><img src="BFDA_manual_files/figure-html/compDist-1.png" width="672" /></p>
+<pre class="r"><code>evDens(BFDA.H1=sim.H1, BFDA.H0=sim.H0, n=50, boundary=c(1/6, 6), xlim=c(1/11, 31))</code></pre>
+<p><img src="BFDA_manual_files/figure-html/evDens-1.png" width="672" /></p>
 </div>
 <div id="open-ended-sequential-design" class="section level3">
 <h3>Open-ended sequential design</h3>

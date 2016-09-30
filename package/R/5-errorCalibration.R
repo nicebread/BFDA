@@ -1,3 +1,5 @@
+# TODO: This function is a stub! DO NOT USE IT!
+
 errorCalibration <- function(BFDA.H1, BFDA.H0, alpha=.05) {
 	sim <- BFDA$sim
 	if (is.na(n.max)) n.max <- max(sim$n)

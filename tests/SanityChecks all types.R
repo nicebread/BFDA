@@ -24,7 +24,7 @@
 
 #sim0 <- BFDA.sim(expected.ES=0, type="between", n.min=20, n.max=100, boundary=Inf, stepsize=NA, design="sequential", B=10, verbose=TRUE, cores=1, ETA=FALSE)
 
-#compDist(sim1, sim0, n=50)
+#evDens(sim1, sim0, n=50)
 #SSD(sim1, power=.80)
 
 ## ======================================================================

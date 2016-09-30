@@ -25,9 +25,9 @@ par(oma = c(0, 0, 4, 0), mar=c(4, 2.3, 1, 1))
 # and two columns left and right (relative width=7)
 l1 <- layout(matrix(1:6, ncol=3), widths = c(7, 1, 7), heights = c(4, 4), respect = FALSE)
 ##  Draw Plots
-compDist(BFDA.0.5.prior, BFDA.0, n=20, boundary=log(c(1/3, 3)), xlim=c(log(1/10), log(90000)), noSplit=TRUE, cex=0.8)
+evDens(BFDA.0.5.prior, BFDA.0, n=20, boundary=log(c(1/3, 3)), xlim=c(log(1/10), log(90000)), noSplit=TRUE, cex=0.8)
 plot.new();plot.new(); # skip empty column in the middle
-compDist(BFDA.0.5.prior, BFDA.0, n=100, boundary=log(c(1/3, 3)), xlim=c(log(1/10), log(90000)), noSplit=TRUE, cex=0.8)
+evDens(BFDA.0.5.prior, BFDA.0, n=100, boundary=log(c(1/3, 3)), xlim=c(log(1/10), log(90000)), noSplit=TRUE, cex=0.8)
 
 ##  Create an overall title.
 mtext("n = 20, d = 0.5", line=2, outer = TRUE, adj=0.2)
@@ -43,9 +43,9 @@ par(oma = c(0, 0, 4, 0), mar=c(4, 2.3, 1, 1))
 # and two columns left and right (relative width=7)
 l1 <- layout(matrix(1:6, ncol=3), widths = c(7, 1, 7), heights = c(4, 4), respect = FALSE)
 ##  Draw Plots
-compDist(BFDA.0.5, BFDA.0, n=20, boundary=log(c(1/3, 3)), xlim=c(log(1/10), log(90000)), noSplit=TRUE, cex=0.8)
+evDens(BFDA.0.5, BFDA.0, n=20, boundary=log(c(1/3, 3)), xlim=c(log(1/10), log(90000)), noSplit=TRUE, cex=0.8)
 plot.new();plot.new(); # skip empty column in the middle
-compDist(BFDA.0.5.prior, BFDA.0, n=20, boundary=log(c(1/3, 3)), xlim=c(log(1/10), log(90000)), noSplit=TRUE, cex=0.8)
+evDens(BFDA.0.5.prior, BFDA.0, n=20, boundary=log(c(1/3, 3)), xlim=c(log(1/10), log(90000)), noSplit=TRUE, cex=0.8)
 
 ##  Create an overall title.
 mtext("n = 40, d = 0.5", line=2, outer = TRUE, adj=0.2)

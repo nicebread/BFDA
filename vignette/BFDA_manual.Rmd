@@ -33,7 +33,7 @@ install_github("nicebread/BFDA", subdir="package")
 
 1. Simulate many hypothetical studies, both under H1 and under H0, using the function `BFDA.sim`
 2. Analyze the simulated studies, using the function `BFDA.analyze`
-3. Plot the simulated studies (`plot`, `SSD`, `compDist`)
+3. Plot the simulated studies (`plot`, `SSD`, `evDens`)
 4. Tune your design in a way that you achieve the desired goals with adequate probability (`SSD`)
 
 To summarize, the general workflow is (here shown without parameters; these are discussed later):
@@ -108,8 +108,8 @@ BFDA.analyze(sim.H1, design="sequential", n.min=20, n.max=100, boundary=10)
 
 ### Compare distributions of BFs for a fixed *n*
 
-```{r compDist}
-compDist(BFDA.H1=sim.H1, BFDA.H0=sim.H0, n=50, boundary=c(1/6, 6), xlim=c(1/11, 31))
+```{r evDens}
+evDens(BFDA.H1=sim.H1, BFDA.H0=sim.H0, n=50, boundary=c(1/6, 6), xlim=c(1/11, 31))
 ```
 
 

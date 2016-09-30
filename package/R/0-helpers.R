@@ -2,6 +2,7 @@
 inside <- function(x, R) Vectorize({x >= R[1] & x <= R[2]})
 
 
+# draw a segment of a density
 drawpoly <- function(dens, from, to, ...) {
 	poly <- data.frame(x=dens$x, y=dens$y)
 	poly <- poly %>% filter(x>from & x<to)

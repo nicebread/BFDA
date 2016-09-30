@@ -4,7 +4,7 @@ makeMovie <- function(BFDA, n.start, n.stop, by, fname="d0.5", fps=15, ...) {
 
 	# create the picture sequence
 	picName <- paste(fname, "/", fname, "_%03d.jpg", sep="")
-	jpeg(picName, width=800, height=500, quality=95)
+	jpeg(picName, width=1000, height=600, quality=95)
 	for (n in seq(n.start, n.stop, by=by)) {
 		print(n)
 		plot(BFDA, n.max=n, ...)
@@ -38,3 +38,12 @@ makeMovie(BFDA.0.5, n.start=30, n.stop=170, by=3, fname="GIF1", fps=10, boundary
 makeMovie(BFDA.0.5.prior, n.start=30, n.stop=100, by=1, fname="d0.5.asymbound", fps=10, boundary=c(1/5, 30), xlim=c(10, 270), ylim=c(log(1/40), log(40)), traj.selection="fixed", dens.amplification=1.7, xextension=1.2, n.max.label.position="fixed", dens.right.offset=2)
 
 makeMovie(BFDA.0.5.prior, n.start=100, n.stop=320, by=1, fname="d0.5.asymbound.part2", fps=10, boundary=c(1/5, 30), xlim=c(10, 320), ylim=c(log(1/40), log(40)), traj.selection="fixed", dens.amplification=1.7, xextension=1.2, n.max.label.position="fixed", dens.right.offset=2)
+
+
+
+# GIF animation (smooth)
+makeMovie(BFDA.0.5, n.start=30, n.stop=170, by=1, fname="GIF2", fps=15, boundary=10, xlim=c(10, 270), ylim=c(log(1/40), log(40)), traj.selection="fixed", dens.amplification=1.7, xextension=1.2, n.max.label.position="fixed", dens.right.offset=2, cex.labels=1.1, cex.annotations=0.95)
+
+#ffmpeg command: convert -delay 12 -loop 0 *.jpg BFDA-talk.gif
+
+BFDA.analyze(BFDA.0.5, boundary=10)
