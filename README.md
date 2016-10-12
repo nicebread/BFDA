@@ -16,6 +16,6 @@ The BFDA package is not on CRAN yet, but you can install the development version
 
 > Schönbrodt, F. D. & Wagenmakers, E.-J. (submitted). Bayes Factor Design Analysis: Planning for compelling evidence. Retrieved from http://ssrn.com/abstract=2722435.
 
-2. Read the additional [manual](https://cdn.rawgit.com/nicebread/BFDA/master/vignette/BFDA_manual.html).
+2. Read the additional [manual](https://rawgit.com/nicebread/BFDA/master/vignette/BFDA_manual.html).
 
 ![Sequential Design](https://github.com/nicebread/BFDA/blob/master/movies/GIF1/BFDA1.gif)
