@@ -1,10 +1,10 @@
 ---
-title: "Bayes factor design analysis"
+title: "Bayes factor design analysis: Manual for the BFDA package"
 author: "Felix Schönbrodt"
-date: "4 August 2016"
-output: 
-    html_document:
-        self_contained: false
+date: "`r Sys.Date()`"
+output:
+  tufte::tufte_html: default
+  tufte::tufte_handout: default
 ---
 
 This document demonstrates how to do a design analysis (aka. power analysis) for studies which use Bayes factors as index of evidence.
@@ -14,6 +14,7 @@ For more details about Bayes Factor Design Analysis (BFDA), see our paper:
 
 
 ```{r setup, include=FALSE}
+	library(tint)
 	knitr::opts_chunk$set(cache=TRUE)
 	# load all functions
 	devtools::load_all("../package")
@@ -104,7 +105,7 @@ Here, all studies hit a boundary before n.max is reached. If we reduce n.max, so
 BFDA.analyze(sim.H1, design="sequential", n.min=20, n.max=100, boundary=10)
 ```
 
-## 3. Plots the design analysis
+## 3. Plot the design analysis
 
 ### Compare distributions of BFs for a fixed *n*
 
@@ -150,6 +151,27 @@ SSD(sim.H0, alpha=.01, boundary=c(1/3, 3))
 
 Note: The SSD function automatically detects whether a H1 or a H0 simulation is analyzed.
 
+# Paired t-test: A complete example #
+
+```{r paired.t}
+#devtools::install_github("nicebread/BFDA", subdir="package")
+library(BFDA)
+
+# do a sequential design analysis
+s1 <- BFDA.sim(expected.ES=0.4, n.min=50, stepsize=5, n.max=300, type="t.paired", design="sequential", r=sqrt(2)/2, alternative="directional", cores=4)
+s0 <- BFDA.sim(expected.ES=0, n.min=50, stepsize=5, n.max=300, type="t.paired", design="sequential", r=sqrt(2)/2, alternative="directional", cores=4)
+
+BFDA.analyze(s1, boundary=10)
+BFDA.analyze(s0, boundary=10)
+
+BFDA.analyze(s1, boundary=6)
+BFDA.analyze(s0, boundary=6)
+
+plot(s1)
+```
+
+
+
 
 # Use case: Apply for a grant with sequential sampling
 
@@ -184,4 +206,4 @@ BFDA.analyze(sim.H0, design="sequential", n.min=20, n.max=n_q80, boundary=10)
 
 In this design analysis for the *SBF+maxN* design, we can see that, although we apply for `r n_q80` participants in each group, we can expect to stop with 45 participants or less with a 50% chance, if H1 is true. The false negative rate is virtually 0%. That means, if the effect exists in the expected size, this design virtually guarantees to detect it.
 
-Under H0, at least half of the studies will have to use the full requested sample of 86 participants. We have a 2.2% false positive error rate, and 35.6% of all studies will correctly stop at the H0 boundary. The remaining 62.2% of all studies will remain inconclusive with respect to the desired evidential threshold of $BF_{10}$ <= 1/10. However, the Bayes factor of these studies can still be interpreted in size and direction.
+Under H0, at least half of the studies will have to use the full requested sample of `r n_q80` participants. We have a 2.2% false positive error rate, and 35.6% of all studies will correctly stop at the H0 boundary. The remaining 62.2% of all studies will remain inconclusive with respect to the desired evidential threshold of $BF_{10}$ <= 1/10. However, the Bayes factor of these studies can still be interpreted in size and direction.
