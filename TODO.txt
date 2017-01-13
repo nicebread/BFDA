@@ -1,3 +1,2 @@
-- Compute one-sided by default
 - Compute H0 distribution, include in package (we need this everytime)
 - SSD-function: plot H1/H0 scenario side by side
