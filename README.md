@@ -8,13 +8,14 @@ The BFDA package is not on CRAN yet, but you can install the development version
 
     library(devtools)
     install_github("nicebread/BFDA", subdir="package")
-	
-	
+
+For installations on Windows you need R version 3.3.1 or higher.
+
 ### How to use the BFDA package?
 
 1. Read our [paper](http://papers.ssrn.com/abstract=2722435):
 
-> Schönbrodt, F. D. & Wagenmakers, E.-J. (submitted). Bayes Factor Design Analysis: Planning for compelling evidence. Retrieved from http://ssrn.com/abstract=2722435.
+	> Schönbrodt, F. D. & Wagenmakers, E.-J. (submitted). Bayes Factor Design Analysis: Planning for compelling evidence. Retrieved from http://ssrn.com/abstract=2722435.
 
 2. Read the additional [manual](https://rawgit.com/nicebread/BFDA/master/vignette/BFDA_manual.html).
 
