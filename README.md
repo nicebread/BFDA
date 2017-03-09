@@ -9,7 +9,7 @@ The BFDA package is not on CRAN yet, but you can install the development version
     library(devtools)
     install_github("nicebread/BFDA", subdir="package")
 
-For installations on Windows you need R version 3.3.1 or higher.
+For installations on Windows the package requires R version 3.3.1 or higher.
 
 ### How to use the BFDA package?
 
