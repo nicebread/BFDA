@@ -2,15 +2,12 @@
 title: "Bayes factor design analysis: Manual for the BFDA package"
 author: "Felix Schönbrodt"
 date: "`r Sys.Date()`"
-output:
-  tufte::tufte_html: default
-  tufte::tufte_handout: default
 ---
 
 This document demonstrates how to do a design analysis (aka. power analysis) for studies which use Bayes factors as index of evidence.
 For more details about Bayes Factor Design Analysis (BFDA), see our paper:
 
-> Schönbrodt, F. D. and Wagenmakers, E.-J. (2016). Bayes Factor Design Analysis: Planning for Compelling Evidence. Available at SSRN: http://ssrn.com/abstract=2722435
+> Schönbrodt, F. D. & Wagenmakers, E.-J. (in press). Bayes Factor Design Analysis: Planning for compelling evidence. Psychonomic Bulletin & Review. doi:10.3758/s13423-017-1230-y. [(PDF)[https://osf.io/d4dcu]][(OSF project with reproducible code)[https://osf.io/v7yxp/]]
 
 
 ```{r setup, include=FALSE}
@@ -43,8 +40,8 @@ To summarize, the general workflow is (here shown without parameters; these are 
 sim.H1 <- BFDA.sim(expected.ES = 0.5, ...)
 sim.H0 <- BFDA.sim(expected.ES = 0, ...)
 
-BFDA.analyze(H1)
-BFDA.analyze(H0)
+BFDA.analyze(sim.H1)
+BFDA.analyze(sim.H0)
 
 plot(sim.H1)
 plot(sim.H0)
