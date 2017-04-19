@@ -7,7 +7,7 @@ date: "`r Sys.Date()`"
 This document demonstrates how to do a design analysis (aka. power analysis) for studies which use Bayes factors as index of evidence.
 For more details about Bayes Factor Design Analysis (BFDA), see our paper:
 
-> Schönbrodt, F. D. & Wagenmakers, E.-J. (in press). Bayes Factor Design Analysis: Planning for compelling evidence. Psychonomic Bulletin & Review. doi:10.3758/s13423-017-1230-y. [(PDF)[https://osf.io/d4dcu]][(OSF project with reproducible code)[https://osf.io/v7yxp/]]
+> Schönbrodt, F. D. & Wagenmakers, E.-J. (in press). Bayes Factor Design Analysis: Planning for compelling evidence. *Psychonomic Bulletin & Review*. doi:10.3758/s13423-017-1230-y. [[PDF](https://osf.io/d4dcu)][[OSF project with reproducible code](https://osf.io/v7yxp/)]
 
 
 ```{r setup, include=FALSE}
