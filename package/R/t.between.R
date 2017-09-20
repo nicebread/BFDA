@@ -53,8 +53,6 @@ BF.test.t.between <- function(SAMP, alternative="directional", freq.test=NULL, .
 		nullInterval <- NULL
 	}
 
-	t.value <- 
-
 	# suppress the "t is large; approximation invoked" message
 	suppressMessages({
 		t1 <- BayesFactor::ttest.tstat(freq.test$statistic, nrow(SAMP), nrow(SAMP), nullInterval=nullInterval, simple=TRUE, ...)

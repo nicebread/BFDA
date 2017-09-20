@@ -16,8 +16,6 @@
 # 
 ###############################################################################
 
-require("hypergeo")
-
 # 0. Prior specification
 priorRho <- function(rho, alpha=1) {
 	priorDensity <- 2^(1-2*alpha)*(1-rho^2)^(alpha-1)

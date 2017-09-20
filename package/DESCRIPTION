@@ -16,7 +16,8 @@ Imports:
     scales,
     reshape2,
     sfsmisc,
-	gridExtra
+		gridExtra,
+		hypergeo
 Description: Compute and visualize design analyses for Bayes factors. Handles
     fixed-n and sequential designs.
 License: GPL (>= 2)
