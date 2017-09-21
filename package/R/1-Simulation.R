@@ -14,8 +14,8 @@
 #' @param stepsize The number with which participants are added to the sample. If NA, the sample is increased +1 until it's 100, and +10 from that size on.
 #' @param verbose Show output about progress?
 #' @param cores number of parallel processes. If cores==1, no parallel framework is used.
-#' @param alternative One of c("directional", "undirected") for directed (one-sided) or undirected (two-sided) hypothesis tests.
-#' @param ETA Compute an estimate of the full simulation time? This adds some overhead to the simulation, so turn off for actual simulations.
+#' @param alternative One of c("directional", "undirected") for directed (one-sided) or undirected (two-sided) hypothesis tests in data analysis. Hence, this refers to the directionality of the analysis prior
+#' @param ETA Compute an estimate of the full simulation time? This adds some overhead to the simulation, so turn off for actual simulations. NOT IMPLEMENTED YET
 #' @param options.sample Further parameters passed to the data generating function (depending on the \code{type} of design). NOT IMPLEMENTED YET
 #' @param ... Further parameters passed to the BF.test function
 #'
@@ -189,7 +189,7 @@ Bayes Factor Design Analysis
 --------------------------------	
 Number of simulations: ", length(unique(x$sim$id)), "
 Stopping boundary (evidential threshold): ", x$settings$boundary, "
-H1: ", x$settings$alternative, "
+Directionality of H1 analysis prior: ", x$settings$alternative, "
 Minimum n: ", x$settings$n.min, "
 Maximum n: ", x$settings$n.max, "
 Design: ", x$settings$design, "

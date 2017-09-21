@@ -2,9 +2,11 @@
 #' Analyze a BFDA.sim object
 #'
 #' @param BFDA The result object from a BFDA.sim function
-#' @param n.min What is the minimum n that is sampled before optional stopping is started? Defaults to the smallest n in the BFDA object
-#' @param n.max What is the minimum n that is sampled before optional stopping is started? Defaults to the largest n in the BFDA object.
-#' @param boundary At which BF boundary should trajectories stop? Either a single number (then the reciprocal is taken as the other boundary), or a vector of two numbers for lower and upper boundary.
+#' @param design The function can analyze the simulations with regard to a fixed-n (\code{design="fixed"}) or in a sequential style (\code{design="sequential"})
+#' @param n.min What is the minimum n that is sampled before optional stopping is started? Defaults to the smallest n in the BFDA object (only relevant for \code{design="sequential"}).
+#' @param n.max What is the minimum n that is sampled before optional stopping is started? Defaults to the largest n in the BFDA object (only relevant for \code{design="sequential"}).
+#' @param n The fixed-n sample size that should be evaluated (only relevant for \code{design="fixed"})
+#' @param boundary At which BF boundary should trajectories stop? Either a single number (then the reciprocal is taken as the other boundary), or a vector of two numbers for lower and upper boundary (only relevant for \code{design="sequential"}).
 #' @param verbose Print information about analysis?
 #' @param alpha For a frequentist analysis in the fixed-n case: Use this alpha level.
 #'
@@ -12,15 +14,15 @@
 #'
 #' @examples
 #' \dontrun{
-#' BFDA.analyze(sim, design="sequential", boundary=6, n.max=80)
+#' BFDA.analyze(sim, design="sequential", boundary=6, n.min=20, n.max=80)
 #' }
-BFDA.analyze <- function(BFDA, n.min=NA, n.max=NA, boundary=NA, design=c("sequential", "fixed"), verbose=TRUE, alpha=.05) {
+BFDA.analyze <- function(BFDA, design=c("sequential", "fixed"), boundary, n.min=NULL, n.max=NULL, n=NULL, verbose=TRUE, alpha=.05) {
 
 	# some preliminary checks
 	versionCheck(BFDA)	
 	design <- match.arg(design, c("sequential", "fixed"))
-	if (design=="fixed" & !is.na(n.min)) stop("If design='fixed' you have to specify n.max (not n.min).")
-	if (design=="fixed") n.min <- n.max
+	if (design=="fixed" & is.null(n)) stop("If design='fixed' you have to specify n (not n.min nor n.max).")
+	if (design=="fixed" & all(is.null(boundary))) stop("If design='fixed' you have to specify a BF value that is used as a decision criterion (i.e., set parameter 'boundary' to some value).")
 		
 	if (length(boundary) == 1) boundary <- sort(c(boundary, 1/boundary))
 		
@@ -34,13 +36,13 @@ BFDA.analyze <- function(BFDA, n.min=NA, n.max=NA, boundary=NA, design=c("sequen
 
 
 
-BFDA.analyze.sequential <- function(BFDA, n.min=NA, n.max=NA, design="sequential", boundary=NA, verbose=TRUE, alpha=.05) {
+BFDA.analyze.sequential <- function(BFDA, boundary, n=NULL, n.min=NULL, n.max=NULL, design="sequential", verbose=TRUE, alpha=.05) {
 	
 	# set variables
 	sim <- BFDA$sim
-	if (is.na(n.max) | is.infinite(n.max)) n.max <- max(sim$n)
-	if (is.na(n.min)) n.min <- min(sim$n)
-	if (all(is.na(boundary))) boundary <- max(sim$boundary)
+	if (is.null(n.max) || is.na(n.max) || is.infinite(n.max)) n.max <- max(sim$n)
+	if (is.null(n.min) || is.na(n.min)) n.min <- min(sim$n)
+	if (all(is.null(boundary))) boundary <- max(sim$boundary)
 		
 	# reduce simulation to relevant data
 	sim <- sim %>% filter(n >= n.min, n <= n.max)
@@ -55,12 +57,16 @@ BFDA.analyze.sequential <- function(BFDA, n.min=NA, n.max=NA, design="sequential
 
 
 	# For the densities: Data frames of stopping times / stopping BFs
-	n.max.hit <- sim %>% group_by(id) %>% filter(n == n.max, max(logBF) <= logBoundary[2] & min(logBF) >= logBoundary[1])
+	n.max.hit <- sim %>% 
+		group_by(id) %>% 
+		filter(n == n.max, max(logBF) <= logBoundary[2] & min(logBF) >= logBoundary[1]) %>% 
+		mutate(hitCondition = "n.max")
 	
 	# reduce to *first* break of a boundary
 	boundary.hit <- sim %>% group_by(id) %>%
 		filter(logBF>=logBoundary[2] | logBF<=logBoundary[1]) %>%
-		filter(row_number()==1) %>% ungroup()	
+		filter(row_number()==1) %>% ungroup()	%>%
+		mutate(hitCondition = "boundary")
 
 	endpoint <- bind_rows(n.max.hit, boundary.hit)
 	
@@ -107,6 +113,7 @@ BFDA.analyze.sequential <- function(BFDA, n.min=NA, n.max=NA, design="sequential
 
 	res <- list(
 		settings = BFDA$settings,
+		n.max=n.max,
 		d.top=d.top,
 		d.bottom = d.bottom,
 		d.right = d.right,
@@ -123,6 +130,7 @@ BFDA.analyze.sequential <- function(BFDA, n.min=NA, n.max=NA, design="sequential
 		n.max.traj.n = n.max.traj.n,
 		n.max.hit.logBF = n.max.hit$logBF,
 		endpoint.n = endpoint$n,
+		endpoint = endpoint,
 		alpha = alpha,
 		p.value = p.value,
 		ASN = ceiling(mean(endpoint$n)),
@@ -150,14 +158,14 @@ print.BFDAanalysisSequential <- function(x, ..., digits=1) {
 with(x, {
 	
 	print(data.frame(
-		outcome = c("Studies terminating at n.max", "Studies terminating at a boundary", "--> Terminating at H1 boundary", "--> Terminating at H0 boundary"),
+		outcome = c(paste0("Studies terminating at n.max (n=", n.max, ")"), "Studies terminating at a boundary", "--> Terminating at H1 boundary", "--> Terminating at H0 boundary"),
 		percentage = paste0(c(round(n.max.hit.frac*100, digits), round(boundary.hit.frac*100, digits), round(upper.hit.frac*100, digits), round(lower.hit.frac*100, digits)), "%")))
 	
 	# If some studies stopped at n.max: report of categories of resulting Bayes factor
 	
 	# TODO: "(BF > 3)": insert actual boundary from parameter!
 	if (n.max.traj.n > 0) {
-		cat(paste0("\nOf ", round(n.max.traj.n/all.traj.n*100, digits), "% of studies terminating at n.max:\n",
+		cat(paste0("\nOf ", round(n.max.traj.n/all.traj.n*100, digits), "% of studies terminating at n.max (n=", n.max, "):\n",
 			round(sum(n.max.hit.logBF > log(3))/all.traj.n*100, digits), "% showed evidence for H1 (BF > 3)\n", 
 			round(sum(n.max.hit.logBF < log(3) & n.max.hit.logBF > log(1/3))/all.traj.n*100, digits), "% were inconclusive (3 > BF > 1/3)\n", 
 			round(sum(n.max.hit.logBF < log(1/3))/all.traj.n*100, digits), "% showed evidence for H0 (BF < 1/3)\n"
@@ -170,12 +178,6 @@ with(x, {
 		cat("\n\nSample number quantiles (50/80/90/95%) at stopping point:\n")
 		print(ceiling(quantile(endpoint.n, prob=c(0.5, 0.80, 0.90, 0.95))))
 	}
-
-	#If simulation was a fixed-n design: Also report frequentist power estimate	
-	if (settings$design == "fixed") {
-		cat("\nFor fixed-n designs:\n--------------------\n")
-		cat(paste0("Frequentist power estimate (studies with p < ", alpha, ") = ", round(p.value*100, digits), "%\n"))
-	}
 })	
 }
 
@@ -183,16 +185,15 @@ with(x, {
 
 
 
-BFDA.analyze.fixed <- function(BFDA, n.min=NA, n.max=NA, design="fixed", boundary=NA, verbose=TRUE, alpha=.05) {
+BFDA.analyze.fixed <- function(BFDA, n=NULL, n.min=NA, n.max=NA, design="fixed", boundary=NA, verbose=TRUE, alpha=.05) {
 	# set variables
 	sim <- BFDA$sim
-	if (is.na(n.max) | is.infinite(n.max)) n.max <- max(sim$n)
-	n.min <- n.max
+	n.eval <- n	# rename, otherwise dplyr might get confused
 		
 	# reduce simulation to relevant data
-	n.max.hit <- sim %>% filter(n == n.max)
+	n.max.hit <- sim %>% filter(n == n.eval)
 
-	if (n.max > max(n.max.hit$n)) warning(paste0("Error: The selected n.max (", n.max, ") for analysis is larger than the largest n (", max(n.max.hit$n), ") in the simulation stage. Cannot produce a meaningful analysis."))
+	if (n.eval > max(n.max.hit$n)) error(paste0("Error: The selected n (", n.eval, ") for analysis is larger than the largest n (", max(n.max.hit$n), ") in the simulation stage. Cannot produce a meaningful analysis."))
 
 	# ---------------------------------------------------------------------
 	# Output
@@ -225,4 +226,5 @@ print.BFDAanalysisFixed <- function(x, ..., digits=1) {
 			round(sum(n.max.hit.logBF < log(max(boundary)) & n.max.hit.logBF > log(min(boundary)))*100/length(n.max.hit.logBF), digits), "% were inconclusive (", round(min(boundary), 4), " < BF < ", round(max(boundary), 4), ")\n", 
 			round(sum(n.max.hit.logBF < log(min(boundary)))*100/length(n.max.hit.logBF), digits), "% showed evidence for H0 (BF < ", round(min(boundary), 4), ")\n"
 			))
+			
 })}

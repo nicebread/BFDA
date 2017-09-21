@@ -23,4 +23,3 @@ SSD = sample size determination
 \details{
 Finds the optimal fixed sample size to achieve desired level of power.
 }
-

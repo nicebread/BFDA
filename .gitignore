@@ -9,3 +9,5 @@ FS_*
 
 *.RData
 tests
+
+vignette/BFDA_manual_cache

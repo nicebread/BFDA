@@ -4,7 +4,8 @@
 
 #' @export
 #' @importFrom reshape2 melt
-# TODO: Add link to proper function name
+#' @importFrom ggplot2 ggplot
+
 #' @param BFDA A BFDA simulation object, resulting from the \code{BFDA.sim} function
 #' @param boundary The critical boundary that defines the "success" of a study. This can be a single value, for example 1. In this case, all studies with BF < 1 are counted as "negative outcomes", and BF > 1 as positive outcomes (i.e., it quantifies the probability of getting a BF with the correct direction).
 #' @param power The desired rate of true-positive results (in case of reality=H1)

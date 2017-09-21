@@ -8,7 +8,7 @@ BFDA.sim(expected.ES, type = c("t.between", "t.paired", "correlation"),
   n.min = 10, n.max = 500, design = c("sequential", "fixed.n"),
   boundary = Inf, B = 1000, stepsize = NA,
   alternative = c("directional", "undirected"), verbose = TRUE, cores = 1,
-  ETA = FALSE, options.sample = list(paired.cor = 0.3), ...)
+  ETA = FALSE, options.sample = list(), ...)
 }
 \arguments{
 \item{expected.ES}{The assumed true effect size. This can be a single number (this leads to a fixed assumed effect size, as in a classical power analysis) or a vector of numbers (e.g., \code{rnorm(100000, 0.5, 0.1)}). If it is a vector, the sampler draws a new effect size at each step. Hence, the provided distribution represents the uncertainty about the true effect size.}
@@ -27,13 +27,13 @@ BFDA.sim(expected.ES, type = c("t.between", "t.paired", "correlation"),
 
 \item{stepsize}{The number with which participants are added to the sample. If NA, the sample is increased +1 until it's 100, and +10 from that size on.}
 
-\item{alternative}{One of c("directional", "undirected") for directed (one-sided) or undirected (two-sided) hypothesis tests.}
+\item{alternative}{One of c("directional", "undirected") for directed (one-sided) or undirected (two-sided) hypothesis tests in data analysis. Hence, this refers to the directionality of the analysis prior}
 
 \item{verbose}{Show output about progress?}
 
 \item{cores}{number of parallel processes. If cores==1, no parallel framework is used.}
 
-\item{ETA}{Compute an estimate of the full simulation time? This adds some overhead to the simulation, so turn off for actual simulations.}
+\item{ETA}{Compute an estimate of the full simulation time? This adds some overhead to the simulation, so turn off for actual simulations. NOT IMPLEMENTED YET}
 
 \item{options.sample}{Further parameters passed to the data generating function (depending on the \code{type} of design). NOT IMPLEMENTED YET}
 
@@ -53,4 +53,3 @@ plot(sim, boundary=6)
 plot(sim, boundary=6, n.max=80)
 }
 }
-

@@ -4,17 +4,21 @@
 \alias{BFDA.analyze}
 \title{Analyze a BFDA.sim object}
 \usage{
-BFDA.analyze(BFDA, n.min = NA, n.max = NA, boundary = NA,
-  design = c("sequential", "fixed"), verbose = TRUE, alpha = 0.05)
+BFDA.analyze(BFDA, design = c("sequential", "fixed"), boundary,
+  n.min = NULL, n.max = NULL, n = NULL, verbose = TRUE, alpha = 0.05)
 }
 \arguments{
 \item{BFDA}{The result object from a BFDA.sim function}
 
-\item{n.min}{What is the minimum n that is sampled before optional stopping is started? Defaults to the smallest n in the BFDA object}
+\item{design}{The function can analyze the simulations with regard to a fixed-n (\code{design="fixed"}) or in a sequential style (\code{design="sequential"})}
 
-\item{n.max}{What is the minimum n that is sampled before optional stopping is started? Defaults to the largest n in the BFDA object.}
+\item{boundary}{At which BF boundary should trajectories stop? Either a single number (then the reciprocal is taken as the other boundary), or a vector of two numbers for lower and upper boundary (only relevant for \code{design="sequential"}).}
 
-\item{boundary}{At which BF boundary should trajectories stop? Either a single number (then the reciprocal is taken as the other boundary), or a vector of two numbers for lower and upper boundary.}
+\item{n.min}{What is the minimum n that is sampled before optional stopping is started? Defaults to the smallest n in the BFDA object (only relevant for \code{design="sequential"}).}
+
+\item{n.max}{What is the minimum n that is sampled before optional stopping is started? Defaults to the largest n in the BFDA object (only relevant for \code{design="sequential"}).}
+
+\item{n}{The fixed-n sample size that should be evaluated (only relevant for \code{design="fixed"})}
 
 \item{verbose}{Print information about analysis?}
 
@@ -25,7 +29,6 @@ Analyze a BFDA.sim object
 }
 \examples{
 \dontrun{
-BFDA.analyze(sim, design="sequential", boundary=6, n.max=80)
+BFDA.analyze(sim, design="sequential", boundary=6, n.min=20, n.max=80)
 }
 }
-

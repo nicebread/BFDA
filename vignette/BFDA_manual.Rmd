@@ -7,12 +7,14 @@ date: "`r Sys.Date()`"
 This document demonstrates how to do a design analysis (aka. power analysis) for studies which use Bayes factors as index of evidence.
 For more details about Bayes Factor Design Analysis (BFDA), see our paper:
 
-> Schönbrodt, F. D. & Wagenmakers, E.-J. (in press). Bayes Factor Design Analysis: Planning for compelling evidence. *Psychonomic Bulletin & Review*. doi:10.3758/s13423-017-1230-y. [[PDF](https://osf.io/d4dcu)][[OSF project with reproducible code](https://osf.io/v7yxp/)]
+> Schönbrodt, F. D. & Wagenmakers, E.-J. (2017). Bayes Factor Design Analysis: Planning for compelling evidence. *Psychonomic Bulletin & Review*. doi:10.3758/s13423-017-1230-y. [[PDF](https://osf.io/d4dcu)][[OSF project with reproducible code](https://osf.io/v7yxp/)]
+
+Please note that this package is still a development version; take the results with a grain of salt.
 
 
 ```{r setup, include=FALSE}
 	library(tint)
-	knitr::opts_chunk$set(cache=TRUE)
+	knitr::opts_chunk$set(cache=TRUE, warnings = FALSE, messages=FALSE)
 	# load all functions
 	devtools::load_all("../package")
 ```
@@ -87,8 +89,8 @@ Next, we can retrieve summary statistics from our simulations. For these summari
 For example, we can get the operational characteristics of a **fixed-n design**:
 
 ```{r analyze}
-BFDA.analyze(sim.H1, design="fixed", n.max=50, boundary=6)
-BFDA.analyze(sim.H0, design="fixed", n.max=50, boundary=6)
+BFDA.analyze(sim.H1, design="fixed", n=50, boundary=6)
+BFDA.analyze(sim.H0, design="fixed", n=50, boundary=6)
 ```
 
 And for a **sequential design**:
@@ -139,16 +141,18 @@ What sample size do you need to ensure, say, 80% probability that a study design
 SSD(sim.H1, power=.80, boundary=c(1/10, 10))
 ```
 
-What sample size do I need to have less than 1% of studies with a false positive error, if I set the boundary to 3?
-(Note: A BF threshold of 3 is in almost all applications too lenient! Aim for a BF of at least 5).
+What sample size do I need to have less than 2% of studies with a false positive error, if I set the boundary to 2?
+**Note: A BF threshold of 2 should never be used! Aim for a BF of at least 5. This is for didactical purposes only!**
 
 ```{r SSD2}
-SSD(sim.H0, alpha=.01, boundary=c(1/3, 3))
+SSD(sim.H0, alpha=.02, boundary=c(1/2, 2))
 ```
 
-Note: The SSD function automatically detects whether a H1 or a H0 simulation is analyzed.
+Note: The SSD function automatically detects whether a H1 or a H0 simulation is analyzed. Also note that these numbers of necessary sample sizes are based on simulations and can differ between runs (see the rugged border between the shaded areas in the plot). The larger the number `B` of simulations, the less variable are these estimates.
 
 # Paired t-test: A complete example #
+
+The effect size metric is d_z (standardized difference scores).
 
 ```{r paired.t}
 #devtools::install_github("nicebread/BFDA", subdir="package")
@@ -158,11 +162,12 @@ library(BFDA)
 s1 <- BFDA.sim(expected.ES=0.4, n.min=50, stepsize=5, n.max=300, type="t.paired", design="sequential", r=sqrt(2)/2, alternative="directional", cores=4)
 s0 <- BFDA.sim(expected.ES=0, n.min=50, stepsize=5, n.max=300, type="t.paired", design="sequential", r=sqrt(2)/2, alternative="directional", cores=4)
 
-BFDA.analyze(s1, boundary=10)
-BFDA.analyze(s0, boundary=10)
+# if no n.min and n.max is provided in the `BFDA.analyze` function, the values from the simulation are taken
+BFDA.analyze(s1, design="sequential", boundary=10)
+BFDA.analyze(s0, design="sequential", boundary=10)
 
-BFDA.analyze(s1, boundary=6)
-BFDA.analyze(s0, boundary=6)
+BFDA.analyze(s1, design="sequential", boundary=6)
+BFDA.analyze(s0, design="sequential", boundary=6)
 
 plot(s1)
 ```
@@ -184,7 +189,7 @@ We suggest to determine the requested sample size using two different design ana
 ```{r grant}
 # We use the simulation from above. 
 # Check the expected sample sizes for an evidential boundary of 10
-a1 <- BFDA.analyze(sim.H1, design="sequential", n.min=20, n.max=NA, boundary=10)
+a1 <- BFDA.analyze(sim.H1, design="sequential", n.min=20, boundary=10)
 
 # --> see 80% quantile in output
 a1
@@ -197,10 +202,12 @@ n_q80
 80% of all studies stop earlier than n = `r n_q80`. How does a design with that n.max perform concerning rates of misleading evidence?
 
 ```{r grant2}
-BFDA.analyze(sim.H1, design="sequential", n.min=20, n.max=n_q80, boundary=10)
-BFDA.analyze(sim.H0, design="sequential", n.min=20, n.max=n_q80, boundary=10)
+a2.H1 <- BFDA.analyze(sim.H1, design="sequential", n.min=20, n.max=n_q80, boundary=10)
+a2.H0 <- BFDA.analyze(sim.H0, design="sequential", n.min=20, n.max=n_q80, boundary=10)
+a2.H1
+a2.H0
 ```
 
-In this design analysis for the *SBF+maxN* design, we can see that, although we apply for `r n_q80` participants in each group, we can expect to stop with 45 participants or less with a 50% chance, if H1 is true. The false negative rate is virtually 0%. That means, if the effect exists in the expected size, this design virtually guarantees to detect it.
+In this design analysis for the *SBF+maxN* design, we can see that, although we apply for `r n_q80` participants in each group, we can expect to stop with `r a2.H1$ASN` participants or less with a 50% chance, if H1 is true. The false negative rate is virtually 0%. That means, if the effect exists in the expected size, this design virtually guarantees to detect it.
 
-Under H0, at least half of the studies will have to use the full requested sample of `r n_q80` participants. We have a 2.2% false positive error rate, and 35.6% of all studies will correctly stop at the H0 boundary. The remaining 62.2% of all studies will remain inconclusive with respect to the desired evidential threshold of $BF_{10}$ <= 1/10. However, the Bayes factor of these studies can still be interpreted in size and direction. From the output, you can see that the majority of these inconclusive BFs still points into the correct (H0) direction.
+Under H0, at least half of the studies will have to use the full requested sample of `r n_q80` participants. On average, samples will have a size of n=`r a2.H0$ASN` under H0. We have a `r round(a2.H0$upper.hit.frac*100, 2)`% false positive error rate, and `r round(a2.H0$lower.hit.frac*100, 2)`% of all studies will correctly stop at the H0 boundary. The remaining `r round(a2.H0$n.max.hit.frac*100, 2)`% of all studies will remain inconclusive with respect to the desired evidential threshold of $BF_{10}$ <= 1/10. However, the Bayes factor of these studies can still be interpreted in size and direction. From the output, you can see that the majority of these inconclusive BFs still points into the correct (H0) direction.
