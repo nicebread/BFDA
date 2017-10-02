@@ -2,10 +2,12 @@ Encoding: UTF-8
 Package: BFDA
 Type: Package
 Title: Bayes Factor Design Analysis
-Version: 0.2
-Date: 2017-09-21
-Author: Felix Schönbrodt
-Maintainer: Felix Schönbrodt <felix@nicebread.de>
+Version: 0.3
+Date: 2017-10-02
+Authors@R: c(
+		person(c("Felix", "D."), "Schönbrodt", email = "felix@nicebread.de", role = c("aut", "cre"))
+	)
+Maintainer: Felix D. Schönbrodt <felix@nicebread.de>
 Depends:
     doParallel,
     dplyr,

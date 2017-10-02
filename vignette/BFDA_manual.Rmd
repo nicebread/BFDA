@@ -2,12 +2,20 @@
 title: "Bayes factor design analysis: Manual for the BFDA package"
 author: "Felix Schönbrodt"
 date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
 ---
 
 This document demonstrates how to do a design analysis (aka. power analysis) for studies which use Bayes factors as index of evidence.
 For more details about Bayes Factor Design Analysis (BFDA), see our paper:
 
 > Schönbrodt, F. D. & Wagenmakers, E.-J. (2017). Bayes Factor Design Analysis: Planning for compelling evidence. *Psychonomic Bulletin & Review*. doi:10.3758/s13423-017-1230-y. [[PDF](https://osf.io/d4dcu)][[OSF project with reproducible code](https://osf.io/v7yxp/)]
+
+If you use this package to compute and report your design analysis, please cite it as:
+
+> Schönbrodt, F. D. (2017). RSA: An R package for Bayes factor design analysis (version 0.2). Retrieved from https://github.com/nicebread/BFDA
 
 Please note that this package is still a development version; take the results with a grain of salt.
 
@@ -19,7 +27,7 @@ Please note that this package is still a development version; take the results w
 	devtools::load_all("../package")
 ```
 
-## Installation ##
+# Installation #
 
 The BFDA package is not on CRAN yet, but you can install the development version from Github:
 
@@ -29,7 +37,7 @@ install_github("nicebread/BFDA", subdir="package")
 ```
 
 
-## The general workflow ##
+# The general workflow #
 
 1. Simulate many hypothetical studies, both under H1 and under H0, using the function `BFDA.sim`
 2. Analyze the simulated studies, using the function `BFDA.analyze`
@@ -150,6 +158,7 @@ SSD(sim.H0, alpha=.02, boundary=c(1/2, 2))
 
 Note: The SSD function automatically detects whether a H1 or a H0 simulation is analyzed. Also note that these numbers of necessary sample sizes are based on simulations and can differ between runs (see the rugged border between the shaded areas in the plot). The larger the number `B` of simulations, the less variable are these estimates.
 
+
 # Paired t-test: A complete example #
 
 The effect size metric is d_z (standardized difference scores).
@@ -170,6 +179,66 @@ BFDA.analyze(s1, design="sequential", boundary=6)
 BFDA.analyze(s0, design="sequential", boundary=6)
 
 plot(s1)
+```
+
+
+
+# Correlation: A complete example #
+
+The correlation BF implemented in the BFDA package uses a beta prior distribution, as described in:
+
+Wagenmakers, E. J., Verhagen, J., & Ly, A. (2016). How to quantify the evidence for the absence of a correlation. *Behavior Research Methods*, 1–14. http://doi.org/10.3758/s13428-015-0593-0
+
+> "We prefer a similar but more elegant solution, where we first rescale the correlation to lie between 0 and 1, and then assign it a beta distribution. Hence, ρ′ ∼ beta(α, α), and a measure of the spread of this distribution is γ = 1/α. We then transform the beta distribution back to the (−1, 1) scale and calculate the Bayes factors as a function of γ . When γ = 1, this corresponds to a uniform prior on the correlation coefficient, as per our default analysis. When γ = 0, which happens when α grows very large, H1 becomes indistinguishable from H0 and consequently the Bayes factor is 1. Values of γ in between 0 and 1 define an continuous range of different alternative hypotheses that represent different beliefs about the extent to which large values for the correlation are plausible." (p. 419)
+
+The alpha parameter which can be passed as a parameter in the BFDA.sim function corresponds to the "beta* prior width" in JASP. Here are some plots for different settings of alpha for the two-sided case:
+
+```{r corr_alpha_prior_2_plots, cache=TRUE, results='hide'}
+rho <- seq(-1, 1, by=.01)
+
+par(mfrow=c(2, 3))
+plot(rho, BFDA:::priorRho(rho, alpha=1),    main="alpha = 1",    ylim=c(0, 2.4), type="l", xlab="rho", ylab="Plausibility")
+plot(rho, BFDA:::priorRho(rho, alpha=1.5),  main="alpha = 1.5",  ylim=c(0, 2.4), type="l", xlab="rho", ylab="Plausibility")
+plot(rho, BFDA:::priorRho(rho, alpha=2),    main="alpha = 2",    ylim=c(0, 2.4), type="l", xlab="rho", ylab="Plausibility")
+plot(rho, BFDA:::priorRho(rho, alpha=3),    main="alpha = 3",    ylim=c(0, 2.4), type="l", xlab="rho", ylab="Plausibility")
+plot(rho, BFDA:::priorRho(rho, alpha=0.75), main="alpha = 0.75", ylim=c(0, 2.4), type="l", xlab="rho", ylab="Plausibility")
+plot(rho, BFDA:::priorRho(rho, alpha=0.5),  main="alpha = 0.5",  ylim=c(0, 2.4), type="l", xlab="rho", ylab="Plausibility")
+```
+
+Here are some plots for different settings of alpha for the two-sided case:
+
+```{r corr_alpha_prior_1_plots, cache=TRUE, results='hide'}
+rho <- seq(0, 1, by=.01)
+
+par(mfrow=c(2, 3))
+plot(rho, BFDA:::priorRhoPlus(rho, alpha=1),    main="alpha = 1",    ylim=c(0, 4.2), type="l", xlab="rho", ylab="Plausibility")
+plot(rho, BFDA:::priorRhoPlus(rho, alpha=1.5),  main="alpha = 1.5",  ylim=c(0, 4.2), type="l", xlab="rho", ylab="Plausibility")
+plot(rho, BFDA:::priorRhoPlus(rho, alpha=2),    main="alpha = 2",    ylim=c(0, 4.2), type="l", xlab="rho", ylab="Plausibility")
+plot(rho, BFDA:::priorRhoPlus(rho, alpha=3),    main="alpha = 3",    ylim=c(0, 4.2), type="l", xlab="rho", ylab="Plausibility")
+plot(rho, BFDA:::priorRhoPlus(rho, alpha=0.75), main="alpha = 0.75", ylim=c(0, 4.2), type="l", xlab="rho", ylab="Plausibility")
+plot(rho, BFDA:::priorRhoPlus(rho, alpha=0.5),  main="alpha = 0.5",  ylim=c(0, 4.2), type="l", xlab="rho", ylab="Plausibility")
+```
+
+
+Here's a complete walkthrough for a one-sided (directional) correlation BF design analysis:
+
+```{r correlation_walkthrough}
+#devtools::install_github("nicebread/BFDA", subdir="package")
+library(BFDA)
+
+# do a sequential design analysis
+# scale the beta* prior with the alpha parameter
+s1 <- BFDA.sim(expected.ES=0.21, n.min=50, stepsize=10, n.max=300, B=100, type="correlation", design="sequential", alpha=2, alternative="directional", cores=4)
+s0 <- BFDA.sim(expected.ES=0, n.min=50, stepsize=10, n.max=300, B=100, type="correlation", design="sequential", alpha=2, alternative="directional", cores=4)
+
+# if no n.min and n.max is provided in the `BFDA.analyze` function, the values from the simulation are taken
+BFDA.analyze(s1, design="sequential", boundary=10)
+BFDA.analyze(s0, design="sequential", boundary=10)
+
+BFDA.analyze(s1, design="sequential", boundary=6)
+BFDA.analyze(s0, design="sequential", boundary=6)
+
+plot(s1, boundary=c(1/10, 20), n.max=150)
 ```
 
 

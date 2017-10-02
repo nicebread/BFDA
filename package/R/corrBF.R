@@ -83,7 +83,7 @@ mPlusMarginalBJeffreys <- function(n, r, alpha=1){
 		return(0)
 	}
 	
-	hyperTerm <- Re(genhypergeo(U=c(1, (2*n-1)/4, (2*n+1)/4),
+	hyperTerm <- Re(hypergeo::genhypergeo(U=c(1, (2*n-1)/4, (2*n+1)/4),
 								L=c(3/2, (n+1+2*alpha)/2), z=r^2))
 	logTerm <- -lbeta(alpha, alpha)
 	myResult <- 2^(1-2*alpha)*r*(2*n-3)/(n+2*alpha-1)*exp(logTerm)*hyperTerm
@@ -133,7 +133,7 @@ bfPlus0JeffreysIntegrate <- function(n, r, alpha=1){
 
 estimationPosteriorU <- function(rho, n, r, alpha=1){
 	dataTerm <- (1-rho^2)^((n-1)/2)/((1-rho*r)^((2*n-3)/2))*priorRho(rho, alpha)
-	hyperTerm <- Re(hypergeo(1/2, 1/2, (2*n-1)/2, 1/2+1/2*r*rho))
+	hyperTerm <- Re(hypergeo::hypergeo(1/2, 1/2, (2*n-1)/2, 1/2+1/2*r*rho))
 	myResult <- dataTerm*hyperTerm
 	return(myResult)
 }
@@ -178,7 +178,7 @@ repPrior <- function(rho, nOri, rOri){
 repPosteriorU <- function(rho, nOri, rOri, nRep, rRep){
 	# Unnormalised posterior for the replication Bayes factor
 	dataTerm <- (1-rho^2)^((nOri+nRep-2)/2)/((1-rho*rRep)^((2*nRep-3)/2)*(1-rho*rOri)^((2*nOri-3)/2))
-	hyperTerm <- Re(hypergeo(1/2, 1/2, (2*nOri-1)/2, 1/2+1/2*rOri*rho))
+	hyperTerm <- Re(hypergeo::hypergeo(1/2, 1/2, (2*nOri-1)/2, 1/2+1/2*rOri*rho))
 	myResult <- dataTerm*hyperTerm
 	return(myResult)
 }

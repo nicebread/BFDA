@@ -1,0 +1,19 @@
+citHeader("If you use the BFDA package for your design analysis, please cite it as:")
+
+year <- sub("-.*", "", meta$Date)
+title.bibtex <- paste("{BFDA}: An R package for Bayes factor design analysis (version ",meta$Version,")", sep="")
+title <- paste("RSA: An R package for Bayes factor design analysis (version ",meta$Version,").", sep="")
+
+    
+citEntry(entry = "Manual",
+  title = title.bibtex,
+  author = personList(as.person("Felix D. Schönbrodt")),
+  year = year,
+  url = "https://github.com/nicebread/BFDA",
+
+  textVersion =
+  paste("Schönbrodt, F. D.",
+       sprintf("(%s).", year),
+       title,
+        "Retrieved from https://github.com/nicebread/BFDA")
+)
