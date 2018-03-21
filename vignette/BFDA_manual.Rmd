@@ -168,8 +168,8 @@ The effect size metric is d_z (standardized difference scores).
 library(BFDA)
 
 # do a sequential design analysis
-s1 <- BFDA.sim(expected.ES=0.4, n.min=50, stepsize=5, n.max=300, type="t.paired", design="sequential", r=sqrt(2)/2, alternative="directional", cores=4)
-s0 <- BFDA.sim(expected.ES=0, n.min=50, stepsize=5, n.max=300, type="t.paired", design="sequential", r=sqrt(2)/2, alternative="directional", cores=4)
+s1 <- BFDA.sim(expected.ES=0.4, n.min=50, stepsize=5, n.max=300, type="t.paired", design="sequential", rscale=sqrt(2)/2, alternative="directional", cores=4)
+s0 <- BFDA.sim(expected.ES=0, n.min=50, stepsize=5, n.max=300, type="t.paired", design="sequential", rscale=sqrt(2)/2, alternative="directional", cores=4)
 
 # if no n.min and n.max is provided in the `BFDA.analyze` function, the values from the simulation are taken
 BFDA.analyze(s1, design="sequential", boundary=10)
@@ -205,7 +205,7 @@ plot(rho, BFDA:::priorRho(rho, alpha=0.75), main="alpha = 0.75", ylim=c(0, 2.4),
 plot(rho, BFDA:::priorRho(rho, alpha=0.5),  main="alpha = 0.5",  ylim=c(0, 2.4), type="l", xlab="rho", ylab="Plausibility")
 ```
 
-Here are some plots for different settings of alpha for the two-sided case:
+Here are some plots for different settings of alpha for the one-sided case:
 
 ```{r corr_alpha_prior_1_plots, cache=TRUE, results='hide'}
 rho <- seq(0, 1, by=.01)
@@ -220,7 +220,7 @@ plot(rho, BFDA:::priorRhoPlus(rho, alpha=0.5),  main="alpha = 0.5",  ylim=c(0, 4
 ```
 
 
-Here's a complete walkthrough for a one-sided (directional) correlation BF design analysis:
+Here's a complete walkthrough for a one-sided (directional) correlation BF design analysis, which places prior weight on smaller effect sizes (alpha = 2):
 
 ```{r correlation_walkthrough}
 #devtools::install_github("nicebread/BFDA", subdir="package")

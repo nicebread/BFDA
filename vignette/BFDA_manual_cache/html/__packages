@@ -33,3 +33,7 @@ doParallel
 hypergeo
 BFDA
 bindrcpp
+registry
+pkgmaker
+rngtools
+doRNG

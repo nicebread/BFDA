@@ -3,6 +3,7 @@
 #' @import BayesFactor
 #' @import dplyr
 #' @import doParallel
+#' @import doRNG
 #'
 #' @param n.min Minimum n before optional stopping is started
 #' @param n.max Maximum n - if that is reached without hitting a boundary, the run is aborted
@@ -17,6 +18,7 @@
 #' @param alternative One of c("directional", "undirected") for directed (one-sided) or undirected (two-sided) hypothesis tests in data analysis. Hence, this refers to the directionality of the analysis prior
 #' @param ETA Compute an estimate of the full simulation time? This adds some overhead to the simulation, so turn off for actual simulations. NOT IMPLEMENTED YET
 #' @param options.sample Further parameters passed to the data generating function (depending on the \code{type} of design). NOT IMPLEMENTED YET
+#' @param seed The seed that is passed to the %dorng% function (which ensures reproducibility with parallel processing).
 #' @param ... Further parameters passed to the BF.test function
 #'
 #' @examples
@@ -31,7 +33,7 @@
 #'}
 
 
-BFDA.sim <- function(expected.ES, type=c("t.between", "t.paired", "correlation"), n.min=10, n.max=500, design=c("sequential", "fixed.n"), boundary=Inf, B=1000, stepsize=NA, alternative=c("directional", "undirected"), verbose=TRUE, cores=1, ETA=FALSE, options.sample=list(), ...) {
+BFDA.sim <- function(expected.ES, type=c("t.between", "t.paired", "correlation"), n.min=10, n.max=500, design=c("sequential", "fixed.n"), boundary=Inf, B=1000, stepsize=NA, alternative=c("directional", "undirected"), verbose=TRUE, cores=1, ETA=FALSE, options.sample=list(), seed=1234, ...) {
 	
 	# link to test specific functions
 	# get() can reference a function by its (string) name
@@ -83,7 +85,7 @@ BFDA.sim <- function(expected.ES, type=c("t.between", "t.paired", "correlation")
 	if (verbose==TRUE) print(paste0("Simulation started at ", start))
 	flush.console()
 	
-	sim <- foreach(batch=1:getDoParWorkers(), .combine=rbind) %dopar% {
+	sim <- foreach(batch=1:getDoParWorkers(), .combine=rbind, .options.RNG=seed) %dorng% {
 
 		max_b <- round(B/getDoParWorkers())
 		res.counter <- 1
@@ -112,7 +114,7 @@ BFDA.sim <- function(expected.ES, type=c("t.between", "t.paired", "correlation")
 				freq.test <- freq.test.function(samp, alternative)
 
 				# do the BF test; supply freq.test to access t.value for faster computation
-				logBF <- BF.test.function(samp, alternative, freq.test)
+				logBF <- BF.test.function(samp, alternative, freq.test, ...)
 					
 				res0[which(ns == n), ] <- c(
 					id		= batch*10^(floor(log(max_b, base=10))+2) + b,		# id is a unique id for each trajectory

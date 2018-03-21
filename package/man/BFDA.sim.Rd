@@ -8,7 +8,7 @@ BFDA.sim(expected.ES, type = c("t.between", "t.paired", "correlation"),
   n.min = 10, n.max = 500, design = c("sequential", "fixed.n"),
   boundary = Inf, B = 1000, stepsize = NA,
   alternative = c("directional", "undirected"), verbose = TRUE, cores = 1,
-  ETA = FALSE, options.sample = list(), ...)
+  ETA = FALSE, options.sample = list(), seed = 1234, ...)
 }
 \arguments{
 \item{expected.ES}{The assumed true effect size. This can be a single number (this leads to a fixed assumed effect size, as in a classical power analysis) or a vector of numbers (e.g., \code{rnorm(100000, 0.5, 0.1)}). If it is a vector, the sampler draws a new effect size at each step. Hence, the provided distribution represents the uncertainty about the true effect size.}
@@ -36,6 +36,8 @@ BFDA.sim(expected.ES, type = c("t.between", "t.paired", "correlation"),
 \item{ETA}{Compute an estimate of the full simulation time? This adds some overhead to the simulation, so turn off for actual simulations. NOT IMPLEMENTED YET}
 
 \item{options.sample}{Further parameters passed to the data generating function (depending on the \code{type} of design). NOT IMPLEMENTED YET}
+
+\item{seed}{The seed that is passed to the %dorng% function (which ensures reproducibility with parallel processing).}
 
 \item{...}{Further parameters passed to the BF.test function}
 }
