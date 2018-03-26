@@ -6,14 +6,14 @@
 #' @importFrom sfsmisc integrate.xy
 
 # TODO: Add link to proper function name
-#' @param BFDA A BFDA simulation object, resulting from the \code{BFDA.sim} function
+#' @param BFDA A BFDA simulation object, resulting from the \code{\link{BFDA.sim}} function
 #' @param forH1 If TRUE, use the BF_10 labels, otherwise the BF_01 labels
-#' @param dens.right.offset How much should the right density be moved to the right?
+#' @param dens.right.offset How much should the right density (at n.max) be moved to the right?
 #' @param dens.amplification Amplification factor for all densities.
 #' @param n.min Minimum sample size
 #' @param n.max Maximum sample size
-#' @param boundary The BF threshold where to stop (resp. its reciprocal)
-#' @param n.trajectories Number of demo trajectories
+#' @param boundary At which BF boundary should sequential trajectories stop? Either a single number (then the reciprocal is taken as the other boundary), or a vector of two numbers for lower and upper boundary
+#' @param n.trajectories Number of demo trajectories that are plotted
 #' @param xlim Define limits on x axis
 #' @param ylim Define limits on y axis
 #' @param xextension How much reltive space should be on the rights side of the plot? You can adjust this to change the distance of the BF category labels from the plot.
@@ -23,8 +23,8 @@
 #' @param bw Black/white density on the right?
 #' @param traj.selection Should a fixed set of trajectories be shown ("fixed"), or a selection that reflects the proportional of each stopping category (upper/lower/n.max hits; use "proportional").
 #' @param n.max.label.position "fixed": Always centered at BF=1. "dynamic": Centered on the the peak of the right density.
-#' @param cex.labels Zoom factor for axes labels
-#' @param cex.annotations Zoom factor for annotations
+#' @param cex.labels Zoom factor for axes text labels
+#' @param cex.annotations Zoom factor for text annotations
 #' @param ... Additional parameters passed through to the base plot function
 
 #forH1 = TRUE; boundary=6; n.trajectories=60; n.max=500; dens.amplification=NA; dens.right.amplification=NA; plotratio=NA; cat=3; dens.right.offset=2; xlim=NA; ylim=NA; load("finalSims/sim.0.5.RData")

@@ -3,28 +3,28 @@
 #' @import BayesFactor
 #' @import dplyr
 #' @import doParallel
-#' @import doRNG
+#' @importFrom doRNG %dorng%
 #'
 #' @param n.min Minimum n before optional stopping is started
 #' @param n.max Maximum n - if that is reached without hitting a boundary, the run is aborted
-#' @param boundary The Bayes factor (resp. its reciprocal) where the run is stopped as well. For a fixed-n design, set it to Inf
-#' @param B Number of bootstrap samples (should be dividable by getDoParWorkers())
+#' @param boundary The Bayes factor (resp. its reciprocal) where a sequential run is stopped. For a fixed-n design, \code{boundary} is automatically set to Inf.
+#' @param B Number of bootstrap samples; should be dividable by the numbers of \code{cores} (see also \code{getDoParWorkers()})
 #' @param design "fixed.n" or "sequential". If design=="fixed.n", \code{n.min} and \code{boundary} are irrelevant, and all samples are drawn with n=n.max.
-#' @param expected.ES The assumed true effect size. This can be a single number (this leads to a fixed assumed effect size, as in a classical power analysis) or a vector of numbers (e.g., \code{rnorm(100000, 0.5, 0.1)}). If it is a vector, the sampler draws a new effect size at each step. Hence, the provided distribution represents the uncertainty about the true effect size.
-#' @param type Either "between-t-test", "within-t-test", or "correlation"
+#' @param expected.ES The assumed true effect size. This can be a single number (this leads to a fixed assumed effect size, as in a classical power analysis) or a vector of numbers (e.g., \code{rnorm(100000, 0.5, 0.1)}). If it is a vector, the sampler draws a new effect size from this vector at each step. In this case, the provided distribution represents the uncertainty about the true effect size.
+#' @param type Currently three designs are implemented: c("t.between", "t.paired", "correlation")
 #' @param stepsize The number with which participants are added to the sample. If NA, the sample is increased +1 until it's 100, and +10 from that size on.
 #' @param verbose Show output about progress?
 #' @param cores number of parallel processes. If cores==1, no parallel framework is used.
 #' @param alternative One of c("directional", "undirected") for directed (one-sided) or undirected (two-sided) hypothesis tests in data analysis. Hence, this refers to the directionality of the analysis prior
 #' @param ETA Compute an estimate of the full simulation time? This adds some overhead to the simulation, so turn off for actual simulations. NOT IMPLEMENTED YET
 #' @param options.sample Further parameters passed to the data generating function (depending on the \code{type} of design). NOT IMPLEMENTED YET
-#' @param seed The seed that is passed to the %dorng% function (which ensures reproducibility with parallel processing).
-#' @param ... Further parameters passed to the BF.test function
+#' @param seed The seed that is passed to the \code{dorng} function (which ensures reproducibility with parallel processing). If this parameter is set to \code{NULL}, a new seed is chosen at each run.
+#' @param ... Further parameters passed to the BF.test function. Most importantly, the scale parameter \code{rscale} can be passed to adjust the width of the Cauchy analysis prior.
 #'
 #' @examples
 #' \dontrun{
 #' sim <- BFDA.sim(expected.ES=0.5, n.min=20, n.max=300, boundary=Inf, 
-#'				stepsize=1, design="sequential", B=1000, verbose=TRUE, cores=2)
+#'				stepsize=1, design="sequential", B=1000, verbose=TRUE, cores=2, rscale=0.5)
 #' save(sim, file="sim0.5.RData")
 #' BFDA.analyze(sim)
 #' BFDA.analyze(sim, boundary=6)
@@ -66,6 +66,10 @@ BFDA.sim <- function(expected.ES, type=c("t.between", "t.paired", "correlation")
 	# define sample sizes that are simulated
 	if (design=="fixed.n") {
 		ns <- n.max
+		if (!is.infinite(boundary)) {
+			warning("For fixed-n designs, boundary is automatically set to Inf")
+			boundary <- Inf
+		}
 	} else if (design == "sequential"){
 		if (is.na(stepsize)) {
 			ns <- seq(n.min, min(n.max, 100), by=1)

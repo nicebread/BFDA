@@ -19,7 +19,8 @@ Imports:
     reshape2,
     sfsmisc,
 		gridExtra,
-		hypergeo
+		hypergeo,
+		doRNG
 Description: Compute and visualize design analyses for Bayes factors. Handles
     fixed-n and sequential designs.
 License: GPL (>= 2)

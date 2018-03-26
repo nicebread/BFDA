@@ -66,9 +66,9 @@ SSD(sim.H0)
 As we do not know in advance whether H1 or H0 provide a better predictive performance of real world data, we want to evaluate the performance of a design under *both* hypotheses. Hence, we have to simulate a "H1 world" and a "H0 world":
 
 ```{r sim, cache=TRUE, results='hide'}
-sim.H1 <- BFDA.sim(expected.ES=0.5, type="t.between", n.min=20, n.max=300, alternative="directional", boundary=Inf, B=1000, verbose=TRUE, cores=2)
+sim.H1 <- BFDA.sim(expected.ES=0.5, type="t.between", n.min=20, n.max=300, alternative="directional", boundary=Inf, B=1000, verbose=TRUE, cores=4)
 
-sim.H0 <- BFDA.sim(expected.ES=0, type="t.between", n.min=20, n.max=300, alternative="directional", boundary=Inf, B=1000, verbose=TRUE, cores=2)
+sim.H0 <- BFDA.sim(expected.ES=0, type="t.between", n.min=20, n.max=300, alternative="directional", boundary=Inf, B=1000, verbose=TRUE, cores=4)
 ```
 
 Let's go through the most important parameters (for a full list of options, see `?BFDA.sim`):
@@ -250,9 +250,10 @@ Granting agencies probably want a fixed sample size in the planning stage in ord
 
 We suggest to determine the requested sample size using two different design analyses:
 
-1. Compute an open-ended SBF design with the expected sample size to get a distribution of sample sizes at stopping point.
-2. Compute the 80% quantile of stopping-ns: n_q80
-3. Evaluate the characteristics of a *SBF+maxN* design with n.max = n_q80. Does it have acceptable false positive and false negative error rates? What is the mean and median expected sample size?
+1. Compute an open-ended SBF design with the expected effect size to get a distribution of sample sizes at stopping point.
+2. Compute the 80% quantile of stopping-ns: `n_q80`
+3. Evaluate the characteristics of a *SBF+maxN* design with `n.max = n_q80`. Does it have acceptable false positive and false negative error rates? (If not: tune your boundaries). What is the mean and median expected sample size?
+4. Apply for a sample size of `n_q80`.
 
 
 ```{r grant}
@@ -277,6 +278,6 @@ a2.H1
 a2.H0
 ```
 
-In this design analysis for the *SBF+maxN* design, we can see that, although we apply for `r n_q80` participants in each group, we can expect to stop with `r a2.H1$ASN` participants or less with a 50% chance, if H1 is true. The false negative rate is virtually 0%. That means, if the effect exists in the expected size, this design virtually guarantees to detect it.
+In this design analysis for the *SBF+maxN* design, we can see that, although we apply for `r n_q80` participants in each group, we can expect to stop with `r a2.H1$ASN` participants or less with a 50% chance, if H1 is true. The false negative rate is virtually 0%. That means, if the effect exists in the expected size, this design virtually guarantees to detect it, and we have a good chance to be more efficient.
 
 Under H0, at least half of the studies will have to use the full requested sample of `r n_q80` participants. On average, samples will have a size of n=`r a2.H0$ASN` under H0. We have a `r round(a2.H0$upper.hit.frac*100, 2)`% false positive error rate, and `r round(a2.H0$lower.hit.frac*100, 2)`% of all studies will correctly stop at the H0 boundary. The remaining `r round(a2.H0$n.max.hit.frac*100, 2)`% of all studies will remain inconclusive with respect to the desired evidential threshold of $BF_{10}$ <= 1/10. However, the Bayes factor of these studies can still be interpreted in size and direction. From the output, you can see that the majority of these inconclusive BFs still points into the correct (H0) direction.

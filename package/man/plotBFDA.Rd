@@ -13,11 +13,11 @@ plotBFDA(BFDA, boundary = 10, n.trajectories = 60, n.min = NA,
   cex.annotations = 0.85, ...)
 }
 \arguments{
-\item{BFDA}{A BFDA simulation object, resulting from the \code{BFDA.sim} function}
+\item{BFDA}{A BFDA simulation object, resulting from the \code{\link{BFDA.sim}} function}
 
-\item{boundary}{The BF threshold where to stop (resp. its reciprocal)}
+\item{boundary}{At which BF boundary should sequential trajectories stop? Either a single number (then the reciprocal is taken as the other boundary), or a vector of two numbers for lower and upper boundary}
 
-\item{n.trajectories}{Number of demo trajectories}
+\item{n.trajectories}{Number of demo trajectories that are plotted}
 
 \item{n.min}{Minimum sample size}
 
@@ -29,7 +29,7 @@ plotBFDA(BFDA, boundary = 10, n.trajectories = 60, n.min = NA,
 
 \item{bw}{Black/white density on the right?}
 
-\item{dens.right.offset}{How much should the right density be moved to the right?}
+\item{dens.right.offset}{How much should the right density (at n.max) be moved to the right?}
 
 \item{xlim}{Define limits on x axis}
 
@@ -47,9 +47,9 @@ plotBFDA(BFDA, boundary = 10, n.trajectories = 60, n.min = NA,
 
 \item{n.max.label.position}{"fixed": Always centered at BF=1. "dynamic": Centered on the the peak of the right density.}
 
-\item{cex.labels}{Zoom factor for axes labels}
+\item{cex.labels}{Zoom factor for axes text labels}
 
-\item{cex.annotations}{Zoom factor for annotations}
+\item{cex.annotations}{Zoom factor for text annotations}
 
 \item{...}{Additional parameters passed through to the base plot function}
 }

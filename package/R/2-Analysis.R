@@ -1,12 +1,12 @@
 # make sure that the id is really unique!
 #' Analyze a BFDA.sim object
 #'
-#' @param BFDA The result object from a BFDA.sim function
+#' @param BFDA The result object from a \code{\link{BFDA.sim}} function call
 #' @param design The function can analyze the simulations with regard to a fixed-n (\code{design="fixed"}) or in a sequential style (\code{design="sequential"})
 #' @param n.min What is the minimum n that is sampled before optional stopping is started? Defaults to the smallest n in the BFDA object (only relevant for \code{design="sequential"}).
-#' @param n.max What is the minimum n that is sampled before optional stopping is started? Defaults to the largest n in the BFDA object (only relevant for \code{design="sequential"}).
+#' @param n.max What is the maximum n that is sampled in sequential sampling? Defaults to the largest n in the BFDA object (only relevant for \code{design="sequential"}).
 #' @param n The fixed-n sample size that should be evaluated (only relevant for \code{design="fixed"})
-#' @param boundary At which BF boundary should trajectories stop? Either a single number (then the reciprocal is taken as the other boundary), or a vector of two numbers for lower and upper boundary (only relevant for \code{design="sequential"}).
+#' @param boundary At which BF boundary should sequential trajectories stop? Either a single number (then the reciprocal is taken as the other boundary), or a vector of two numbers for lower and upper boundary (only relevant for \code{design="sequential"}).
 #' @param verbose Print information about analysis?
 #' @param alpha For a frequentist analysis in the fixed-n case: Use this alpha level.
 #'

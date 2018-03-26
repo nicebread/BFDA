@@ -1,8 +1,8 @@
-citHeader("If you use the BFDA package for your design analysis, please cite it as:")
+citHeader("If you use the BFDA package for your design analysis, please cite the package and the accompanying paper:")
 
 year <- sub("-.*", "", meta$Date)
 title.bibtex <- paste("{BFDA}: An R package for Bayes factor design analysis (version ",meta$Version,")", sep="")
-title <- paste("RSA: An R package for Bayes factor design analysis (version ",meta$Version,").", sep="")
+title <- paste("BFDA: An R package for Bayes factor design analysis (version ",meta$Version,")", sep="")
 
     
 citEntry(entry = "Manual",
@@ -17,3 +17,7 @@ citEntry(entry = "Manual",
        title,
         "Retrieved from https://github.com/nicebread/BFDA")
 )
+
+# print("
+# @article{Schönbrodt_Wagenmakers_2018, title={Bayes factor design analysis: Planning for compelling evidence}, volume={25}, ISSN={1069-9384, 1531-5320}, DOI={10.3758/s13423-017-1230-y}, number={1}, journal={Psychonomic Bulletin & Review}, author={Schönbrodt, Felix D. and Wagenmakers, Eric-Jan}, year={2018}, month={Feb}, pages={128–142}}
+# ")
