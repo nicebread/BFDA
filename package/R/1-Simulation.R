@@ -7,7 +7,7 @@
 #'
 #' @param n.min Minimum n before optional stopping is started
 #' @param n.max Maximum n - if that is reached without hitting a boundary, the run is aborted
-#' @param boundary The Bayes factor (resp. its reciprocal) where a sequential run is stopped. For a fixed-n design, \code{boundary} is automatically set to Inf.
+#' @param boundary The Bayes factor where a sequential run is stopped. For a fixed-n design, \code{boundary} is automatically set to Inf. Provide either two values for lower and upper boundary (e.g., c(1/3, 6). If only one value is provided, it automatically uses its reciprocal for the other boundary.
 #' @param B Number of bootstrap samples; should be dividable by the numbers of \code{cores} (see also \code{getDoParWorkers()})
 #' @param design "fixed.n" or "sequential". If design=="fixed.n", \code{n.min} and \code{boundary} are irrelevant, and all samples are drawn with n=n.max.
 #' @param expected.ES The assumed true effect size. This can be a single number (this leads to a fixed assumed effect size, as in a classical power analysis) or a vector of numbers (e.g., \code{rnorm(100000, 0.5, 0.1)}). If it is a vector, the sampler draws a new effect size from this vector at each step. In this case, the provided distribution represents the uncertainty about the true effect size.
@@ -79,6 +79,10 @@ BFDA.sim <- function(expected.ES, type=c("t.between", "t.paired", "correlation")
 			ns <- seq(n.min, n.max, by=stepsize)
 		}
 	}
+	
+	if (length(boundary) == 1) boundary <- c(1/boundary, boundary)
+	boundary <- sort(boundary)
+	logBoundary <- log(boundary)
 
 
 	## ======================================================================
@@ -95,7 +99,7 @@ BFDA.sim <- function(expected.ES, type=c("t.between", "t.paired", "correlation")
 		res.counter <- 1
 
 		# res saves the statistics at each step
-		res <- matrix(NA, nrow=length(ns)*max_b, ncol=8, dimnames=list(NULL, c("id", "true.ES", "boundary", "n", "logBF", "emp.ES", "statistic", "p.value")))
+		res <- matrix(NA, nrow=length(ns)*max_b, ncol=7, dimnames=list(NULL, c("id", "true.ES", "n", "logBF", "emp.ES", "statistic", "p.value")))
 
 		# run max_b iterations in each parallel worker
 		for (b in 1:max_b) {
@@ -123,7 +127,6 @@ BFDA.sim <- function(expected.ES, type=c("t.between", "t.paired", "correlation")
 				res0[which(ns == n), ] <- c(
 					id		= batch*10^(floor(log(max_b, base=10))+2) + b,		# id is a unique id for each trajectory
 					true.ES	= expected.ES.1,
-					boundary = boundary,
 					n		= n,
 					logBF	= logBF,
 					emp.ES	= freq.test$emp.ES,
@@ -131,7 +134,7 @@ BFDA.sim <- function(expected.ES, type=c("t.between", "t.paired", "correlation")
 					p.value	= freq.test$p.value)
 
 				# if boundary is hit: stop sampling in this trajectory
-				if (abs(logBF) >= log(boundary)) {break;}
+				if (logBF<=logBoundary[1] | logBF >= logBoundary[2]) {break;}
 			} 	# of n
 
 			res[res.counter:(res.counter+nrow(res0)-1), ] <- res0
@@ -139,7 +142,7 @@ BFDA.sim <- function(expected.ES, type=c("t.between", "t.paired", "correlation")
 		}  # of b's
 
 		return(res)		
-	} # of %dopar%
+	} # of %dorng%
 
 	# reduce columns
 	sim <- data.frame(sim)
@@ -178,7 +181,7 @@ print.BFDA <- function(x, ...) {
 	versionCheck(x)
 
 	ES.VAR <- var(x$sim$true.ES)
-	if (ES.VAR > 0) {
+	if (nrow(x$sim) > 1 && ES.VAR > 0) {
 		QU <- paste0("; 25%/75% quantile = [", round(quantile(x$sim$true.ES, prob=.25), 2), "; ", round(quantile(x$sim$true.ES, prob=.75), 2), "]")
 	} else {QU <- ""}
 	
@@ -194,12 +197,12 @@ print.BFDA <- function(x, ...) {
 Bayes Factor Design Analysis
 --------------------------------	
 Number of simulations: ", length(unique(x$sim$id)), "
-Stopping boundary (evidential threshold): ", x$settings$boundary, "
+Stopping boundaries (evidential thresholds): ", round(x$settings$boundary[1], 2), "; ", round(x$settings$boundary[2], 2), "
 Directionality of H1 analysis prior: ", x$settings$alternative, "
 Minimum n: ", x$settings$n.min, "
 Maximum n: ", x$settings$n.max, "
 Design: ", x$settings$design, "
-Simulated true effect size (", ifelse(ES.VAR > 0, "random", "fixed"), "): ", ES.type, " = ", round(mean(x$sim$true.ES), 3), QU,
+Simulated true effect size (", ifelse(nrow(x$sim) > 1 && ES.VAR > 0, "random", "fixed"), "): ", ES.type, " = ", round(mean(x$sim$true.ES), 3), QU,
 "\n"
 	))
 }
