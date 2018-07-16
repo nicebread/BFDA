@@ -42,15 +42,16 @@ BFDA.analyze.sequential <- function(BFDA, boundary, n=NULL, n.min=NULL, n.max=NU
 	sim <- BFDA$sim
 	if (is.null(n.max) || is.na(n.max) || is.infinite(n.max)) n.max <- max(sim$n)
 	if (is.null(n.min) || is.na(n.min)) n.min <- min(sim$n)
-	if (all(is.null(boundary))) boundary <- max(sim$boundary)
+	if (all(is.null(boundary))) boundary <- BFDA$settings$boundary
 		
 	# reduce simulation to relevant data
 	sim <- sim %>% filter(n >= n.min, n <= n.max)
 	
-	if (length(boundary) == 1) boundary <- sort(c(boundary, 1/boundary))
+	if (length(boundary) == 1) boundary <- c(1/boundary, boundary)
+	boundary <- sort(boundary)
 	logBoundary <- log(boundary)
 		
-	if (boundary[2] > max(sim$boundary)) warning(paste0("Error: The selected boundary (", boundary[2], ") for analysis is larger than the smallest stopping boundary (", min(sim$boundary), ") in the simulation stage. Cannot produce a meaningful analysis."))
+	if (boundary[2] > max(BFDA$settings$boundary)) warning(paste0("Error: The selected boundary (", boundary[2], ") for analysis is larger than the largest stopping boundary (", max(BFDA$settings$boundary), ") in the simulation stage. Cannot produce a meaningful analysis."))
 				
 		
 	if (n.max > max(sim$n)) warning(paste0("Error: The selected n.max (", n.max, ") for analysis is larger than the largest n (", max(sim$n), ") in the simulation stage. Cannot produce a meaningful analysis."))

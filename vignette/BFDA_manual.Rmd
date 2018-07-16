@@ -168,8 +168,8 @@ The effect size metric is d_z (standardized difference scores).
 library(BFDA)
 
 # do a sequential design analysis
-s1 <- BFDA.sim(expected.ES=0.4, n.min=50, stepsize=5, n.max=300, type="t.paired", design="sequential", rscale=sqrt(2)/2, alternative="directional", cores=4)
-s0 <- BFDA.sim(expected.ES=0, n.min=50, stepsize=5, n.max=300, type="t.paired", design="sequential", rscale=sqrt(2)/2, alternative="directional", cores=4)
+s1 <- BFDA.sim(expected.ES=0.4, n.min=50, stepsize=5, n.max=300, type="t.paired", design="sequential", rscale=sqrt(2)/2, alternative="directional", B=1000, cores=4)
+s0 <- BFDA.sim(expected.ES=0, n.min=50, stepsize=5, n.max=300, type="t.paired", design="sequential", rscale=sqrt(2)/2, alternative="directional", B=1000, cores=4)
 
 # if no n.min and n.max is provided in the `BFDA.analyze` function, the values from the simulation are taken
 BFDA.analyze(s1, design="sequential", boundary=10)
