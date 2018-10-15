@@ -46,15 +46,9 @@ select.correlation <- function(MAXSAMP, n) {
 # ---------------------------------------------------------------------
 # freq.test.function: return p.value, test statistic, and empirical ES
 
-freq.test.correlation <- function(SAMP, alternative="directional") {
+freq.test.correlation <- function(SAMP, alternative=NULL) {
 
-	if (alternative=="directional") {
-		alt2 <- "greater"
-	} else {
-		alt2 <- "two.sided"
-	}
-
-	t1 <- cor.test(SAMP[, 1], SAMP[, 2], alternative=alt2)
+	t1 <- cor.test(SAMP[, 1], SAMP[, 2], alternative=alternative)
 
 	return(list(
 		statistic = t1$statistic,
@@ -64,16 +58,47 @@ freq.test.correlation <- function(SAMP, alternative="directional") {
 }
 
 # ---------------------------------------------------------------------
+# Check definition of prior
+
+prior.check.correlation <- function(prior=NULL) {
+  
+  if(!is.list(prior)){
+    if(!is.null(prior) == TRUE) {
+      stop("Argument prior needs to be specified as a list.")
+    } else {
+      prior <- list("stretchedbeta", list(prior.alpha=1))
+    }}
+  
+  match.arg(prior[[1]], "stretchedbeta")
+  
+  if(names(prior[[2]]) != "prior.alpha") {
+    warning("Stretched beta prior only takes parameter prior.alpha. Default value will be applied.")
+    prior[[2]][["prior.alpha"]] <- 1
+  }
+  
+  if(prior[[2]][["prior.alpha"]] > 2 | prior[[2]][["prior.alpha"]] < 0 ) stop("Prior.alpha must be between 0 and 2 ")
+
+  return(prior)
+}
+
+# ---------------------------------------------------------------------
 # BF.test.function: return log(BF10)
 
-BF.test.correlation <- function(SAMP, alternative="directional", freq.test=NULL, ...) {
+BF.test.correlation <- function(SAMP, alternative=NULL, freq.test=NULL, prior=NULL, ...) {
+  
+  if(alternative == "greater" | alternative == "less") {
+    alt2 <- "directional"
+  } else if (alternative == "two.sided"){
+    alt2 <- "two.sided"
+  }
 
-	if (alternative=="directional") {
-		t1 <- corBF1sided(nrow(SAMP), freq.test$emp.ES, ...)
-	} else {
-		t1 <- corBF2sided(nrow(SAMP), freq.test$emp.ES, ...)
+	if (alt2=="directional") {
+		t1 <- corBF1sided(nrow(SAMP), freq.test$emp.ES, alpha=prior[[2]][["prior.alpha"]], ...)
+	} else if (alt2 == "two.sided"){
+		t1 <- corBF2sided(nrow(SAMP), freq.test$emp.ES, alpha=prior[[2]][["prior.alpha"]], ...)
 	}
 	
 	# returns the log(BF10)
-	return(log(t1))
+	return(as.numeric(log(t1)))
 }
+
