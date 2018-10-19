@@ -5,7 +5,8 @@ Title: Bayes Factor Design Analysis
 Version: 0.3.1
 Date: 2018-03-21
 Authors@R: c(
-		person(c("Felix", "D."), "Schönbrodt", email = "felix@nicebread.de", role = c("aut", "cre"))
+		person(c("Felix", "D."), "Schönbrodt", email = "felix@nicebread.de", role = c("aut", "cre")),
+		person(c("Angelika"), "Stefan", email = "angelika.stefan@gmx.de", role = c("aut"))
 	)
 Maintainer: Felix D. Schönbrodt <felix@nicebread.de>
 Depends:
