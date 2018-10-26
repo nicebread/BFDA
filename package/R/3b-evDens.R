@@ -47,12 +47,12 @@ evDens <- function(BFDA.H1, BFDA.H0, n, boundary=c(1/6, 6), xlim=NA, noSplit=FAL
 	# ---------------------------------------------------------------------
 	# H1
 	
-	evDens.plot(dens.H1, n=N, boundary=boundary, xlim=xlim, ylim=ylim, cex=cex, cex.axis=cex.axis, bw=bw, largeIsGreen=TRUE, main=expression(Under~H[1]))
+	suppressWarnings(evDens.plot(dens.H1, n=N, boundary=boundary, xlim=xlim, ylim=ylim, cex=cex, cex.axis=cex.axis, bw=bw, largeIsGreen=TRUE, main=expression(Under~H[1])))
 
 	# ---------------------------------------------------------------------
 	# Under H0
 	
-	evDens.plot(dens.H0, n=N, boundary=boundary, xlim=xlim, ylim=ylim, cex=cex, cex.axis=cex.axis, bw=bw, largeIsGreen=FALSE, main=expression(Under~H[0]))
+	suppressWarnings(evDens.plot(dens.H0, n=N, boundary=boundary, xlim=xlim, ylim=ylim, cex=cex, cex.axis=cex.axis, bw=bw, largeIsGreen=FALSE, main=expression(Under~H[0])))
 	
 }
 

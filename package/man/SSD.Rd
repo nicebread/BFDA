@@ -4,7 +4,8 @@
 \alias{SSD}
 \title{SSD = sample size determination}
 \usage{
-SSD(BFDA, boundary = c(1/3, 3), power = 0.9, alpha = 0.025, plot = TRUE)
+SSD(BFDA, boundary = c(1/3, 3), power = 0.9, alpha = 0.025,
+  plot = TRUE)
 }
 \arguments{
 \item{BFDA}{A BFDA simulation object, resulting from the \code{BFDA.sim} function}

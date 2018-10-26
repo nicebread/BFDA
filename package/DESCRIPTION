@@ -6,7 +6,7 @@ Version: 0.3.1
 Date: 2018-03-21
 Authors@R: c(
 		person(c("Felix", "D."), "Schönbrodt", email = "felix@nicebread.de", role = c("aut", "cre")),
-		person(c("Angelika"), "Stefan", email = "angelika.stefan@gmx.de", role = c("aut"))
+		person(c("Angelika", "M."), "Stefan", email = "angelika.stefan@gmx.de", role = c("aut"))
 	)
 Maintainer: Felix D. Schönbrodt <felix@nicebread.de>
 Depends:
@@ -14,7 +14,6 @@ Depends:
     dplyr,
     ggplot2
 Imports:
-    BayesFactor,
     TeachingDemos,
     scales,
     reshape2,
@@ -26,5 +25,6 @@ Description: Compute and visualize design analyses for Bayes factors. Handles
     fixed-n and sequential designs.
 License: GPL (>= 2)
 LazyData: TRUE
-RoxygenNote: 6.0.1
-Suggests: testthat
+RoxygenNote: 6.1.0
+Suggests: testthat,
+    BayesFactor

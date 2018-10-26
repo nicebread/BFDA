@@ -5,7 +5,8 @@
 \title{Analyze a BFDA.sim object}
 \usage{
 BFDA.analyze(BFDA, design = c("sequential", "fixed"), boundary,
-  n.min = NULL, n.max = NULL, n = NULL, verbose = TRUE, alpha = 0.05)
+  n.min = NULL, n.max = NULL, n = NULL, verbose = TRUE,
+  alpha = 0.05)
 }
 \arguments{
 \item{BFDA}{The result object from a \code{\link{BFDA.sim}} function call}

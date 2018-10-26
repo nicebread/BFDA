@@ -29,6 +29,17 @@ isTryError <- function(obj){
 # ------------------------------------------------------------------------------
 # Here starts the Bayesian correlation
 
+# References for Bayesian correlation:
+#
+# Ly, A., Verhagen, A. J. & Wagenmakers, E.-J. (2016). Harold Jeffreys's Default
+# Bayes Factor Hypothesis Tests: Explanation, Extension, and Application in Psychology.
+# Journal of Mathematical Psychology, 72, 19-32.
+# https://www.sciencedirect.com/science/article/pii/S0022249615000383
+#
+# Ly, A., Marsman, M., Wagenmakers, E.-J. (2018). Analytic Posteriors for 
+# Pearson’s Correlation Coefficient. Statistica Neerlandica, 72(1), 4-13.
+# https://onlinelibrary.wiley.com/doi/full/10.1111/stan.12111
+
 ## Help functions ------------------------------------------------------------
 # 0.1 Prior specification Pearson's Rho
 .excludePairwiseCorData <- function(v1, v2) {
