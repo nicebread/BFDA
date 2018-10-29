@@ -20,7 +20,8 @@ Imports:
     sfsmisc,
 		gridExtra,
 		hypergeo,
-		doRNG
+		doRNG,
+		methods
 Description: Compute and visualize design analyses for Bayes factors. Handles
     fixed-n and sequential designs.
 License: GPL (>= 2)

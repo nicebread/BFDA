@@ -1,6 +1,5 @@
 #' Simulate ... TODO
 #' @export
-#' @import BayesFactor
 #' @import dplyr
 #' @import doParallel
 #' @importFrom doRNG %dorng%
@@ -24,8 +23,10 @@
 #'
 #' @examples
 #' \dontrun{
-#' sim <- BFDA.sim(expected.ES=0.5, type="t.between", prior=list("Cauchy", list(prior.location=0, prior.scale=1)),
-#'                 n.min=20, n.max=300, boundary=Inf, stepsize=1, design="sequential", B=1000, verbose=TRUE, cores=2)
+#' sim <- BFDA.sim(expected.ES=0.5, type="t.between", 
+#' 					prior=list("Cauchy", list(prior.location=0, prior.scale=1)),
+#'          n.min=20, n.max=300, boundary=Inf, stepsize=1, design="sequential", 
+#'					B=1000, verbose=TRUE, cores=2)
 #' save(sim, file="sim0.5.RData")
 #' BFDA.analyze(sim)
 #' BFDA.analyze(sim, boundary=6)

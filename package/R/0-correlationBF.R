@@ -506,7 +506,7 @@ isTryError <- function(obj){
       })
     
     
-    bf10 <- try(silent=TRUE, exp=integrate(twoSidedIntegrand, -1, 1)$value)
+    bf10 <- try(silent=TRUE, expr=integrate(twoSidedIntegrand, -1, 1)$value)
     result$bf10 <- bf10
     
     if (is.infinite(result$bf10)) {
@@ -529,8 +529,8 @@ isTryError <- function(obj){
         minSidedIntegrand <- function(x){.hJeffreysApprox(n=n, r=r, x)*.priorRhoMin(x, kappa=kappa)}
       }
       
-      bfPlus0 <- try(silent=TRUE, exp=integrate(plusSidedIntegrand, 0, 1)$value)
-      bfMin0 <- try(silent=TRUE, exp=integrate(minSidedIntegrand, -1, 0)$value)
+      bfPlus0 <- try(silent=TRUE, expr=integrate(plusSidedIntegrand, 0, 1)$value)
+      bfMin0 <- try(silent=TRUE, expr=integrate(minSidedIntegrand, -1, 0)$value)
       
       if (is.finite(bfPlus0) && is.finite(bfMin0)) {
         tempList <- list(bf10=bf10, bfMin0=bfMin0, bfPlus0=bfPlus0, plusSidedTooPeaked=FALSE, minSidedTooPeaked=FALSE)
