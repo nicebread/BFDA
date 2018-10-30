@@ -68,9 +68,9 @@ SSD(sim.H0)
 As we do not know in advance whether H1 or H0 provide a better predictive performance of real world data, we want to evaluate the performance of a design under *both* hypotheses. Hence, we have to simulate a "H1 world" and a "H0 world":
 
 ```{r sim, cache=TRUE, results='hide'}
-sim.H1 <- BFDA.sim(expected.ES=0.5, type="t.between", prior=list("Cauchy", list(prior.location=0, prior.scale=1)), n.min=20, n.max=100, alternative="greater", boundary=Inf, B=1000, verbose=TRUE, cores=4, stepsize = 10)
+sim.H1 <- BFDA.sim(expected.ES=0.5, type="t.between", prior=list("Cauchy", list(prior.location=0, prior.scale=sqrt(2)/2)), n.min=20, n.max=100, alternative="greater", boundary=Inf, B=1000, verbose=TRUE, cores=4, stepsize = 10)
 
-sim.H0 <- BFDA.sim(expected.ES=0, type="t.between", prior=list("Cauchy", list(prior.location=0, prior.scale=1)), n.min=20, n.max=100, alternative="greater", boundary=Inf, B=1000, verbose=TRUE, cores=4, stepsize = 10)
+sim.H0 <- BFDA.sim(expected.ES=0, type="t.between", prior=list("Cauchy", list(prior.location=0, prior.scale=sqrt(2)/2)), n.min=20, n.max=100, alternative="greater", boundary=Inf, B=1000, verbose=TRUE, cores=4, stepsize = 10)
 ```
 
 Let's go through the most important parameters (for a full list of options, see `?BFDA.sim`):
@@ -181,11 +181,11 @@ The effect size metric is d_z (standardized difference scores).
 
 ```{r paired.t, warning=FALSE}
 #devtools::install_github("nicebread/BFDA", subdir="package")
-library(BFDA)
+#library(BFDA)
 
 # do a sequential design analysis
-s1 <- BFDA.sim(expected.ES=0.4, prior=list("t", list(prior.location=0, prior.scale=1, prior.df=10)), n.min=50, stepsize=5, n.max=300, type="t.paired", design="sequential", alternative="greater", B=1000, cores=4, verbose=FALSE)
-s0 <- BFDA.sim(expected.ES=0, prior=list("t", list(prior.location=0, prior.scale=1, prior.df=10)), n.min=50, stepsize=5, n.max=300, type="t.paired", design="sequential", alternative="greater", B=1000, cores=4, verbose=FALSE)
+s1 <- BFDA.sim(expected.ES=0.4, prior=list("t", list(prior.location=0, prior.scale=sqrt(2)/2, prior.df=1)), n.min=50, stepsize=5, n.max=300, type="t.paired", design="sequential", alternative="greater", B=1000, cores=4, verbose=FALSE)
+s0 <- BFDA.sim(expected.ES=0, prior=list("t", list(prior.location=0, prior.scale=sqrt(2)/2, prior.df=1)), n.min=50, stepsize=5, n.max=300, type="t.paired", design="sequential", alternative="greater", B=1000, cores=4, verbose=FALSE)
 
 # if no n.min and n.max is provided in the `BFDA.analyze` function, the values from the simulation are taken
 BFDA.analyze(s1, design="sequential", boundary=10)
@@ -240,7 +240,7 @@ Here's a complete walkthrough for a one-sided (positive directional) correlation
 
 ```{r correlation_walkthrough, warning=FALSE}
 #devtools::install_github("nicebread/BFDA", subdir="package")
-library(BFDA)
+#library(BFDA)
 
 # do a sequential design analysis
 # scale the beta* prior with the kappa parameter
