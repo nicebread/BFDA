@@ -346,6 +346,6 @@ plotBFDA <- function(BFDA, boundary=10, n.trajectories=60, n.min=NA, n.max=NA, d
 
 #' @export
 plot.BFDA <- function(x, ...) {
-	plotBFDA(x, ...)
+	suppressWarnings(plotBFDA(x, ...))
 }
 

@@ -25,15 +25,9 @@ select.t.between <- function(MAXSAMP, n) {
 # ---------------------------------------------------------------------
 # freq.test.function: return p.value, test statistic, and empirical ES
 
-freq.test.t.between <- function(SAMP, alternative="directional") {
+freq.test.t.between <- function(SAMP, alternative=NULL) {
 
-	if (alternative=="directional") {
-		alt2 <- "greater"
-	} else {
-		alt2 <- "two.sided"
-	}
-
-	t1 <- t.test(SAMP[, 1], SAMP[, 2], var.equal=TRUE, alternative=alt2)
+	t1 <- t.test(SAMP[, 1], SAMP[, 2], var.equal=TRUE, alternative=alternative)
 
 	return(list(
 		statistic = t1$statistic,
@@ -43,21 +37,90 @@ freq.test.t.between <- function(SAMP, alternative="directional") {
 }
 
 # ---------------------------------------------------------------------
+# Check definition of prior
+
+prior.check.t.between <- function(prior=NULL){
+  
+  if(!is.list(prior)){
+    if(!is.null(prior) == TRUE) {
+      stop("Argument prior needs to be specified as a list.")
+    } else {
+      prior <- list("Cauchy", list(prior.location = 0, prior.scale = sqrt(2)/2))
+    }}
+  
+  match.arg(prior[[1]], c("Cauchy", "t", "normal"))
+  
+  if(prior[[1]] %in% c("Cauchy", "t")){
+    if(is.null(prior[[2]][["prior.location"]])){
+      warning("Prior location not defined. Default specification will be used.")
+      prior[[2]][["prior.location"]] <- 0
+    } 
+    if(is.null(prior[[2]][["prior.scale"]])){
+      warning("Prior scale not defined. Default specification will be used.")
+      prior[[2]][["prior.scale"]] <- sqrt(2)/2
+    }
+  }
+  
+  if(prior[[1]] == "Cauchy"){
+    if(any(!is.element(names(prior[[2]]), c("prior.location", "prior.scale")))){
+      warning("Cauchy distribution only takes parameters prior.location and prior.scale.")
+    }
+  } else if (prior[[1]] == "t"){
+    if(any(!is.element(names(prior[[2]]), c("prior.location", "prior.scale", "prior.df")))){
+      warning("t distribution only takes parameters prior.location, prior.scale, and prior.df.")
+    }
+    if(is.null(prior[[2]][["prior.df"]])) {
+      warning("Prior degrees of freedom not defined. Default specifications will be used.")
+      prior[[2]][["prior.df"]] <- 1
+    }
+  } else if (prior[[1]] == "normal") {
+    if(any(!is.element(names(prior[[2]]), c("prior.mean", "prior.variance")))){
+      warning("Normal distribution only takes parameters prior.mean and prior.variance.")
+    }
+    if(is.null(prior[[2]][["prior.mean"]])){
+      warning("Prior mean not defined. Default specification will be used.")
+      prior[[2]][["prior.mean"]] <- 0
+    } 
+    if(is.null(prior[[2]][["prior.variance"]])){
+      prior[[2]][["prior.variance"]] <- 1
+      warning("Prior variance not defined. Default specification will be used.")
+    }
+  }
+  return(prior)
+}
+
+
+# ---------------------------------------------------------------------
 # BF.test.function: return log(BF10)
 
-BF.test.t.between <- function(SAMP, alternative="directional", freq.test=NULL, ...) {
+BF.test.t.between <- function(SAMP, alternative=NULL, freq.test=NULL, prior=NULL, ...) {
 
-	if (alternative=="directional") {
-		nullInterval <- c(0, Inf)
-	} else {
-		nullInterval <- NULL
+	if (alternative=="greater") {
+		alt2 <- "BFplus0"
+	} else if (alternative=="two.sided"){
+		alt2 <- "BF10"
+	} else if (alternative=="less"){
+	  alt2 <- "BFmin0"
 	}
-
-	# suppress the "t is large; approximation invoked" message
-	suppressMessages({
-		t1 <- BayesFactor::ttest.tstat(freq.test$statistic, nrow(SAMP), nrow(SAMP), nullInterval=nullInterval, simple=TRUE, ...)
-	})
-	
+  
+  
+  if(prior[[1]] == "Cauchy"){
+    
+    t1 <- bf10_t(t = as.numeric(freq.test$statistic), n1 = nrow(SAMP), n2 = nrow(SAMP), independentSamples = TRUE, prior.location = prior[[2]][["prior.location"]],
+           prior.scale = prior[[2]][["prior.scale"]], prior.df = 1)
+    
+  } else if (prior[[1]] == "t") {
+    
+    t1 <- bf10_t(t = as.numeric(freq.test$statistic), n1 = nrow(SAMP), n2 = nrow(SAMP), independentSamples = TRUE, prior.location = prior[[2]][["prior.location"]],
+           prior.scale = prior[[2]][["prior.scale"]], prior.df = prior[[2]][["prior.df"]])
+    
+  } else if (prior[[1]] == "normal") {
+  
+      
+    t1 <- bf10_normal(t = as.numeric(freq.test$statistic), n1=nrow(SAMP), n2 = nrow(SAMP), independentSamples = TRUE,
+                      prior.mean = prior[[2]][["prior.mean"]], prior.variance = prior[[2]][["prior.variance"]])
+  }
+  
 	# returns the log(BF10)
-	return(log(t1))
+	return(as.numeric(log(t1[[alt2]])))
 }

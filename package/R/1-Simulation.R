@@ -1,6 +1,5 @@
 #' Simulate ... TODO
 #' @export
-#' @import BayesFactor
 #' @import dplyr
 #' @import doParallel
 #' @importFrom doRNG %dorng%
@@ -12,6 +11,7 @@
 #' @param design "fixed.n" or "sequential". If design=="fixed.n", \code{n.min} and \code{boundary} are irrelevant, and all samples are drawn with n=n.max.
 #' @param expected.ES The assumed true effect size. This can be a single number (this leads to a fixed assumed effect size, as in a classical power analysis) or a vector of numbers (e.g., \code{rnorm(100000, 0.5, 0.1)}). If it is a vector, the sampler draws a new effect size from this vector at each step. In this case, the provided distribution represents the uncertainty about the true effect size.
 #' @param type Currently three designs are implemented: c("t.between", "t.paired", "correlation")
+#' @param prior Define the prior distribution of your alternative hypothesis. Argument takes a list as an input: The first element of the list should be a character string defining the type of the distribution ("t", "Cauchy", or "normal"). The second element of the list is another list containing the parameters of the distribution. For the t-distribution, this is prior.location, prior.df, and prior.scale; for the Cauchy-distribution, it is prior.location and prior.scale; for the normal distribution, it is prior.mean and prior.variance. The default for t-tests is \code{list("Cauchy", list(prior.location = 0, prior.scale = sqrt(2)/2))}
 #' @param stepsize The number with which participants are added to the sample. If NA, the sample is increased +1 until it's 100, and +10 from that size on.
 #' @param verbose Show output about progress?
 #' @param cores number of parallel processes. If cores==1, no parallel framework is used.
@@ -23,8 +23,10 @@
 #'
 #' @examples
 #' \dontrun{
-#' sim <- BFDA.sim(expected.ES=0.5, n.min=20, n.max=300, boundary=Inf, 
-#'				stepsize=1, design="sequential", B=1000, verbose=TRUE, cores=2, rscale=0.5)
+#' sim <- BFDA.sim(expected.ES=0.5, type="t.between", 
+#' 					prior=list("Cauchy", list(prior.location=0, prior.scale=1)),
+#'          n.min=20, n.max=300, boundary=Inf, stepsize=1, design="sequential", 
+#'					B=1000, verbose=TRUE, cores=2)
 #' save(sim, file="sim0.5.RData")
 #' BFDA.analyze(sim)
 #' BFDA.analyze(sim, boundary=6)
@@ -33,7 +35,7 @@
 #'}
 
 
-BFDA.sim <- function(expected.ES, type=c("t.between", "t.paired", "correlation"), n.min=10, n.max=500, design=c("sequential", "fixed.n"), boundary=Inf, B=1000, stepsize=NA, alternative=c("directional", "undirected"), verbose=TRUE, cores=1, ETA=FALSE, options.sample=list(), seed=1234, ...) {
+BFDA.sim <- function(expected.ES, type=c("t.between", "t.paired", "correlation"), prior = NULL, n.min=10, n.max=500, design=c("sequential", "fixed.n"), boundary=Inf, B=1000, stepsize=NA, alternative=c("two.sided", "greater", "less"), verbose=TRUE, cores=1, ETA=FALSE, options.sample=list(), seed=1234, ...) {
 	
 	# link to test specific functions
 	# get() can reference a function by its (string) name
@@ -41,11 +43,13 @@ BFDA.sim <- function(expected.ES, type=c("t.between", "t.paired", "correlation")
 	select.function <- get(paste0("select.", type))
 	BF.test.function <- get(paste0("BF.test.", type))
 	freq.test.function <- get(paste0("freq.test.", type))
+	prior.check.function <- get(paste0("prior.check.", type))
 
-	alternative <- match.arg(alternative, c("directional", "undirected"))
+	alternative <- match.arg(alternative, c("two.sided", "greater", "less"))
 
 	design <- match.arg(design, c("sequential", "fixed.n"))
 	type <- match.arg(type, c("t.between", "t.paired", "correlation"))
+	prior <- prior.check.function(prior)
 	
 	# # Estimate the expected time for simulation
 	# if (ETA == TRUE) {
@@ -122,7 +126,7 @@ BFDA.sim <- function(expected.ES, type=c("t.between", "t.paired", "correlation")
 				freq.test <- freq.test.function(samp, alternative)
 
 				# do the BF test; supply freq.test to access t.value for faster computation
-				logBF <- BF.test.function(samp, alternative, freq.test, ...)
+				logBF <- BF.test.function(samp, alternative, freq.test, prior, ...)
 					
 				res0[which(ns == n), ] <- c(
 					id		= batch*10^(floor(log(max_b, base=10))+2) + b,		# id is a unique id for each trajectory
@@ -160,6 +164,7 @@ BFDA.sim <- function(expected.ES, type=c("t.between", "t.paired", "correlation")
 			n.min	= n.min, 
 			n.max	= n.max, 
 			design	= design,
+			prior = prior,
 			boundary= boundary,
 			alternative = alternative,
 			type=type,

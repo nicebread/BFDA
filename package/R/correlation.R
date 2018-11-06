@@ -46,15 +46,9 @@ select.correlation <- function(MAXSAMP, n) {
 # ---------------------------------------------------------------------
 # freq.test.function: return p.value, test statistic, and empirical ES
 
-freq.test.correlation <- function(SAMP, alternative="directional") {
+freq.test.correlation <- function(SAMP, alternative=NULL) {
 
-	if (alternative=="directional") {
-		alt2 <- "greater"
-	} else {
-		alt2 <- "two.sided"
-	}
-
-	t1 <- cor.test(SAMP[, 1], SAMP[, 2], alternative=alt2)
+	t1 <- cor.test(SAMP[, 1], SAMP[, 2], alternative=alternative)
 
 	return(list(
 		statistic = t1$statistic,
@@ -64,16 +58,43 @@ freq.test.correlation <- function(SAMP, alternative="directional") {
 }
 
 # ---------------------------------------------------------------------
+# Check definition of prior
+
+prior.check.correlation <- function(prior=NULL) {
+  
+  if(!is.list(prior)){
+    if(!is.null(prior) == TRUE) {
+      stop("Argument prior needs to be specified as a list.")
+    } else {
+      prior <- list("stretchedbeta", list(prior.kappa=1))
+    }}
+  
+  match.arg(prior[[1]], "stretchedbeta")
+  
+  if(names(prior[[2]]) != "prior.kappa") {
+    warning("Stretched beta prior only takes parameter prior.kappa. Default value will be applied.")
+    prior[[2]][["prior.kappa"]] <- 1
+  }
+  
+  return(prior)
+}
+
+# ---------------------------------------------------------------------
 # BF.test.function: return log(BF10)
 
-BF.test.correlation <- function(SAMP, alternative="directional", freq.test=NULL, ...) {
-
-	if (alternative=="directional") {
-		t1 <- corBF1sided(nrow(SAMP), freq.test$emp.ES, ...)
-	} else {
-		t1 <- corBF2sided(nrow(SAMP), freq.test$emp.ES, ...)
-	}
+BF.test.correlation <- function(SAMP, alternative=NULL, freq.test=NULL, prior=NULL, ...) {
+  
+  if(alternative == "greater") {
+    alt2 <- "bfPlus0"
+  } else if (alternative == "two.sided"){
+    alt2 <- "bf10"
+  } else if (alternative == "less"){
+    alt2 <- "bfMin0"
+  }
+  
+  t1 <- as.numeric(bfPearsonCorrelation(nrow(SAMP), as.numeric(freq.test$emp.ES), kappa=prior[[2]][["prior.kappa"]], ...)[alt2])
 	
 	# returns the log(BF10)
-	return(log(t1))
+	return(as.numeric(log(t1)))
 }
+

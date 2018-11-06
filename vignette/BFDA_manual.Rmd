@@ -1,6 +1,6 @@
 ---
 title: "Bayes factor design analysis: Manual for the BFDA package"
-author: "Felix Schönbrodt"
+author: "Felix Schönbrodt, Angelika Stefan"
 date: "`r Sys.Date()`"
 output:
   html_document:
@@ -9,13 +9,15 @@ output:
 ---
 
 This document demonstrates how to do a design analysis (aka. power analysis) for studies which use Bayes factors as index of evidence.
-For more details about Bayes Factor Design Analysis (BFDA), see our paper:
+For more details about Bayes Factor Design Analysis (BFDA), see our papers:
 
 > Schönbrodt, F. D. & Wagenmakers, E.-J. (2017). Bayes Factor Design Analysis: Planning for compelling evidence. *Psychonomic Bulletin & Review*. doi:10.3758/s13423-017-1230-y. [[PDF](https://osf.io/d4dcu)][[OSF project with reproducible code](https://osf.io/v7yxp/)]
 
+> Stefan, A. M., Gronau, Q. F., Schönbrodt, F. D., & Wagenmakers, E. (2018). A Tutorial on Bayes Factor Design Analysis with Informed Priors. [PsyArXiv Preprint](https://doi.org/10.31234/osf.io/aqr79)
+
 If you use this package to compute and report your design analysis, please cite it as:
 
-> Schönbrodt, F. D. (2017). RSA: An R package for Bayes factor design analysis (version 0.2). Retrieved from https://github.com/nicebread/BFDA
+> Schönbrodt, F. D. & Stefan, A. M. (2018). BFDA: An R package for Bayes factor design analysis (version 0.3). Retrieved from https://github.com/nicebread/BFDA
 
 Please note that this package is still a development version; take the results with a grain of salt.
 
@@ -66,29 +68,43 @@ SSD(sim.H0)
 As we do not know in advance whether H1 or H0 provide a better predictive performance of real world data, we want to evaluate the performance of a design under *both* hypotheses. Hence, we have to simulate a "H1 world" and a "H0 world":
 
 ```{r sim, cache=TRUE, results='hide'}
-sim.H1 <- BFDA.sim(expected.ES=0.5, type="t.between", n.min=20, n.max=300, alternative="directional", boundary=Inf, B=1000, verbose=TRUE, cores=4)
+sim.H1 <- BFDA.sim(expected.ES=0.5, type="t.between", prior=list("Cauchy", list(prior.location=0, prior.scale=sqrt(2)/2)), n.min=20, n.max=100, alternative="greater", boundary=Inf, B=1000, verbose=TRUE, cores=4, stepsize = 10)
 
-sim.H0 <- BFDA.sim(expected.ES=0, type="t.between", n.min=20, n.max=300, alternative="directional", boundary=Inf, B=1000, verbose=TRUE, cores=4)
+sim.H0 <- BFDA.sim(expected.ES=0, type="t.between", prior=list("Cauchy", list(prior.location=0, prior.scale=sqrt(2)/2)), n.min=20, n.max=100, alternative="greater", boundary=Inf, B=1000, verbose=TRUE, cores=4, stepsize = 10)
 ```
 
 Let's go through the most important parameters (for a full list of options, see `?BFDA.sim`):
 
-- `expected.ES`: The assumed effect size (ES). In classical power analysis, this is a fixed number. Here, you can also provide a vector, which quantifies the uncertainty about the true ES. For example: `expected.ES=rnorm(100000, 0.5, 0.1)`. If a vector is provided, a new ES is drawn from this vector for each simulated study. The **metric** for `expected.ES` depends on the type of design (see net bullet point):
-	- `type = "t.between` or `type = "t.paired`": expected.ES has to be provided as Cohen's *d*
-	- `type = "correlation"`: expected.ES has to be provided as correlation
-- `type`: Type of design. Currently, 3 designs are implemented: A between-group t-test ("t.between"), a paired t-test ("t.paired"), and correlations ("correlation")
-- `n.min` and `n.max`: The initial sample size and the maximum sample size that is tested in the sequential procedure.
-- `alternative`: Either "directional" for directed hypotheses (default) or "undirected" for two-sided tests
+  - `expected.ES`: The assumed effect size (ES). In classical power analysis, this is a fixed number. Here, you can also provide a vector, which quantifies the uncertainty about the true ES. For example:       `expected.ES=rnorm(100000, 0.5, 0.1)`. If a vector is provided, a new ES is drawn from this vector for  each simulated study. The **metric** for `expected.ES` depends on the type of design (see next bullet  point):
+
+    - `type = "t.between"` or `type = "t.paired"`: expected.ES has to be provided as Cohen's *d*
+    
+    - `type = "correlation"`: expected.ES has to be provided as correlation
+    
+  - `type`: Type of design. Currently, 3 designs are implemented: A between-group t-test ("t.between"), a paired t-test ("t.paired"), and correlations ("correlation")
+
+  - `prior`: This argument specifies the prior distribution under the alternative hypothesis. It consists of a list with two elements: The first element is a character vector which specifies the type of the prior distribution. The second element is a list which contains the hyperparameters of the prior distribution. For example, the prior distribution for t-tests could be defined as `prior = list("Cauchy", prior.location = 0, prior.scale = sqrt(2)/2))` which is the default prior suggested in the *BayesFactor* R package. The choice of prior distributions depends on the type of design (see next bullet point)
+
+    - `type = "t.between"` or `type = "t.paired"`: There are 3 distribution types you can choose from
+        - A Cauchy distribution (`"Cauchy"`) with the hyperparameters `prior.location` (non-centrality parameter) and `prior.scale` (scale parameter)
+        
+        - A t distribution (`"t"`) with the hyperparameters `prior.location`, (non-centrality parameter) `prior.scale`, (scale parameter) and `prior.df`(degrees of freedom)
+        - A normal distribution (`"normal"`) with the hyperparameters `prior.mean` (mean) and `prior.variance` (variance)
+        
+    - `type = "correlation"`: The prior distribution on the correlation is a stretched beta prior (`"stretchedbeta"`) with the hyperparameter $\kappa$ (`prior.kappa`). The stretched beta distribution is a beta distribution with the parameters $\alpha = \beta = 1/ \kappa$ whose domain is extended from [0, 1] to [-1, 1].
+    
+  - `n.min` and `n.max`: The initial sample size and the maximum sample size that is tested in the sequential procedure.
+
+  - `alternative`: Either "two.sided" for two-sided tests, "greater" for a positive directional alternative hypothesis (the effect size is greater than zero), or "less" for a negative directional alternative hypothesis (the effect size is smaller than zero).
 - `B`: Number of simulated studies. Aim for B >= 10,000 for stable results (in this document we use B=1000 to save some computation time).
-- `cores`: Multicore support. Add as many cores as you have to speed up computations.
 
+  - `cores`: Multicore support. Add as many cores as you have to speed up computations.
 
-The simulations of the "H1 world" and a "H0 world" should have the same parameters (alternative, rscale, boundary, n.min) except the `expected.ES` (in the actual data analysis, we will apply the same test to the data set, regardless whether data came from H0 or H1 (what we don't know anyway.)).
+The simulations of the "H1 world" and a "H0 world" should have the same parameters (type, prior, alternative, rscale, boundary, n.min, n.max, B) except the `expected.ES` (in the actual data analysis, we will apply the same test to the data set, regardless whether data came from H0 or H1 (what we don't know anyway.)).
 
-The BFDA uses the BayesFactor package to compute between and paired t-test. By default, it uses an rscale of sqrt(2)/2 for the JZS prior on effect sizes under H1. For correlations, it uses the code provided by Wagenmakers, E. J., Verhagen, J., & Ly, A. (2016). How to quantify the evidence for the absence of a correlation. Behavior Research Methods, 1–14. http://doi.org/10.3758/s13428-015-0593-0 (see https://osf.io/cabmf/).
+The BFDA uses the informed t-test functions by [Gronau, Ly, & Wagenmakers (2017)](https://arxiv.org/abs/1704.02479) to compute the between and paired t-test. By default, it uses a central Cauchy distribution with a scale parameter of sqrt(2)/2 as a prior on effect size under H1. For correlations, it uses the source code of the statistics software JASP [(available on Github)](https://github.com/jasp-stats/jasp-desktop/blob/development/JASP-Engine/JASP/R/correlationbayesian.R) which is based on a paper by [Ly, Verhagen & Wagenmakers (2016)](https://www.sciencedirect.com/science/article/pii/S0022249615000383) and a paper by [Ly, Marsman, & Wagenmakers](https://onlinelibrary.wiley.com/doi/full/10.1111/stan.12111). By default, it uses a stretched beta prior on the effect size under H1 with a $\kappa$ parameter of 1, which is equivalent to a uniform prior distribution over the possible correlations.
 
-By default, a full sequential design without evidential stopping threshold is simulated. That means, ...
-That allows to extract ...
+By default, a full sequential design without evidential stopping threshold is simulated. This means that samples are drawn in a sequential process (n.min + 1 + 1 + ...) until the maximum sample size is reached and the hypothesis test is conducted at each stage of this sequential process. The process does not stop when a Bayes factor boundary is reached (e.g., BF(accumulated sample) > 6 or BF(accumulated sample) < 1/6), but when n.max is reached. This allows to extract the results of sequential BFDA procedures with arbitrary thresholds and a maximum N of n.max. With the arguments `design` and `n.max` it is possible to change the procedure to a fixed-N BFDA (e.g., `design="fixed.n", n.max=200` for a fixed-N design with 200 observations) or an open-ended sequential procedure (e.g., `design="sequential", n.max = Inf`).
 
 ## 2. Analyze the simulations ##
 
@@ -116,7 +132,7 @@ BFDA.analyze(sim.H1, design="sequential", n.min=20, n.max=100, boundary=10)
 
 ### Compare distributions of BFs for a fixed *n*
 
-```{r evDens}
+```{r evDens, warning=FALSE}
 evDens(BFDA.H1=sim.H1, BFDA.H0=sim.H0, n=50, boundary=c(1/6, 6), xlim=c(1/11, 31))
 ```
 
@@ -124,12 +140,12 @@ evDens(BFDA.H1=sim.H1, BFDA.H0=sim.H0, n=50, boundary=c(1/6, 6), xlim=c(1/11, 31
 ### Open-ended sequential design
 
 Under H1:
-```{r SBF1}
+```{r SBF1, warning=FALSE}
 plot(sim.H1, n.min=20, boundary=c(1/6, 6))
 ```
 
 Under H0:
-```{r SBF0}
+```{r SBF0, warning=FALSE}
 plot(sim.H0, n.min=20, boundary=c(1/6, 6))
 ```
 
@@ -137,7 +153,7 @@ plot(sim.H0, n.min=20, boundary=c(1/6, 6))
 ### Sequential design with n.max and asymmetric boundaries
 
 Under H1:
-```{r SBF_nmax}
+```{r SBF_nmax, warning=FALSE}
 plot(sim.H1, n.min=20, n.max=80, boundary=c(1/5, 10))
 ```
 
@@ -145,14 +161,14 @@ plot(sim.H1, n.min=20, n.max=80, boundary=c(1/5, 10))
 
 What sample size do you need to ensure, say, 80% probability that a study design finds an effect of size, say, 0.5 with a BF >= 10?
 
-```{r SSD1}
+```{r SSD1, warning=FALSE}
 SSD(sim.H1, power=.80, boundary=c(1/10, 10))
 ```
 
 What sample size do I need to have less than 2% of studies with a false positive error, if I set the boundary to 2?
 **Note: A BF threshold of 2 should never be used! Aim for a BF of at least 5. This is for didactical purposes only!**
 
-```{r SSD2}
+```{r SSD2, warning=FALSE}
 SSD(sim.H0, alpha=.02, boundary=c(1/2, 2))
 ```
 
@@ -163,13 +179,13 @@ Note: The SSD function automatically detects whether a H1 or a H0 simulation is 
 
 The effect size metric is d_z (standardized difference scores).
 
-```{r paired.t}
+```{r paired.t, warning=FALSE}
 #devtools::install_github("nicebread/BFDA", subdir="package")
-library(BFDA)
+#library(BFDA)
 
 # do a sequential design analysis
-s1 <- BFDA.sim(expected.ES=0.4, n.min=50, stepsize=5, n.max=300, type="t.paired", design="sequential", rscale=sqrt(2)/2, alternative="directional", B=1000, cores=4)
-s0 <- BFDA.sim(expected.ES=0, n.min=50, stepsize=5, n.max=300, type="t.paired", design="sequential", rscale=sqrt(2)/2, alternative="directional", B=1000, cores=4)
+s1 <- BFDA.sim(expected.ES=0.4, prior=list("t", list(prior.location=0, prior.scale=sqrt(2)/2, prior.df=1)), n.min=50, stepsize=5, n.max=300, type="t.paired", design="sequential", alternative="greater", B=1000, cores=4, verbose=FALSE)
+s0 <- BFDA.sim(expected.ES=0, prior=list("t", list(prior.location=0, prior.scale=sqrt(2)/2, prior.df=1)), n.min=50, stepsize=5, n.max=300, type="t.paired", design="sequential", alternative="greater", B=1000, cores=4, verbose=FALSE)
 
 # if no n.min and n.max is provided in the `BFDA.analyze` function, the values from the simulation are taken
 BFDA.analyze(s1, design="sequential", boundary=10)
@@ -185,51 +201,51 @@ plot(s1)
 
 # Correlation: A complete example #
 
-The correlation BF implemented in the BFDA package uses a beta prior distribution, as described in:
+The correlation BF implemented in the BFDA package uses a stretched beta prior distribution, as described in:
 
 Wagenmakers, E. J., Verhagen, J., & Ly, A. (2016). How to quantify the evidence for the absence of a correlation. *Behavior Research Methods*, 1–14. http://doi.org/10.3758/s13428-015-0593-0
 
-> "We prefer a similar but more elegant solution, where we first rescale the correlation to lie between 0 and 1, and then assign it a beta distribution. Hence, ρ′ ∼ beta(α, α), and a measure of the spread of this distribution is γ = 1/α. We then transform the beta distribution back to the (−1, 1) scale and calculate the Bayes factors as a function of γ . When γ = 1, this corresponds to a uniform prior on the correlation coefficient, as per our default analysis. When γ = 0, which happens when α grows very large, H1 becomes indistinguishable from H0 and consequently the Bayes factor is 1. Values of γ in between 0 and 1 define an continuous range of different alternative hypotheses that represent different beliefs about the extent to which large values for the correlation are plausible." (p. 419)
+Here, the correlation is first rescaled to lie between 0 and 1, and then a beta distribution with the parameters $\alpha = \beta = 1/\kappa$ is assigned to it. Then, the beta distribution is transformed back to the (−1, 1) scale and the Bayes factors are calculated as a function of $\kappa$. When $\kappa = 1$, this corresponds to a uniform prior on the correlation coefficient, as in Jeffreys's default analysis. When $\kappa \rightarrow 0$, H1 becomes indistinguishable from H0 and consequently the Bayes factor is 1. Values of $\kappa$ in between 0 and $\infty$ define an continuous range of different alternative hypotheses that represent different beliefs about the extent to which large values for the correlation are plausible.
 
-The alpha parameter which can be passed as a parameter in the BFDA.sim function corresponds to the "beta* prior width" in JASP. Here are some plots for different settings of alpha for the two-sided case:
+The kappa parameter which can be passed to the BFDA.sim function as part of the "prior" argument, corresponds to the "beta prior width" in JASP. Here are some plots for different settings of kappa for the two-sided case:
 
-```{r corr_alpha_prior_2_plots, cache=TRUE, results='hide'}
+```{r corr_kappa_prior_2_plots, cache=TRUE, results='hide'}
 rho <- seq(-1, 1, by=.01)
 
 par(mfrow=c(2, 3))
-plot(rho, BFDA:::priorRho(rho, alpha=1),    main="alpha = 1",    ylim=c(0, 2.4), type="l", xlab="rho", ylab="Plausibility")
-plot(rho, BFDA:::priorRho(rho, alpha=1.5),  main="alpha = 1.5",  ylim=c(0, 2.4), type="l", xlab="rho", ylab="Plausibility")
-plot(rho, BFDA:::priorRho(rho, alpha=2),    main="alpha = 2",    ylim=c(0, 2.4), type="l", xlab="rho", ylab="Plausibility")
-plot(rho, BFDA:::priorRho(rho, alpha=3),    main="alpha = 3",    ylim=c(0, 2.4), type="l", xlab="rho", ylab="Plausibility")
-plot(rho, BFDA:::priorRho(rho, alpha=0.75), main="alpha = 0.75", ylim=c(0, 2.4), type="l", xlab="rho", ylab="Plausibility")
-plot(rho, BFDA:::priorRho(rho, alpha=0.5),  main="alpha = 0.5",  ylim=c(0, 2.4), type="l", xlab="rho", ylab="Plausibility")
+plot(rho, BFDA:::.priorRho(rho, kappa=1),    main=bquote(kappa*" = 1"),    ylim=c(0, 2.4), type="l", xlab="rho", ylab="Plausibility")
+plot(rho, BFDA:::.priorRho(rho, kappa=1.5),  main=bquote(kappa*" = 1.5"),  ylim=c(0, 2.4), type="l", xlab="rho", ylab="Plausibility")
+plot(rho, BFDA:::.priorRho(rho, kappa=2),    main=bquote(kappa*" = 2"),    ylim=c(0, 2.4), type="l", xlab="rho", ylab="Plausibility")
+plot(rho, BFDA:::.priorRho(rho, kappa=3),    main=bquote(kappa*" = 3"),    ylim=c(0, 2.4), type="l", xlab="rho", ylab="Plausibility")
+plot(rho, BFDA:::.priorRho(rho, kappa=0.75), main=bquote(kappa*" = 0.75"), ylim=c(0, 2.4), type="l", xlab="rho", ylab="Plausibility")
+plot(rho, BFDA:::.priorRho(rho, kappa=0.001),  main=bquote(kappa*" = 0.001"),  ylim=c(0, 2.4), type="l", xlab="rho", ylab="Plausibility")
 ```
 
-Here are some plots for different settings of alpha for the one-sided case:
+Here are some plots for different settings of kappa for the one-sided case with a positive directional hypothesis:
 
-```{r corr_alpha_prior_1_plots, cache=TRUE, results='hide'}
+```{r corr_kappa_prior_1_plots, cache=TRUE, results='hide'}
 rho <- seq(0, 1, by=.01)
 
 par(mfrow=c(2, 3))
-plot(rho, BFDA:::priorRhoPlus(rho, alpha=1),    main="alpha = 1",    ylim=c(0, 4.2), type="l", xlab="rho", ylab="Plausibility")
-plot(rho, BFDA:::priorRhoPlus(rho, alpha=1.5),  main="alpha = 1.5",  ylim=c(0, 4.2), type="l", xlab="rho", ylab="Plausibility")
-plot(rho, BFDA:::priorRhoPlus(rho, alpha=2),    main="alpha = 2",    ylim=c(0, 4.2), type="l", xlab="rho", ylab="Plausibility")
-plot(rho, BFDA:::priorRhoPlus(rho, alpha=3),    main="alpha = 3",    ylim=c(0, 4.2), type="l", xlab="rho", ylab="Plausibility")
-plot(rho, BFDA:::priorRhoPlus(rho, alpha=0.75), main="alpha = 0.75", ylim=c(0, 4.2), type="l", xlab="rho", ylab="Plausibility")
-plot(rho, BFDA:::priorRhoPlus(rho, alpha=0.5),  main="alpha = 0.5",  ylim=c(0, 4.2), type="l", xlab="rho", ylab="Plausibility")
+plot(rho, BFDA:::.priorRhoPlus(rho, kappa=1),    main=bquote(kappa*" = 1"),    ylim=c(0, 4.2), type="l", xlab="rho", ylab="Plausibility")
+plot(rho, BFDA:::.priorRhoPlus(rho, kappa=1.5),  main=bquote(kappa*" = 1.5"),  ylim=c(0, 4.2), type="l", xlab="rho", ylab="Plausibility")
+plot(rho, BFDA:::.priorRhoPlus(rho, kappa=2),    main=bquote(kappa*" = 2"),    ylim=c(0, 4.2), type="l", xlab="rho", ylab="Plausibility")
+plot(rho, BFDA:::.priorRhoPlus(rho, kappa=3),    main=bquote(kappa*" = 3"),    ylim=c(0, 4.2), type="l", xlab="rho", ylab="Plausibility")
+plot(rho, BFDA:::.priorRhoPlus(rho, kappa=0.75), main=bquote(kappa*" = 0.75"), ylim=c(0, 4.2), type="l", xlab="rho", ylab="Plausibility")
+plot(rho, BFDA:::.priorRhoPlus(rho, kappa=0.001),  main=bquote(kappa*" = 0.001"),  ylim=c(0, 4.2), type="l", xlab="rho", ylab="Plausibility")
 ```
 
 
-Here's a complete walkthrough for a one-sided (directional) correlation BF design analysis, which places prior weight on smaller effect sizes (alpha = 2):
+Here's a complete walkthrough for a one-sided (positive directional) correlation BF design analysis, which places prior weight on smaller effect sizes (kappa = 2):
 
-```{r correlation_walkthrough}
+```{r correlation_walkthrough, warning=FALSE}
 #devtools::install_github("nicebread/BFDA", subdir="package")
-library(BFDA)
+#library(BFDA)
 
 # do a sequential design analysis
-# scale the beta* prior with the alpha parameter
-s1 <- BFDA.sim(expected.ES=0.21, n.min=50, stepsize=10, n.max=300, B=100, type="correlation", design="sequential", alpha=2, alternative="directional", cores=4)
-s0 <- BFDA.sim(expected.ES=0, n.min=50, stepsize=10, n.max=300, B=100, type="correlation", design="sequential", alpha=2, alternative="directional", cores=4)
+# scale the beta* prior with the kappa parameter
+s1 <- BFDA.sim(expected.ES=0.21, prior=list("stretchedbeta", list(prior.kappa=2)), n.min=50, stepsize=10, n.max=300, B=1000, type="correlation", design="sequential", alternative="greater", cores=4, verbose=FALSE)
+s0 <- BFDA.sim(expected.ES=0, prior=list("stretchedbeta", list(prior.kappa=2)), n.min=50, stepsize=10, n.max=300, B=1000, type="correlation", design="sequential", alternative="greater", cores=4, verbose=FALSE)
 
 # if no n.min and n.max is provided in the `BFDA.analyze` function, the values from the simulation are taken
 BFDA.analyze(s1, design="sequential", boundary=10)
@@ -240,8 +256,6 @@ BFDA.analyze(s0, design="sequential", boundary=6)
 
 plot(s1, boundary=c(1/10, 20), n.max=150)
 ```
-
-
 
 
 # Use case: Apply for a grant with sequential sampling
