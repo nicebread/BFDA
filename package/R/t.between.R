@@ -25,7 +25,7 @@ select.t.between <- function(MAXSAMP, n) {
 # ---------------------------------------------------------------------
 # freq.test.function: return p.value, test statistic, and empirical ES
 
-freq.test.t.between <- function(SAMP, alternative=NULL) {
+freq.test.t.between <- function(SAMP, alternative=NULL, options.sample=NULL) {
 
 	t1 <- t.test(SAMP[, 1], SAMP[, 2], var.equal=TRUE, alternative=alternative)
 

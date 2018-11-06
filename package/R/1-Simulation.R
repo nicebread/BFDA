@@ -10,14 +10,14 @@
 #' @param B Number of bootstrap samples; should be dividable by the numbers of \code{cores} (see also \code{getDoParWorkers()})
 #' @param design "fixed.n" or "sequential". If design=="fixed.n", \code{n.min} and \code{boundary} are irrelevant, and all samples are drawn with n=n.max.
 #' @param expected.ES The assumed true effect size. This can be a single number (this leads to a fixed assumed effect size, as in a classical power analysis) or a vector of numbers (e.g., \code{rnorm(100000, 0.5, 0.1)}). If it is a vector, the sampler draws a new effect size from this vector at each step. In this case, the provided distribution represents the uncertainty about the true effect size.
-#' @param type Currently three designs are implemented: c("t.between", "t.paired", "correlation")
+#' @param type Currently three designs are implemented: c("t.between", "t.paired", "correlation", "abtest")
 #' @param prior Define the prior distribution of your alternative hypothesis. Argument takes a list as an input: The first element of the list should be a character string defining the type of the distribution ("t", "Cauchy", or "normal"). The second element of the list is another list containing the parameters of the distribution. For the t-distribution, this is prior.location, prior.df, and prior.scale; for the Cauchy-distribution, it is prior.location and prior.scale; for the normal distribution, it is prior.mean and prior.variance. The default for t-tests is \code{list("Cauchy", list(prior.location = 0, prior.scale = sqrt(2)/2))}
 #' @param stepsize The number with which participants are added to the sample. If NA, the sample is increased +1 until it's 100, and +10 from that size on.
 #' @param verbose Show output about progress?
 #' @param cores number of parallel processes. If cores==1, no parallel framework is used.
 #' @param alternative One of c("directional", "undirected") for directed (one-sided) or undirected (two-sided) hypothesis tests in data analysis. Hence, this refers to the directionality of the analysis prior
 #' @param ETA Compute an estimate of the full simulation time? This adds some overhead to the simulation, so turn off for actual simulations. NOT IMPLEMENTED YET
-#' @param options.sample Further parameters passed to the data generating function (depending on the \code{type} of design). NOT IMPLEMENTED YET
+#' @param options.sample Further parameters passed to the data generating function (depending on the \code{type} of design). Currently only used for AB-test: list(effecttype=...) with possible parameters \code{"OR"} (odds ratio), \code{"logOR"} (log odds ratio), \code{RR} (relative risk), \code{AR} (absolute risk) defines the type of effect size used as input in the \code{expected.ES} argument.
 #' @param seed The seed that is passed to the \code{dorng} function (which ensures reproducibility with parallel processing). If this parameter is set to \code{NULL}, a new seed is chosen at each run.
 #' @param ... Further parameters passed to the BF.test function. Most importantly, the scale parameter \code{rscale} can be passed to adjust the width of the Cauchy analysis prior.
 #'
@@ -35,8 +35,8 @@
 #'}
 
 
-BFDA.sim <- function(expected.ES, type=c("t.between", "t.paired", "correlation"), prior = NULL, n.min=10, n.max=500, design=c("sequential", "fixed.n"), boundary=Inf, B=1000, stepsize=NA, alternative=c("two.sided", "greater", "less"), verbose=TRUE, cores=1, ETA=FALSE, options.sample=list(), seed=1234, ...) {
-	
+BFDA.sim <- function(expected.ES, type=c("t.between", "t.paired", "correlation", "abtest"), prior = NULL, n.min=10, n.max=500, design=c("sequential", "fixed.n"), boundary=Inf, B=1000, stepsize=NA, alternative=c("two.sided", "greater", "less"), verbose=TRUE, cores=1, ETA=FALSE, options.sample=list(), seed=1234, ...) {
+  
 	# link to test specific functions
 	# get() can reference a function by its (string) name
 	sample.function <- get(paste0("sample.", type))
@@ -48,7 +48,9 @@ BFDA.sim <- function(expected.ES, type=c("t.between", "t.paired", "correlation")
 	alternative <- match.arg(alternative, c("two.sided", "greater", "less"))
 
 	design <- match.arg(design, c("sequential", "fixed.n"))
-	type <- match.arg(type, c("t.between", "t.paired", "correlation"))
+
+	type <- match.arg(type, c("t.between", "t.paired", "correlation", "abtest"))
+
 	prior <- prior.check.function(prior)
 	
 	# # Estimate the expected time for simulation
@@ -123,7 +125,7 @@ BFDA.sim <- function(expected.ES, type=c("t.between", "t.paired", "correlation")
 				samp <- select.function(maxsamp, n)
 				
 				# do the frequentist test
-				freq.test <- freq.test.function(samp, alternative)
+				freq.test <- freq.test.function(samp, alternative, options.sample)
 
 				# do the BF test; supply freq.test to access t.value for faster computation
 				logBF <- BF.test.function(samp, alternative, freq.test, prior, ...)
@@ -168,6 +170,7 @@ BFDA.sim <- function(expected.ES, type=c("t.between", "t.paired", "correlation")
 			boundary= boundary,
 			alternative = alternative,
 			type=type,
+			options.sample=options.sample,
 			extra = list(...),
 			packageVersion = packageVersion("BFDA")
 		),
@@ -194,6 +197,7 @@ print.BFDA <- function(x, ...) {
 		"t.between" = "Cohen's d",
 		"t.paired" = "Cohen's d",
 		"correlation" = "correlation",
+		"abtest" = x$settings$options.sample,
 		{paste0("ERROR: Test type ", x$settings$type, " not recognized.")}	#default
 	)
 	
@@ -201,6 +205,7 @@ print.BFDA <- function(x, ...) {
 	cat(paste0("
 Bayes Factor Design Analysis
 --------------------------------	
+Test type: ", x$settings$type, "
 Number of simulations: ", length(unique(x$sim$id)), "
 Stopping boundaries (evidential thresholds): ", round(x$settings$boundary[1], 2), "; ", round(x$settings$boundary[2], 2), "
 Directionality of H1 analysis prior: ", x$settings$alternative, "

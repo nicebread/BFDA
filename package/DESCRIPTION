@@ -15,17 +15,22 @@ Depends:
     ggplot2
 Imports:
     TeachingDemos,
+    Rcpp,
     scales,
     reshape2,
     sfsmisc,
-		gridExtra,
-		hypergeo,
-		doRNG,
-		methods
+    gridExtra,
+    hypergeo,
+    doRNG,
+    methods,
+    VGAM,
+    mvtnorm,
+    sn
+LinkingTo: Rcpp
 Description: Compute and visualize design analyses for Bayes factors. Handles
     fixed-n and sequential designs.
 License: GPL (>= 2)
 LazyData: TRUE
 RoxygenNote: 6.1.0
 Suggests: testthat,
-    BayesFactor
+          BayesFactor
