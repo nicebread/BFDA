@@ -23,7 +23,7 @@ select.t.paired <- function(MAXSAMP, n) {
 # ---------------------------------------------------------------------
 # freq.test.function: return p.value, test statistic, and empirical ES
 
-freq.test.t.paired <- function(SAMP, alternative="directional") {
+freq.test.t.paired <- function(SAMP, alternative=NULL, options.sample=NULL) {
 
 	if (alternative=="directional") {
 		alt2 <- "greater"

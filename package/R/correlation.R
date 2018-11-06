@@ -46,7 +46,7 @@ select.correlation <- function(MAXSAMP, n) {
 # ---------------------------------------------------------------------
 # freq.test.function: return p.value, test statistic, and empirical ES
 
-freq.test.correlation <- function(SAMP, alternative="directional") {
+freq.test.correlation <- function(SAMP, alternative=NULL, options.sample=NULL) {
 
 	if (alternative=="directional") {
 		alt2 <- "greater"

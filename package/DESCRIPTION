@@ -15,14 +15,20 @@ Depends:
 Imports:
     BayesFactor,
     TeachingDemos,
+    Rcpp,
     scales,
     reshape2,
     sfsmisc,
-		gridExtra,
-		hypergeo,
-		doRNG
+    gridExtra,
+    hypergeo,
+    doRNG,
+    methods,
+    VGAM,
+    mvtnorm,
+    sn
+LinkingTo: Rcpp
 Description: Compute and visualize design analyses for Bayes factors. Handles
     fixed-n and sequential designs.
 License: GPL (>= 2)
 LazyData: TRUE
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0
