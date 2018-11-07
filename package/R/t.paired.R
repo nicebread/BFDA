@@ -83,7 +83,7 @@ prior.check.t.paired <- function(prior=NULL){
       prior[[2]][["prior.mean"]] <- 0
     } 
     if(is.null(prior[[2]][["prior.variance"]])){
-      prior[[2]][["prior.variance"]] <- sqrt(2)/2
+      prior[[2]][["prior.variance"]] <- 1
       warning("Prior variance not defined. Default specification will be used.")
     }
   }

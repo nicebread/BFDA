@@ -92,9 +92,10 @@ select.abtest <- function(MAXSAMP, n) {
 
 freq.test.abtest <- function(SAMP, alternative=NULL, options.sample=NULL){
   
-  t1 <- prop.test(x = as.numeric(colSums(SAMP)),
-                  n = rep(nrow(SAMP), 2),
-                  alternative = alternative)
+  t1 <- suppressWarnings(prop.test(x = as.numeric(colSums(SAMP)),
+                         n = rep(nrow(SAMP), 2),
+                         alternative = alternative)
+                  )
   
   p1 <- t1$estimate[1]
   p2 <- t1$estimate[2]
