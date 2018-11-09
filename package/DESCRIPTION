@@ -33,4 +33,8 @@ License: GPL (>= 2)
 LazyData: TRUE
 RoxygenNote: 6.1.0
 Suggests: testthat,
-          BayesFactor
+          BayesFactor,
+	  knitr,
+          tint,
+          devtools
+VignetteBuilder: knitr

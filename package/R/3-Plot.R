@@ -27,8 +27,6 @@
 #' @param cex.annotations Zoom factor for text annotations
 #' @param ... Additional parameters passed through to the base plot function
 
-#forH1 = TRUE; boundary=6; n.trajectories=60; n.max=500; dens.amplification=NA; dens.right.amplification=NA; plotratio=NA; cat=3; dens.right.offset=2; xlim=NA; ylim=NA; load("finalSims/sim.0.5.RData")
-
 plotBFDA <- function(BFDA, boundary=10, n.trajectories=60, n.min=NA, n.max=NA, dens.amplification=1, cat=3, bw=FALSE, dens.right.offset=2, xlim=NA, ylim=NA, xextension=1.5, traj.selection="proportional", yaxis.at=NA, yaxis.labels=NA, forH1=TRUE, n.max.label.position="dynamic", cex.labels=1, cex.annotations=0.85, ...) {
 	sim <- BFDA$sim
 	traj.selection <- match.arg(traj.selection, c("proportional", "fixed"))
@@ -260,6 +258,9 @@ plotBFDA <- function(BFDA, boundary=10, n.trajectories=60, n.min=NA, n.max=NA, d
 		if (bw==FALSE & cat==3) 
 			colors <- c("green4", "orange1", "red3")
 		
+		if(forH1==FALSE){
+		  colors <- rev(colors)
+		}
 
 		# color polygons of the distribution
 		
@@ -309,21 +310,21 @@ plotBFDA <- function(BFDA, boundary=10, n.trajectories=60, n.min=NA, n.max=NA, d
 
 	par(xpd=NA)	# allow drawing outside the plot
 	if (inside(labels.y[8], ylim))
-		text(xmax, labels.y[8], bquote(Very~strong~H[.(ifelse(forH1==TRUE,0,1))]), adj=c(0, 0.5), cex=cex.annotations)
+		text(xmax, labels.y[8], bquote(Very~strong~H0), adj=c(0, 0.5), cex=cex.annotations)
 	if (inside(labels.y[7], ylim))
-		text(xmax, labels.y[7], bquote(Strong~H[.(ifelse(forH1==TRUE,0,1))]), adj=c(0, 0.5), cex=cex.annotations)
+		text(xmax, labels.y[7], bquote(Strong~H0), adj=c(0, 0.5), cex=cex.annotations)
 	if (inside(labels.y[6], ylim))
-		text(xmax, labels.y[6], bquote(Moderate~H[.(ifelse(forH1==TRUE,0,1))]), adj=c(0, 0.5), cex=cex.annotations)
+		text(xmax, labels.y[6], bquote(Moderate~H0), adj=c(0, 0.5), cex=cex.annotations)
 	if (inside(labels.y[5], ylim))
-		text(xmax, labels.y[5], bquote(Anecdotal~H[.(ifelse(forH1==TRUE,0,1))]), adj=c(0, 0.5), cex=cex.annotations)
+		text(xmax, labels.y[5], bquote(Anecdotal~H0), adj=c(0, 0.5), cex=cex.annotations)
 	if (inside(labels.y[1], ylim))
-		text(xmax, labels.y[1], bquote(Very~strong~H[.(ifelse(forH1==TRUE,1,0))]), adj=c(0, 0.5), cex=cex.annotations)
+		text(xmax, labels.y[1], bquote(Very~strong~H1), adj=c(0, 0.5), cex=cex.annotations)
 	if (inside(labels.y[2], ylim))
-		text(xmax, labels.y[2], bquote(Strong~H[.(ifelse(forH1==TRUE,1,0))]), adj=c(0, 0.5), cex=cex.annotations)
+		text(xmax, labels.y[2], bquote(Strong~H1), adj=c(0, 0.5), cex=cex.annotations)
 	if (inside(labels.y[3], ylim))
-		text(xmax, labels.y[3], bquote(Moderate~H[.(ifelse(forH1==TRUE,1,0))]), adj=c(0, 0.5), cex=cex.annotations)
+		text(xmax, labels.y[3], bquote(Moderate~H1), adj=c(0, 0.5), cex=cex.annotations)
 	if (inside(labels.y[4], ylim))
-		text(xmax, labels.y[4], bquote(Anecdotal~H[.(ifelse(forH1==TRUE,1,0))]), adj=c(0, 0.5), cex=cex.annotations)
+		text(xmax, labels.y[4], bquote(Anecdotal~H1), adj=c(0, 0.5), cex=cex.annotations)
 	par(xpd=TRUE)
 	
 	

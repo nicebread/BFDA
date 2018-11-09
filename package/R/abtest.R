@@ -22,14 +22,10 @@ findp2 <- function(ES, p1, effecttype){
   return(p2)
 }
 
-#' sample.abtest
-#' get two samples with a specified relation of underlying proportions
+# sample.abtest
+# get two samples with a specified relation of underlying proportions
 #' @importFrom stats rbinom
-#' @param n sample size of the trial per condition
-#' @param ES effect size (value of odds ratio, log odds ratio, absolute risk, relative risk)
-#' @param options.sample list defining the type of the input effect size: \code{list(effecttype = ...)} with the options: \code{"OR"} (odds ratio), \code{"RR"} (relative risk), \code{"AR"} (absolute risk), \code{"logOR"} (log odds ratio)
-#' @examples \dontrun{SAMP <- sample.abtest(n=100, ES=2, options.sample = list(effecttype = "OR"))}
-
+#' 
 sample.abtest <- function(n, ES, options.sample=NULL) {
   
   effecttype <- options.sample[["effecttype"]]
@@ -84,10 +80,7 @@ select.abtest <- function(MAXSAMP, n) {
 }
 
 # ------------------------------------------------------------------------------
-#' freq.test.function: return p.value, test statistic, and empirical ES
-#' @param SAMP (reduced) sample
-#' @param alternative direction of the alternative hypothesis
-#' @param options.sample list(effecttype = ...)
+# freq.test.function: return p.value, test statistic, and empirical ES
 #' @importFrom stats prop.test
 
 freq.test.abtest <- function(SAMP, alternative=NULL, options.sample=NULL){

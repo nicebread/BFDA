@@ -521,18 +521,14 @@ det_hessian_minlplus <- function(par, data, sigma_beta = 1, mu_psi = 0,
 }
 
 # ------------------------------------------------------------------------------
-#' Function for conducting a Bayesian A/B test.
+# Function for conducting a Bayesian A/B test.
+
 #' @importFrom Rcpp sourceCpp
-#' @useDynLib BFDA 
-#' @param data data
-#' @param prior_par list with prior parameters
-#' @param nsamples number of samples for importance sampling
-#' @param is_df importance sampling degrees of freedom
-#'
 #' @importFrom stats dnorm median optim pnorm qlogis
 #' @importFrom VGAM log1pexp
 #' @importFrom mvtnorm dmvt rmvt
 #' @importFrom sn psn selm
+#' @useDynLib BFDA 
 
 ab_test <- function(data, prior_par, nsamples = 1e4, is_df = 5) {
   
