@@ -35,6 +35,7 @@ RoxygenNote: 6.1.0
 Suggests: testthat,
           BayesFactor,
 	  knitr,
+	  rmarkdown,
           tint,
           devtools
 VignetteBuilder: knitr

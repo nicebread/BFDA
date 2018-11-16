@@ -231,7 +231,8 @@ s0 <- BFDA.sim(expected.ES=0,
                n.min=50, stepsize=5, n.max=300, type="t.paired", design="sequential",
                alternative="greater", B=1000, cores=4, verbose=FALSE)
 
-# if no n.min and n.max is provided in the `BFDA.analyze` function, the values from the simulation are taken
+# if no n.min and n.max is provided in the `BFDA.analyze` function,
+# the values from the simulation are taken
 BFDA.analyze(s1, design="sequential", boundary=10)
 BFDA.analyze(s0, design="sequential", boundary=10)
 
@@ -246,7 +247,7 @@ plot(s1)
 
 The BFDA uses the source code of the statistics software JASP [(available on Github)](https://github.com/jasp-stats/jasp-desktop/blob/development/JASP-Engine/JASP/R/correlationbayesian.R) which is based on a paper by [Ly, Verhagen & Wagenmakers (2016)](https://www.sciencedirect.com/science/article/pii/S0022249615000383) and a paper by [Ly, Marsman, & Wagenmakers](https://onlinelibrary.wiley.com/doi/full/10.1111/stan.12111). The kappa parameter which can be passed to the BFDA.sim function as part of the "prior" argument, corresponds to the "beta prior width" parameter in JASP. By default, the BFDA uses a $\kappa$ parameter of 1, which is equivalent to a uniform prior distribution over the possible correlations. 
 
-A short explanation of the stretched beta prior: First, the correlation is rescaled to lie between 0 and 1, then a beta distribution with the parameters $\alpha = \beta = 1/\kappa$ is assigned to it. Then, the beta distribution is transformed back to the (−1, 1) scale and the Bayes factors are calculated as a function of $\kappa$. When $\kappa = 1$, this corresponds to a uniform prior on the correlation coefficient, as in Jeffreys's default analysis. When $\kappa \rightarrow 0$, H1 becomes indistinguishable from H0 and consequently the Bayes factor is 1. Values of $\kappa$ in between 0 and $\infty$ define an continuous range of different alternative hypotheses that represent different beliefs about the extent to which large values for the correlation are plausible.
+A short explanation of the stretched beta prior: First, the correlation is rescaled to lie between 0 and 1, then a beta distribution with the parameters $\alpha = \beta = 1/\kappa$ is assigned to it. Then, the beta distribution is transformed back to the $(−1, 1)$ scale and the Bayes factors are calculated as a function of $\kappa$. When $\kappa = 1$, this corresponds to a uniform prior on the correlation coefficient, as in Jeffreys's default analysis. When $\kappa \rightarrow 0$, H1 becomes indistinguishable from H0 and consequently the Bayes factor is 1. Values of $\kappa$ in between 0 and $\infty$ define an continuous range of different alternative hypotheses that represent different beliefs about the extent to which large values for the correlation are plausible.
 
 Here are some plots for different settings of kappa for the two-sided case:
 
@@ -291,7 +292,7 @@ plot(rho, BFDA:::.priorRhoPlus(rho, kappa=0.001), main=bquote(kappa*" = 0.001"),
 
 Here is a complete walkthrough for a one-sided (positive directional) correlation BF design analysis, which places prior weight on smaller effect sizes (kappa = 2):
 
-```{r correlation_walkthrough, warning=FALSE, fig.width=7, fig.height=4}
+```{r corr_walkthrough, warning=FALSE, fig.width=7, fig.height=4}
 #devtools::install_github("nicebread/BFDA", subdir="package")
 #library(BFDA)
 
@@ -303,7 +304,8 @@ c0 <- BFDA.sim(expected.ES=0, prior=list("stretchedbeta", list(prior.kappa=2)),
                n.min=50, stepsize=10, n.max=300, B=1000, type="correlation",
                design="sequential", alternative="greater", cores=4, verbose=FALSE)
 
-# if no n.min and n.max is provided in the `BFDA.analyze` function, the values from the simulation are taken
+# if no n.min and n.max is provided in the `BFDA.analyze` function,
+# the values from the simulation are taken
 BFDA.analyze(c1, design="sequential", boundary=10)
 BFDA.analyze(c0, design="sequential", boundary=10)
 
@@ -341,7 +343,8 @@ ab0 <- BFDA.sim(expected.ES=0, prior=list("normal", list(prior.mean=0.5, prior.v
                 design="sequential", alternative="two.sided", cores=4, verbose=FALSE,
                 options.sample = list(effecttype = "OR"))
 
-# if no n.min and n.max is provided in the `BFDA.analyze` function, the values from the simulation are taken
+# if no n.min and n.max is provided in the `BFDA.analyze` function,
+# the values from the simulation are taken
 BFDA.analyze(ab1, design="sequential", boundary=10)
 BFDA.analyze(ab0, design="sequential", boundary=10)
 
@@ -388,3 +391,6 @@ a2.H0
 In this design analysis for the *SBF+maxN* design, we can see that, although we apply for `r n_q80` participants in each group, we can expect to stop with `r a2.H1$ASN` participants or less with a 50% chance, if H1 is true. The false negative rate is virtually 0%. That means, if the effect exists in the expected size, this design virtually guarantees to detect it, and we have a good chance to be more efficient.
 
 Under H0, at least half of the studies will have to use the full requested sample of `r n_q80` participants. On average, samples will have a size of n=`r a2.H0$ASN` under H0. We have a `r round(a2.H0$upper.hit.frac*100, 2)`% false positive error rate, and `r round(a2.H0$lower.hit.frac*100, 2)`% of all studies will correctly stop at the H0 boundary. The remaining `r round(a2.H0$n.max.hit.frac*100, 2)`% of all studies will remain inconclusive with respect to the desired evidential threshold of $BF_{10}$ <= 1/10. However, the Bayes factor of these studies can still be interpreted in size and direction. From the output, you can see that the majority of these inconclusive BFs still points into the correct (H0) direction.
+
+#### Reproducible code for the vignette 
+The reproducible code for the vignette can be found on [https://github.com/nicebread/BFDA].
