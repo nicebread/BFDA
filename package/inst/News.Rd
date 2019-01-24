@@ -14,7 +14,7 @@ Thanks to Tom Heyman for many helpful suggestions!
 
 \subsection{Bug fixes/Glitches}{
 	\itemize{
-		\item 
+		\item Fixed bug in summary print of an BFDA.sim object: Mean and quantiles of simulated (random) true effect sizes now are correctly displayed.
 	}
 }
 
