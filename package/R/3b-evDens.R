@@ -20,6 +20,10 @@ evDens <- function(BFDA.H1, BFDA.H0, n, boundary=c(1/6, 6), xlim=NA, noSplit=FAL
 	# reduce data set to relevant sample size
 	logBF.H0 <-  BFDA.H0$sim %>% filter(n==N) %>% .$logBF
 	logBF.H1 <-  BFDA.H1$sim %>% filter(n==N) %>% .$logBF	
+	
+	if (length(logBF.H0) == 0 | length(logBF.H1) == 0) {
+		stop(paste0("No data available at n=", N, ". Did you simulate that n?"))
+	}
 
 	# define scale range
 	ylim <- c(0, 1)
