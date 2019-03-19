@@ -1,397 +1,825 @@
-setwd('/Users/Felix/Documents/LMU/Lehrveranstaltungen/2015 WS - Empra Open Science/Replikationsvorschläge/Schiestel/R')
-dat <- read.csv("Daten Kino-Studie - Tabellenblatt1.csv")#
-dat <- dat[1:56, ]#
+ttest.tstat(t=2.8, n1=200, n2=200, simple=TRUE, rscale=0.7)
+ttest.tstat(t=2.8, n1=200, n2=200, simple=TRUE, rscale=1.5)
+x <- rnorm(50)
+y <- rnorm(50, mean=0.3)
+ttestBF(x, y, paired=FALSE, rscale=0.5)
+plot(density(x))
+lines(density(y), add=TRUE)
+plot(density(y), add=TRUE)
+ttestBF(x, y, paired=FALSE, rscale=0.5)
+mean(x)
+mean(y)
+ttestBF(x, y, paired=TRUE, rscale=0.5)
+ttestBF(x-y, mu=0)
+ttestBF(x-y, mu=0, rscale=0.5)
+ttestBF(x-y, mu=0, rscale=0.5, nullIntervall=c(-Inf, 0))
+ttestBF(x, y, rscale=0.5, nullIntervall=c(-Inf, 0))
+ttestBF(x, y, rscale=0.5, nullIntervall=c(0, Inf))
+ttestBF(x, y, rscale=0.5, nullInterval=c(0, Inf))
+BF <- ttestBF(x, y, rscale=0.5, nullInterval=c(0, Inf))
+BF
+1/BF
+?anovaBF
+## Demonstrate top-down testing#
+data(puzzles)#
+result = anovaBF(RT ~ shape*color + ID, data = puzzles, whichRandom = "ID",#
+    whichModels = 'top', progress=FALSE)#
+result
+result = anovaBF(RT ~ shape*color + ID, data = puzzles, whichRandom = "ID")
+result
+result[4]/result[3]
+1/0.38
+str(puzzles)
+?anovaBF
+BFDA.analyze(sim.H1, design="sequential", boundary=10)
+BFDA.analyze(sim.H0, design="sequential", boundary=6)
+library(BFDA)
+?SSD
+SSD(sim.H1, boundary = c(1/6, 6), power = 0.9, alpha = 0.025, plot = TRUE)
+BFDA.analyze(sim.H1, design="sequential", boundary=6)
+data(sleep)#
+plot(extra ~ group, data = sleep)
+?ttestBF
+ttestBF(x = sleep$extra[sleep$group==1], y = sleep$extra[sleep$group==2], paired=TRUE)
+library(BayesFactor)
+ttestBF(x = sleep$extra[sleep$group==1], y = sleep$extra[sleep$group==2], paired=TRUE)
+samples = ttestBF(x = sleep$extra[sleep$group==1],#
+           y = sleep$extra[sleep$group==2], paired=TRUE,#
+           posterior = TRUE, iterations = 1000)#
+plot(samples[,"mu"])
+samples = ttestBF(x = sleep$extra[sleep$group==1],#
+           y = sleep$extra[sleep$group==2], paired=TRUE,#
+           posterior = TRUE, iterations = 10000)#
+plot(samples[,"mu"])
+head(samples)
+summary(samples[, "delta"])
+?anovaBF
+library(groupSeq)
+setwd('/Users/felix/Github/RSA/internal_files')
+devtools::load_all("..")
+plotRSA(b0=4, x=0, y=0, x2=-.25, xy=.5, y2=-.25, xlab="X: female predictor", ylab="Y: male predictor", zlab="Z: outcome variable", zlim=c(-2, 4.5), project=c("LOC", "LOIC"), axes=c("LOC", "LOIC"), param=TRUE, legend=FALSE, gridsize=15)
+setwd('/Users/felix/Github/RSA/internal_files')
+devtools::load_all("..")
+plotRSA(b0=4, x=0, y=0, x2=-.25, xy=.5, y2=-.25, axes=c("LOC", "LOIC"), axesStyles=list(LOIC=list(col="red", lwd=2)))
+setwd('/Users/felix/Github/RSA/internal_files')
+devtools::load_all("..")
+plotRSA(b0=4, x=0, y=0, x2=-.25, xy=.5, y2=-.25, axes=c("LOC", "LOIC"), axesStyles=list(LOIC=list(col="red", lwd=2)))
+plotRSA(b0=4, x=0, y=0, x2=-.25, xy=.5, y2=-.25, axes=c("LOC", "LOIC"), axesStyles=list(LOIC=list(col="red", lwd=2, lty="solid")))
+plotRSA(b0=4, x=0, y=0, x2=-.25, xy=.5, y2=-.25, axes=c("LOC"), axesStyles=list(LOIC=list(col="red", lwd=2, lty="solid")))
+plotRSA(b0=4, x=0, y=0, x2=-.25, xy=.5, y2=-.25, axes=c("LOC"), axesStyles=list(LOIC=list(col="red", lwd=2, lty="solid")), project=c("contour"))
+plotRSA(b0=4, x=0, y=0, x2=-.25, xy=.5, y2=-.25, axes=c("LOC"), axesStyles=list(LOIC=list(col="red", lwd=2, lty="solid")), project=c("contour", "PA1"))
+plotRSA(b0=4, x=0, y=0, x2=-.25, xy=.5, y2=-.25, axes=c("LOC"), axesStyles=list(LOIC=list(col="red", lwd=2, lty="solid")), project=c("PA1"))
+plotRSA(b0=4, x=0, y=0, x2=-.25, xy=.5, y2=-.25, axes=c("LOC"), axesStyles=list(LOIC=list(col="red", lwd=2, lty="solid")), project=c("LOC"))
+setwd('/Users/felix/Github/RSA/internal_files')
+devtools::load_all("..")
+plotRSA(b0=4, x=0, y=0, x2=-.25, xy=.5, y2=-.25, axes=c("LOC"), axesStyles=list(LOIC=list(col="red", lwd=2, lty="solid")), project=c("LOC"))
+.00056 / (.00056+0.421)
+library(lmerTest)
+?lme4
+(fm1 <- lmer(Reaction ~ Days + (Days | Subject), sleepstudy))#
+summary(fm1)# (with its own print method; see class?merMod % ./merMod-class.Rd
+confint(fm1)
+plotRSA(b0=4, x=0, y=0, x2=-.25, xy=.5, y2=-.25, axes=c("LOC"), axesStyles=list(LOIC=list(col="red", lwd=2, lty="solid")), project=c("LOC"))
+setwd('/Users/felix/Github/RSA/internal_files')
+devtools::load_all("..")
+plotRSA(b0=4, x=0, y=0, x2=-.25, xy=.5, y2=-.25, axes=c("LOC"), axesStyles=list(LOIC=list(col="red", lwd=2, lty="solid")), project=c("LOC"))
+setwd('/Users/felix/Github/RSA/internal_files')
+devtools::load_all("..")
+plotRSA(b0=4, x=0, y=0, x2=-.25, xy=.5, y2=-.25, axes=c("LOC"), axesStyles=list(LOIC=list(col="red", lwd=2, lty="solid")), project=c("LOC"))
+setwd('/Users/felix/Github/RSA/internal_files')
+devtools::load_all("..")
+setwd('/Users/felix/LMU/Eigene Manuskripte/2 - Submitted or Under Revision/Dyadic RSA/Supplemental Material/demo-data')
+plotRSA(b0=4, x=0, y=0, x2=-.25, xy=.5, y2=-.25, xlab="X: female predictor", ylab="Y: male predictor", zlab="Z: outcome variable", zlim=c(-2, 4.5), pal.range="surface", project=c("LOC", "LOIC"), axes=c("LOC", "LOIC"), param=TRUE, legend=FALSE, gridsize=15, bw=TRUE, pal=colorRampPalette(c("#222222", "#444444", "#EEEEEE"))(16))
+setwd('/Users/felix/LMU/Eigene Manuskripte/2 - Submitted or Under Revision/Dyadic RSA/Supplemental Material/demo-data')
+# settings#
+cex.tickLabel <- 0#
+cex.axesLabel <- 0.8#
+cex.main <- 0.9#
 #
-# ---------------------------------------------------------------------#
-# Descriptives#
+# bw <- FALSE#
+# pal <- NULL#
 #
-addmargins(table(dat$sex, dat$condition))#
+bw <- TRUE#
+pal <- colorRampPalette(c("#333333", "#888888", "#EEEEEE"))(8)#
+# Rising ridge#
+p1 <- plotRSA(x=.3, y=.3, x2=-.1, xy=.2, y2=-.1, xlab="X", ylab="Y", zlab="Z", project="", axes=c("LOC", "LOIC", "PA1"), param=FALSE, legend=FALSE, gridsize=12, cex.tickLabel=cex.tickLabel, cex.axesLabel=cex.axesLabel, cex.main=cex.main, border=TRUE, distance=c(1,1,1), bw=bw, pal=pal, main=as.expression(bquote(atop("(A) Rising ridge:", a[1]>0~","~a[4]<0))))#
 #
-dat$HG1 <- paste0("00:", gsub("_", ".", dat$handgrip_1))#
-dat$HG2 <- paste0("00:", gsub("_", ".", dat$handgrip_2))#
+# shifted similarity#
+p2 <- plotRSA(x=-.23, y=.2, x2=-.1, xy=.2, y2=-.101, xlab="X", ylab="Y", zlab="Z", project=c("LOC", "PA1"), axes=c("LOC", "LOIC", "PA1"), param=FALSE, legend=FALSE, gridsize=12, cex.tickLabel=cex.tickLabel, cex.axesLabel=cex.axesLabel, cex.main=cex.main, border=TRUE, distance=c(1,1,1), bw=bw, pal=pal, main=as.expression(bquote(atop("(B) Optimal margin:", a[4]<0~","~a[3]!=0))))#
 #
-op <- options(digits.secs = 3)#
-dat$HG1b <- strptime(dat$HG1, "%H:%M:%OS")#
-dat$HG2b <- strptime(dat$HG2, "%H:%M:%OS")#
+# Interaction model#
+p3 <- plotRSA(x=0, y=0, x2=0, xy=0.4, y2=0, xlab="X", ylab="Y", zlab="Z", project="", axes=c("LOIC"), param=FALSE, legend=FALSE, gridsize=12, cex.tickLabel=cex.tickLabel, cex.axesLabel=cex.axesLabel, cex.main=cex.main, border=TRUE, distance=c(1,1,1), bw=bw, pal=pal, main=as.expression(bquote(atop("(C) Interaction:", a[1]==0~","~a[3]==0~","~a[2]>0~","~a[4]<0~"(or v.v.)"))), rot=list(x=-34, y=64, z=53), label.rotation = list(x = 69, y = -10, z = 100))#
 #
-dat$HG_diff <- as.numeric(dat$HG2b - dat$HG1b)#
+# Dome#
+p4 <- plotRSA(x=0, y=0, x2=-.1, xy=0, y2=-.1, xlab="X", ylab="Y", zlab="Z", project="", axes=c(), param=FALSE, legend=FALSE, gridsize=12, cex.tickLabel=cex.tickLabel, cex.axesLabel=cex.axesLabel, cex.main=cex.main, border=TRUE, distance=c(1,1,1), bw=bw, pal=pal, main=as.expression(bquote(atop("(D) Dome:", a[2]<0~","~a[4]<0))))#
 #
-library(ggplot2)#
-ggplot(dat, aes(x=condition, y=HG_diff, color=sex)) + geom_point(position=position_jitter(w=.2))#
-# ---------------------------------------------------------------------#
-# Remove outlier#
-dat <- dat[dat$HG_diff > -100, ]#
-# ---------------------------------------------------------------------#
-# Frequentist#
-t.test(HG_diff ~ condition, dat)#
+# Bowl#
+p5 <- plotRSA(x=0, y=0, x2=.1, xy=0, y2=.1, xlab="X", ylab="Y", zlab="Z", project="", axes=c(), param=FALSE, legend=FALSE, gridsize=12, cex.tickLabel=cex.tickLabel, cex.axesLabel=cex.axesLabel, cex.main=cex.main, border=TRUE, distance=c(1,1,1), bw=bw, pal=pal, main=as.expression(bquote(atop("(E) Bowl:", a[2]>0~","~a[4]>0))))#
 #
-library(WRS)#
-yuen(dat$HG_diff[dat$condition=="i"], dat$HG_diff[dat$condition=="ni"])#
-# ---------------------------------------------------------------------#
-# Bayes factor#
-#
-library(BayesFactor)#
-#
-BF <- data.frame()#
-for (n in 20:nrow(dat)) {#
-	print(n)#
-	BF <- rbind(BF, data.frame(#
-		n = n,#
-		BF = as.vector(ttestBF(dat$HG_diff[dat$condition=="i" & dat$id < n], dat$HG_diff[dat$condition=="ni" & dat$id < n]))))#
-}#
-#
-plot(BF$n, log(BF$BF), type="l", lwd=2)#
-abline(h=0, lty="dotted")#
-#
-library(BayesFactorExtras)#
-seqBFplot(BF$n, BF$BF)
-setwd('/Users/Felix/Documents/LMU/Lehrveranstaltungen/2015 WS - Empra Open Science/Replikationsvorschläge/Schiestel/R')
-dat <- read.csv("Daten Kino-Studie - Tabellenblatt1.csv")
-head(dat)
-tail(dat)
-setwd('/Users/Felix/Documents/LMU/Lehrveranstaltungen/2015 WS - Empra Open Science/Replikationsvorschläge/Schiestel/R')
-dat <- read.csv("Daten Kino-Studie - Tabellenblatt1.csv")#
-dat <- dat[dat$condition != "", ]
-nrow(dat)
-setwd('/Users/Felix/Documents/LMU/Lehrveranstaltungen/2015 WS - Empra Open Science/Replikationsvorschläge/Schiestel/R')
-dat <- read.csv("Daten Kino-Studie - Tabellenblatt1.csv")#
-dat <- dat[dat$condition != "", ]#
-#
-# ---------------------------------------------------------------------#
-# Descriptives#
-#
-addmargins(table(dat$sex, dat$condition))#
-#
-dat$HG1 <- paste0("00:", gsub("_", ".", dat$handgrip_1))#
-dat$HG2 <- paste0("00:", gsub("_", ".", dat$handgrip_2))#
-#
-op <- options(digits.secs = 3)#
-dat$HG1b <- strptime(dat$HG1, "%H:%M:%OS")#
-dat$HG2b <- strptime(dat$HG2, "%H:%M:%OS")#
-#
-dat$HG_diff <- as.numeric(dat$HG2b - dat$HG1b)#
-#
-library(ggplot2)#
-ggplot(dat, aes(x=condition, y=HG_diff, color=sex)) + geom_point(position=position_jitter(w=.2))#
-# ---------------------------------------------------------------------#
-# Remove outlier#
-dat <- dat[dat$HG_diff > -100, ]#
-# ---------------------------------------------------------------------#
-# Frequentist#
-t.test(HG_diff ~ condition, dat)#
-#
-library(WRS)#
-yuen(dat$HG_diff[dat$condition=="i"], dat$HG_diff[dat$condition=="ni"])#
-# ---------------------------------------------------------------------#
-# Bayes factor#
-#
-library(BayesFactor)#
-#
-BF <- data.frame()#
-for (n in 20:nrow(dat)) {#
-	print(n)#
-	BF <- rbind(BF, data.frame(#
-		n = n,#
-		BF = as.vector(ttestBF(dat$HG_diff[dat$condition=="i" & dat$id < n], dat$HG_diff[dat$condition=="ni" & dat$id < n]))))#
-}#
-#
-plot(BF$n, log(BF$BF), type="l", lwd=2)#
-abline(h=0, lty="dotted")#
-#
-library(BayesFactorExtras)#
-seqBFplot(BF$n, BF$BF)
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA')
-# load all functions#
-setwd("/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package")#
-devtools::load_all()
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/tests')
-load("../finalSims/BPA.0.5.RData")
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/tests')
-load("../finalSims/BPA.0.RData")
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-BPA.H1 <- BPA.0.5
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-BPA.H0 <- BPA.0
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-criterion=c(1/3, 3)
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-criterion <- sort(criterion)#
-	logCriterion <- log(criterion)
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-FNE <- BPA.H1$sim %>% group_by(n) %>% summarize(#
-		FNE = sum(logBF < criterion[1])/n()#
-	)
-head(FNE)
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-criterion[2]
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-FPE <- BPA.H0$sim %>% group_by(n) %>% summarize(#
-		FPE = sum(logBF > criterion[2])/n()#
-	)
-FPE
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-max(BPA.H1$sim$n)
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-max(BPA.H0$sim$n)
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-n.max <- min(max(BPA.H1$sim$n), max(BPA.H0$sim$n))
-n.amx
-n.max
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-BPA.H1 <- BPA.H1 %>% filter(n <= n.max)#
-	BPA.H0 <- BPA.H0 %>% filter(n <= n.max)
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-BPA.H1$sim <- BPA.H1$sim %>% filter(n <= n.max)#
-	BPA.H0$sim <- BPA.H0$sim %>% filter(n <= n.max)
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-FNE <- BPA.H1$sim %>% group_by(n) %>% summarize(#
-		FNE = sum(logBF < criterion[1])/n()#
-	)#
-	FPE <- BPA.H0$sim %>% group_by(n) %>% summarize(#
-		FPE = sum(logBF > criterion[2])/n()#
-	)
-FPE
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-ggplot(FNE, aes(x=n, y=FNE)) + geom_:line()
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-ggplot(FNE, aes(x=n, y=FNE)) + geom_line()
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-ggplot(FNE, aes(x=n, y=FNE)) + geom_line() + theme_bw()
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-p1 <- ggplot(FNE, aes(x=n, y=FNE)) + geom_line(linetype="dotted") + theme_bw()#
-	p1 <- p1 + geom_line(data=FPE, aes(x=n, y=FPE), linetype="dashed")
-heads(FNE)
-head(FNE)
-head(FPE)
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-p1
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-criterion=c(1/6, 6)
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-FNE <- BPA.H1$sim %>% group_by(n) %>% summarize(#
-		FNE = sum(logBF < criterion[1])/n()#
-	)#
-	FPE <- BPA.H0$sim %>% group_by(n) %>% summarize(#
-		FPE = sum(logBF > criterion[2])/n()#
-	)#
-	p1 <- ggplot(FNE, aes(x=n, y=FNE)) + geom_line(linetype="dotted") + theme_bw()#
-	p1 <- p1 + geom_line(data=FPE, aes(x=n, y=FPE), linetype="dashed")#
-	p1
-FPE
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-p1 <- ggplot(FNE, aes(x=n, y=FNE)) + geom_line(linetype="dotted") + theme_bw()#
-	p2 <- ggplot(FPE, aes(x=n, y=FPE)) + geom_line(linetype="dotted") + theme_bw()#
-	p1#
-	p2
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-FNE <- BPA.H1$sim %>% group_by(n) %>% summarize(#
-		FNE = sum(logBF < logCriterion[1])/n()#
-	)#
-	FPE <- BPA.H0$sim %>% group_by(n) %>% summarize(#
-		FPE = sum(logBF > logCriterion[2])/n()#
-	)#
-	p1 <- ggplot(FNE, aes(x=n, y=FNE)) + geom_line(linetype="dotted") + theme_bw()#
-	p2 <- ggplot(FPE, aes(x=n, y=FPE)) + geom_line(linetype="dotted") + theme_bw()#
-	p1#
-	p2
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-grid.arrange(p1, p2)
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-library(gridExtras)
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-library(gridextras)
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
+# Saddle#
+p6 <- plotRSA(x=0, y=0, x2=.1, xy=0, y2=-.1, xlab="X", ylab="Y", zlab="Z", project="", axes=c(), param=FALSE, legend=FALSE, gridsize=12, cex.tickLabel=cex.tickLabel, cex.axesLabel=cex.axesLabel, cex.main=cex.main, border=TRUE, distance=c(1,1,1), bw=bw, pal=pal, main=as.expression(bquote(atop("(F) Saddle:", a[2]>0~","~a[4]<0~"(or vice versa)"))))
+setwd('/Users/felix/LMU/Eigene Manuskripte/2 - Submitted or Under Revision/Dyadic RSA/Supplemental Material/demo-data')
+grid.arrange(p1, p2, p3, p4, p5, p6, ncol=3, widths=unit(c(6, 6, 6), c("cm")), heights=unit(c(8, 8), "cm"), padding = unit(0.9, "line"))
+setwd('/Users/felix/LMU/Eigene Manuskripte/2 - Submitted or Under Revision/Dyadic RSA/Supplemental Material/demo-data')
 library(gridExtra)
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-grid.arrange(p1, p2)
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-p1 <- ggplot(FNE, aes(x=n, y=FNE)) + geom_line() + geom_smooth() + theme_bw()#
-	p2 <- ggplot(FPE, aes(x=n, y=FPE)) + geom_line() + geom_smooth() + theme_bw()#
-	library(gridExtra)#
+setwd('/Users/felix/LMU/Eigene Manuskripte/2 - Submitted or Under Revision/Dyadic RSA/Supplemental Material/demo-data')
+grid.arrange(p1, p2, p3, p4, p5, p6, ncol=3, widths=unit(c(6, 6, 6), c("cm")), heights=unit(c(8, 8), "cm"), padding = unit(0.9, "line"))
+plotRSA(b0=4, x=0, y=0, x2=-.25, xy=.5, y2=-.25, axes=c("LOC"), axesStyles=list(LOC=list(col="black", lwd=2, lty="solid"), LOIC=list(col="grey20", lwd=2.5, lty="solid")), project=c("LOC", "LOIC", "contour"))
+plotRSA(b0=4, x=0, y=0, x2=-.25, xy=.5, y2=-.25, axes=c("LOC"), axesStyles=list(LOC=list(col="black", lwd=2, lty="solid"), LOIC=list(col="grey20", lwd=2.5, lty="solid")), project=c("LOC", "LOIC", "contour"), bw=TRUE)
+plotRSA(b0=4, x=0, y=0, x2=-.25, xy=.5, y2=-.25, axes=c("LOC"), axesStyles=list(LOC=list(col="black", lwd=2, lty="solid"), LOIC=list(col="grey20", lwd=2.5, lty="solid")), project=c("LOC", "LOIC", "contour"), bw=TRUE, pal-flip=TRUE)
+plotRSA(b0=4, x=0, y=0, x2=-.25, xy=.5, y2=-.25, axes=c("LOC"), axesStyles=list(LOC=list(col="black", lwd=2, lty="solid"), LOIC=list(col="grey20", lwd=2.5, lty="solid")), project=c("LOC", "LOIC", "contour"), bw=TRUE, pal.flip=TRUE)
+plotRSA(b0=4, x=0, y=0, x2=-.25, xy=.5, y2=-.25, axes=c("LOC"), axesStyles=list(LOC=list(col="black", lwd=2, lty="solid"), LOIC=list(col="grey20", lwd=2.5, lty="solid")), project=c("LOC", "LOIC", "contour"), bw=TRUE, flip=TRUE)
+plotRSA(b0=4, x=0, y=0, x2=-.25, xy=.5, y2=-.25, axes=c("LOC"), axesStyles=list(LOC=list(col="black", lwd=2, lty="solid"), LOIC=list(col="grey20", lwd=2.5, lty="solid")), project=c("LOC", "LOIC", "contour"), bw=TRUE, flip.pal=TRUE)
+plotRSA(b0=4, x=0, y=0, x2=-.25, xy=.5, y2=-.25, axes=c("LOC"), axesStyles=list(LOC=list(col="black", lwd=2, lty="solid"), LOIC=list(col="grey20", lwd=2.5, lty="solid")), project=c("LOC", "LOIC", "contour"), bw=TRUE, pal="flip")
+plotRSA(b0=4, x=0, y=0, x2=-.25, xy=.5, y2=-.25, axes=c("LOC", "LOIC"), axesStyles=list(LOC=list(col="black", lwd=2, lty="solid"), LOIC=list(col="grey20", lwd=2.5, lty="solid")), project=c("LOC", "LOIC", "contour"), bw=TRUE, pal="flip")
+plotRSA(b0=4, x=0, y=0, x2=-.25, xy=.5, y2=-.25, axes=c("LOC", "LOIC"), axesStyles=list(LOC=list(col="black", lwd=2, lty="solid"), LOIC=list(col="grey80", lwd=2.5, lty="solid")), project=c("LOC", "LOIC", "contour"), bw=TRUE, pal="flip")
+plotRSA(b0=4, x=0, y=0, x2=-.25, xy=.5, y2=-.25, axes=c("LOC", "LOIC"), axesStyles=list(LOC=list(col="black", lwd=2, lty="solid"), LOIC=list(col="grey50", lwd=2.5, lty="solid")), project=c("LOC", "LOIC", "contour"), bw=TRUE, pal="flip")
+plotRSA(b0=4, x=0, y=0, x2=-.25, xy=.5, y2=-.25, axes=c("LOC", "LOIC"), axesStyles=list(LOC=list(col="black", lwd=3, lty="solid"), LOIC=list(col="grey50", lwd=3.5, lty="solid")), project=c("LOC", "LOIC", "contour"), bw=TRUE, pal="flip")
+# first: install dependent packages#
+install.packages(c("MASS", "akima", "robustbase"))#
 #
-	grid.arrange(p1, p2)
-?geom_smooth
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-p1 <- ggplot(FNE, aes(x=n, y=FNE)) + geom_line() + geom_smooth(n=10) + theme_bw()#
-	p2 <- ggplot(FPE, aes(x=n, y=FPE)) + geom_line() + geom_smooth(n=10) + theme_bw()#
-	library(gridExtra)#
-	grid.arrange(p1, p2)
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-p1 <- ggplot(FNE, aes(x=n, y=FNE)) + geom_line() + geom_smooth(n=10) + theme_bw()
-p1
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-p1 <- ggplot(FNE, aes(x=n, y=FNE)) + geom_line() + geom_smooth(span=.1) + theme_bw()
-p1
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-p2 <- ggplot(FPE, aes(x=n, y=FPE)) + geom_line() + geom_smooth(span=.1) + theme_bw()
-p2
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-ggplot(FPE, aes(x=n, y=FPE)) + geom_line() + geom_smooth(span=.2, se=FALSE) + theme_bw()
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-ggplot(FPE, aes(x=n, y=FPE)) + geom_line() + geom_smooth(span=.3, se=FALSE) + theme_bw()
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-ggplot(FNE, aes(x=n, y=FNE)) + geom_line() + geom_smooth(span=.2, se=FALSE) + theme_bw()
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-p1 <- ggplot(FNE, aes(x=n, y=FNE)) + geom_line() + geom_smooth(span=.2, se=FALSE) + theme_bw()#
-	p2 <- ggplot(FPE, aes(x=n, y=FPE)) + geom_line() + geom_smooth(span=.2, se=FALSE) + theme_bw()#
-	library(gridExtra)#
-	grid.arrange(p1, p2)
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-criterion = c(1/3, 30)
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-FNE <- BPA.H1$sim %>% group_by(n) %>% summarize(#
-		FNE = sum(logBF < logCriterion[1])/n()#
-	)#
-	FPE <- BPA.H0$sim %>% group_by(n) %>% summarize(#
-		FPE = sum(logBF > logCriterion[2])/n()#
-	)#
-	p1 <- ggplot(FNE, aes(x=n, y=FNE)) + geom_line() + geom_smooth(span=.2, se=FALSE) + theme_bw()#
-	p2 <- ggplot(FPE, aes(x=n, y=FPE)) + geom_line() + geom_smooth(span=.2, se=FALSE) + theme_bw()#
-	library(gridExtra)#
-	grid.arrange(p1, p2)
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-criterion = c(1/30, 30)
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-criterion = c(1/3, 30)
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-# just in case: order criterion#
-	criterion <- sort(criterion)#
-	logCriterion <- log(criterion)
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-FNE <- BPA.H1$sim %>% group_by(n) %>% summarize(#
-		FNE = sum(logBF < logCriterion[1])/n()#
-	)#
-	FPE <- BPA.H0$sim %>% group_by(n) %>% summarize(#
-		FPE = sum(logBF > logCriterion[2])/n()#
-	)#
-	p1 <- ggplot(FNE, aes(x=n, y=FNE)) + geom_line() + geom_smooth(span=.2, se=FALSE) + theme_bw()#
-	p2 <- ggplot(FPE, aes(x=n, y=FPE)) + geom_line() + geom_smooth(span=.2, se=FALSE) + theme_bw()#
-	library(gridExtra)#
-	grid.arrange(p1, p2)
-criterion
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-criterion = c(1/30, 30)
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-# just in case: order criterion#
-	criterion <- sort(criterion)#
-	logCriterion <- log(criterion)
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-FNE <- BPA.H1$sim %>% group_by(n) %>% summarize(#
-		FNE = sum(logBF < logCriterion[1])/n()#
-	)#
-	FPE <- BPA.H0$sim %>% group_by(n) %>% summarize(#
-		FPE = sum(logBF > logCriterion[2])/n()#
-	)#
-	p1 <- ggplot(FNE, aes(x=n, y=FNE)) + geom_line() + geom_smooth(span=.2, se=FALSE) + theme_bw()#
-	p2 <- ggplot(FPE, aes(x=n, y=FPE)) + geom_line() + geom_smooth(span=.2, se=FALSE) + theme_bw()#
-	library(gridExtra)#
-	grid.arrange(p1, p2)
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-ggplot(FNE, aes(x=n, y=FNE)) + geom_line() + geom_smooth(span=.2, se=FALSE) + theme_bw()
-FNE
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-criterion = c(1/6, 6)#
-	# just in case: order criterion#
-	criterion <- sort(criterion)#
-	logCriterion <- log(criterion)#
+# second: install suggested packages#
+install.packages(c("cobs", "robust", "mgcv", "scatterplot3d", "quantreg", "rrcov", "lars", "pwr", "trimcluster", "mc2d", "psych", "Rfit", "DepthProc", "class", "fda", "parallel"))#
 #
-	n.max <- min(max(BPA.H1$sim$n), max(BPA.H0$sim$n))#
-	BPA.H1$sim <- BPA.H1$sim %>% filter(n <= n.max)#
-	BPA.H0$sim <- BPA.H0$sim %>% filter(n <= n.max)
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-FNE <- BPA.H1$sim %>% group_by(n) %>% summarize(#
-		FNE = sum(logBF < logCriterion[1])/n()#
-	)#
-	FPE <- BPA.H0$sim %>% group_by(n) %>% summarize(#
-		FPE = sum(logBF > logCriterion[2])/n()#
-	)#
-	p1 <- ggplot(FNE, aes(x=n, y=FNE)) + geom_line() + geom_smooth(span=.2, se=FALSE) + theme_bw()#
-	p2 <- ggplot(FPE, aes(x=n, y=FPE)) + geom_line() + geom_smooth(span=.2, se=FALSE) + theme_bw()#
-	library(gridExtra)#
-	grid.arrange(p1, p2)
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-underH1 <- BPA.H1$sim %>% group_by(n) %>% summarize(#
-		FNE = sum(logBF < logCriterion[1])/n(),#
-		WE  = sum(logBF > logCriterion[1] & logBF < logCriterion[2])/n()#
-	)#
-	underH0 <- BPA.H0$sim %>% group_by(n) %>% summarize(#
-		FPE = sum(logBF > logCriterion[2])/n(),#
-		WE  = sum(logBF > logCriterion[1] & logBF < logCriterion[2])/n()#
-	)
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-p0 <- ggplot(underH0, aes(x=n, y=FPE)) + geom_line(, color="darkgreen") + geom_smooth(span=.2, se=FALSE) + theme_bw() + geom_line(aes(y=WE), linetype="dotted", color="darkgreen") + geom_smooth(span=.2, se=FALSE)
-p0
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-ggplot(underH0, aes(x=n, y=FPE)) + geom_line(color="darkgreen") + geom_smooth(span=.2, se=FALSE) + theme_bw() + geom_line(aes(y=WE), linetype="dotted", color="darkgreen") + geom_smooth(aes(y=WE), span=.2, se=FALSE)
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-p0 <- ggplot(underH0, aes(x=n, y=FPE)) + geom_line(color="darkgreen") + geom_smooth(span=.2, se=FALSE) + theme_bw() + geom_line(aes(y=WE), linetype="dotted", color="darkgreen") + geom_smooth(aes(y=WE), span=.2, se=FALSE, linetype="dotted", color="darkgreen")
-p0
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-ggplot(underH0, aes(x=n, y=FPE)) + geom_line(color="darkgreen") + geom_smooth(span=.2, se=FALSE, linetype="dotted", color="darkgreen") + theme_bw() + geom_line(aes(y=WE), linetype="dotted", color="darkgreen") + geom_smooth(aes(y=WE), span=.2, se=FALSE, linetype="dotted", color="darkgreen")
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-p0 <- ggplot(underH0, aes(x=n, y=FPE)) + geom_line(color="darkred") + geom_smooth(span=.2, se=FALSE, linetype="dotted", color="darkred") + theme_bw() + geom_line(aes(y=WE), linetype="dotted", color="darkred") + geom_smooth(aes(y=WE), span=.2, se=FALSE, linetype="dotted", color="darkred")#
-	p1 <- ggplot(underH1, aes(x=n, y=FNE)) + geom_line(color="darkgreen") + geom_smooth(span=.2, se=FALSE, linetype="dotted", color="darkgreen") + theme_bw() + geom_line(aes(y=WE), linetype="dotted", color="darkgreen") + geom_smooth(aes(y=WE), span=.2, se=FALSE, linetype="dotted", color="darkgreen")
-p0
-p1
-pß
-p0
-p1
-p0
-p1
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-pWE <- ggplot(underH1, aes(x=n, y=WE)) + geom_smooth(span=.2, se=FALSE, linetype="dotted", color="darkgreen") + geom_smooth(data=underH0, aes(y=WE), span=.2, se=FALSE, linetype="dotted", color="darkred")
-pWE
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-p0 <- ggplot(underH0, aes(x=n, y=FPE)) + geom_smooth(span=.2, se=FALSE, linetype="dotted", color="darkred") + theme_bw()#
-	pWE <- ggplot(underH1, aes(x=n, y=WE)) + geom_smooth(span=.2, se=FALSE, linetype="dotted", color="darkgreen") + geom_smooth(data=underH0, aes(y=WE), span=.2, se=FALSE, linetype="dotted", color="darkred") + theme_bw()#
-	p1 <- ggplot(underH1, aes(x=n, y=FNE)) + geom_smooth(span=.2, se=FALSE, linetype="dotted", color="darkgreen") + theme_bw()#
-	library(gridExtra)#
-	grid.arrange(p0, p1, pWE)
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-# WE = weak evidence#
-	underH1 <- BPA.H1$sim %>% group_by(n) %>% summarize(#
-		FNE = sum(logBF < logCriterion[1])/n(),#
-		WE  = sum(logBF > logCriterion[1] & logBF < logCriterion[2])/n(),#
-		CE  = sum(logBF > logCriterion[2])/n()#
-	)#
-	underH0 <- BPA.H0$sim %>% group_by(n) %>% summarize(#
-		FPE = sum(logBF > logCriterion[2])/n(),#
-		WE  = sum(logBF > logCriterion[1] & logBF < logCriterion[2])/n(),#
-		CE  = sum(logBF < logCriterion[1])/n()#
-	)
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-# just in case: order criterion#
-	criterion <- sort(criterion)#
-	logCriterion <- log(criterion)#
+# third: install an additional package which provides some C functions#
+install.packages("devtools")#
+library("devtools")#
+install_github("mrxiaohe/WRScpp")#
 #
-	n.max <- min(max(BPA.H1$sim$n), max(BPA.H0$sim$n))#
-	BPA.H1$sim <- BPA.H1$sim %>% filter(n <= n.max)#
-	BPA.H0$sim <- BPA.H0$sim %>% filter(n <= n.max)#
+# fourth: install WRS#
+install_github("nicebread/WRS", subdir="pkg")
+setwd(~)
+setwd(!"")
+setwd("~")
+tmp <- installed.packages()#
+installedpkgs <- as.vector(tmp[is.na(tmp[,"Priority"]), 1])#
+save(installedpkgs, file="installed_old.rda")
+33000/769
+library(RSA)
+demoRSA()
+library(semTools)
+?indProd
+5*28*500
+90/5
+18*4
+install.packages("summarytools")
+69900*3
+10000/3
+3333/15
+install.packages("MCMCglmm")
+library('brms')
+install.packages("rstan", repos = "https://cloud.r-project.org/", dependencies=TRUE)
+fx <- inline::cxxfunction( signature(x = "integer", y = "numeric" ) , '#
+	return ScalarReal( INTEGER(x)[0] * REAL(y)[0] ) ;#
+' )#
+#
+fx( 2L, 5 ) # should be 10
+install.packages("pushoverr")
+setwd('/Users/felix')
+pushoverr::set_pushover_user(user = "uY7zyarxM2HoNaTLeX8HXjWvpFA4Cp")
+setwd('/Users/felix')
+pushoverr::pushover("TEST")
+set_pushover_app(token = "az47sd6o1i44pqti5qe1nzix2twfse")
+setwd('/Users/felix')
+pushoverr::set_pushover_app(token = "az47sd6o1i44pqti5qe1nzix2twfse")
+setwd('/Users/felix')
+pushoverr::pushover("TEST")
+3.5*60
+4.5*60
+26^2
+8/39
+library("benchmarkme")#
+get_linear_algebra()
+library("benchmarkme")#
+get_linear_algebra()#
+res = benchmark_std()#
+sum(res$user)
+# R Benchmark 2.5 (06/2008) [Simon Urbanek]#
+# version 2.5: scaled to get roughly 1s per test, R 2.7.0 @ 2.6GHz Mac Pro#
+# R Benchmark 2.4 (06/2008) [Simon Urbanek]#
+# version 2.4 adapted to more recent Matrix package#
+# R Benchmark 2.3 (21 April 2004)#
+# Warning: changes are not carefully checked yet!#
+# version 2.3 adapted to R 1.9.0#
+# Many thanks to Douglas Bates (bates@stat.wisc.edu) for improvements!#
+# version 2.2 adapted to R 1.8.0#
+# version 2.1 adapted to R 1.7.0#
+# version 2, scaled to get 1 +/- 0.1 sec with R 1.6.2#
+# using the standard ATLAS library (Rblas.dll)#
+# on a Pentium IV 1.6 Ghz with 1 Gb Ram on Win XP pro#
+#
+# revised and optimized for R v. 1.5.x, 8 June 2002#
+# Requires additionnal libraries: Matrix, SuppDists#
+# Author : Philippe Grosjean#
+# eMail  : phgrosjean@sciviews.org#
+# Web    : http://www.sciviews.org#
+# License: GPL 2 or above at your convenience (see: http://www.gnu.org)#
+##
+# Several tests are adapted from the Splus Benchmark Test V. 2#
+# by Stephan Steinhaus (stst@informatik.uni-frankfurt.de) #
+# Reference for Escoufier's equivalents vectors (test III.5):#
+# Escoufier Y., 1970. Echantillonnage dans une population de variables#
+# aleatoires réelles. Publ. Inst. Statis. Univ. Paris 19 Fasc 4, 1-47.#
+##
+# type source("c:/<dir>/R2.R") to start the test#
+#
+runs <- 3			# Number of times the tests are executed#
+times <- rep(0, 15); dim(times) <- c(5,3)#
+require(Matrix)		# Optimized matrix operations#
+require(SuppDists)	# Optimized random number generators#
+#Runif <- rMWC1019	# The fast uniform number generator#
+Runif <- runif#
+# If you don't have SuppDists, you can use: Runif <- runif#
+#a <- rMWC1019(10, new.start=TRUE, seed=492166)	# Init. the generator#
+#Rnorm <- rziggurat	# The fast normal number generator#
+# If you don't have SuppDists, you can use: Rnorm <- rnorm#
+#b <- rziggurat(10, new.start=TRUE)	# Init. the generator#
+Rnorm <- rnorm#
+remove("a", "b")#
+options(object.size=100000000)#
+#
+cat("\n\n   R Benchmark 2.5\n")#
+cat("   ===============\n")#
+cat(c("Number of times each test is run__________________________: ", runs))#
+cat("\n\n")#
+cat("   I. Matrix calculation\n")#
+cat("   ---------------------\n")#
+if (R.Version()$os == "Win32" || R.Version()$os == "mingw32") flush.console()#
+#
+# (1)#
+cumulate <- 0; a <- 0; b <- 0#
+for (i in 1:runs) {#
+  invisible(gc())#
+  timing <- system.time({#
+    a <- matrix(Rnorm(2500*2500)/10, ncol=2500, nrow=2500);#
+    b <- t(a);#
+    dim(b) <- c(1250, 5000);#
+    a <- t(b)#
+  })[3]#
+  cumulate <- cumulate + timing#
+}#
+timing <- cumulate/runs#
+times[1, 1] <- timing#
+cat(c("Creation, transp., deformation of a 2500x2500 matrix (sec): ", timing, "\n"))#
+remove("a", "b")#
+if (R.Version()$os == "Win32" || R.Version()$os == "mingw32") flush.console()#
+#
+# (2)#
+cumulate <- 0; b <- 0#
+for (i in 1:runs) {#
+  a <- abs(matrix(Rnorm(2500*2500)/2, ncol=2500, nrow=2500));#
+  invisible(gc())#
+  timing <- system.time({ #
+    b <- a^1000 #
+  })[3]#
+  cumulate <- cumulate + timing#
+}#
+timing <- cumulate/runs#
+times[2, 1] <- timing#
+cat(c("2400x2400 normal distributed random matrix ^1000____ (sec): ", timing, "\n"))#
+remove("a", "b")#
+if (R.Version()$os == "Win32" || R.Version()$os == "mingw32") flush.console()#
+#
+# (3)#
+cumulate <- 0; b <- 0#
+for (i in 1:runs) {#
+  a <- Rnorm(7000000)#
+  invisible(gc())#
+  timing <- system.time({#
+    b <- sort(a, method="quick")	# Sort is modified in v. 1.5.x#
+    # And there is now a quick method that better competes with other packages!!!#
+  })[3]#
+  cumulate <- cumulate + timing#
+}#
+timing <- cumulate/runs#
+times[3, 1] <- timing#
+cat(c("Sorting of 7,000,000 random values__________________ (sec): ", timing, "\n"))#
+remove("a", "b")#
+if (R.Version()$os == "Win32" || R.Version()$os == "mingw32") flush.console()#
+#
+# (4)#
+cumulate <- 0; b <- 0#
+for (i in 1:runs) {#
+  a <- Rnorm(2800*2800); dim(a) <- c(2800, 2800)#
+  invisible(gc())#
+  timing <- system.time({#
+    b <- crossprod(a)		# equivalent to: b <- t(a) %*% a#
+  })[3]#
+  cumulate <- cumulate + timing#
+}#
+timing <- cumulate/runs#
+times[4, 1] <- timing#
+cat(c("2800x2800 cross-product matrix (b = a' * a)_________ (sec): ", timing, "\n"))#
+remove("a", "b")#
+if (R.Version()$os == "Win32" || R.Version()$os == "mingw32") flush.console()#
+#
+# (5)#
+cumulate <- 0; c <- 0; qra <-0#
+for (i in 1:runs) {#
+  a <- new("dgeMatrix", x = Rnorm(2000*2000), Dim = as.integer(c(2000,2000)))#
+  b <- as.double(1:2000)#
+  invisible(gc())#
+  timing <- system.time({#
+    c <- solve(crossprod(a), crossprod(a,b))#
+  })[3]#
+  cumulate <- cumulate + timing#
+  # This is the old method#
+  #a <- Rnorm(600*600); dim(a) <- c(600,600)#
+  #b <- 1:600#
+  #invisible(gc())#
+  #timing <- system.time({#
+  #  qra <- qr(a, tol = 1e-7);#
+  #  c <- qr.coef(qra, b)#
+  #  #Rem: a little faster than c <- lsfit(a, b, inter=F)$coefficients#
+  #})[3]#
+  #cumulate <- cumulate + timing#
+}#
+timing <- cumulate/runs#
+times[5, 1] <- timing#
+cat(c("Linear regr. over a 3000x3000 matrix (c = a \\ b')___ (sec): ", timing, "\n"))#
+remove("a", "b", "c", "qra")#
+if (R.Version()$os == "Win32" || R.Version()$os == "mingw32") flush.console()#
+#
+times[ , 1] <- sort(times[ , 1])#
+cat("                      --------------------------------------------\n")#
+cat(c("                 Trimmed geom. mean (2 extremes eliminated): ", exp(mean(log(times[2:4, 1]))), "\n\n"))#
+#
+cat("   II. Matrix functions\n")#
+cat("   --------------------\n")#
+if (R.Version()$os == "Win32") flush.console()#
+#
+# (1)#
+cumulate <- 0; b <- 0#
+for (i in 1:runs) {#
+  a <- Rnorm(2400000)#
+  invisible(gc())#
+  timing <- system.time({#
+    b <- fft(a)#
+  })[3]#
+  cumulate <- cumulate + timing#
+}#
+timing <- cumulate/runs#
+times[1, 2] <- timing#
+cat(c("FFT over 2,400,000 random values____________________ (sec): ", timing, "\n"))#
+remove("a", "b")#
+if (R.Version()$os == "Win32" || R.Version()$os == "mingw32") flush.console()#
+#
+# (2)#
+cumulate <- 0; b <- 0#
+for (i in 1:runs) {#
+  a <- array(Rnorm(600*600), dim = c(600, 600))#
+  # Only needed if using eigen.Matrix(): Matrix.class(a)#
+  invisible(gc())#
+  timing <- system.time({#
+  	b <- eigen(a, symmetric=FALSE, only.values=TRUE)$Value#
+  	# Rem: on my machine, it is faster than:#
+  #	 b <- La.eigen(a, symmetric=F, only.values=T, method="dsyevr")$Value#
+  #	 b <- La.eigen(a, symmetric=F, only.values=T, method="dsyev")$Value#
+  #  b <- eigen.Matrix(a, vectors = F)$Value#
+  })[3]#
+  cumulate <- cumulate + timing#
+}#
+timing <- cumulate/runs#
+times[2, 2] <- timing#
+cat(c("Eigenvalues of a 640x640 random matrix______________ (sec): ", timing, "\n"))#
+remove("a", "b")#
+if (R.Version()$os == "Win32" || R.Version()$os == "mingw32") flush.console()#
+#
+# (3)#
+cumulate <- 0; b <- 0#
+for (i in 1:runs) {#
+  a <- Rnorm(2500*2500); dim(a) <- c(2500, 2500)#
+  #Matrix.class(a)#
+  invisible(gc())#
+  timing <- system.time({#
+    #b <- determinant(a, logarithm=F)#
+    # Rem: the following is slower on my computer!#
+    # b <- det.default(a)#
+    b <- det(a)#
+  })[3]#
+  cumulate <- cumulate + timing#
+}#
+timing <- cumulate/runs#
+times[3, 2] <- timing#
+cat(c("Determinant of a 2500x2500 random matrix____________ (sec): ", timing, "\n"))#
+remove("a", "b")#
+if (R.Version()$os == "Win32" || R.Version()$os == "mingw32") flush.console()#
+#
+# (4)#
+cumulate <- 0; b <- 0#
+for (i in 1:runs) {#
+  a <- crossprod(new("dgeMatrix", x = Rnorm(3000*3000),#
+                       Dim = as.integer(c(3000, 3000))))#
+  invisible(gc())#
+  #a <- Rnorm(900*900); dim(a) <- c(900, 900)#
+  #a <- crossprod(a, a)#
+  timing <- system.time({#
+    b <- chol(a)#
+  })[3]#
+  cumulate <- cumulate + timing#
+}#
+timing <- cumulate/runs#
+times[4, 2] <- timing#
+cat(c("Cholesky decomposition of a 3000x3000 matrix________ (sec): ", timing, "\n"))#
+remove("a", "b")#
+if (R.Version()$os == "Win32" || R.Version()$os == "mingw32") flush.console()#
+#
+# (5)#
+cumulate <- 0; b <- 0#
+for (i in 1:runs) {#
+  a <- new("dgeMatrix", x = Rnorm(1600*1600), Dim = as.integer(c(1600, 1600)))#
+  invisible(gc())#
+  #a <- Rnorm(400*400); dim(a) <- c(400, 400)#
+  timing <- system.time({#
+  #  b <- qr.solve(a)#
+    # Rem: a little faster than#
+    b <- solve(a)#
+  })[3]#
+  cumulate <- cumulate + timing#
+}#
+timing <- cumulate/runs#
+times[5, 2] <- timing#
+cat(c("Inverse of a 1600x1600 random matrix________________ (sec): ", timing, "\n"))#
+remove("a", "b")#
+if (R.Version()$os == "Win32" || R.Version()$os == "mingw32") flush.console()#
+#
+times[ , 2] <- sort(times[ , 2])#
+cat("                      --------------------------------------------\n")#
+cat(c("                Trimmed geom. mean (2 extremes eliminated): ", exp(mean(log(times[2:4, 2]))), "\n\n"))#
+#
+cat("   III. Programmation\n")#
+cat("   ------------------\n")#
+if (R.Version()$os == "Win32" || R.Version()$os == "mingw32") flush.console()#
+#
+# (1)#
+cumulate <- 0; a <- 0; b <- 0; phi <- 1.6180339887498949#
+for (i in 1:runs) {#
+  a <- floor(Runif(3500000)*1000)#
+  invisible(gc())#
+  timing <- system.time({#
+    b <- (phi^a - (-phi)^(-a))/sqrt(5)#
+  })[3]#
+  cumulate <- cumulate + timing#
+}#
+timing <- cumulate/runs#
+times[1, 3] <- timing#
+cat(c("3,500,000 Fibonacci numbers calculation (vector calc)(sec): ", timing, "\n"))#
+remove("a", "b", "phi")#
+if (R.Version()$os == "Win32" || R.Version()$os == "mingw32") flush.console()#
+#
+# (2)#
+cumulate <- 0; a <- 3000; b <- 0#
+for (i in 1:runs) {#
+  invisible(gc())#
+  timing <- system.time({#
+    b <- rep(1:a, a); dim(b) <- c(a, a);#
+    b <- 1 / (t(b) + 0:(a-1))#
+    # Rem: this is twice as fast as the following code proposed by R programmers#
+    # a <- 1:a; b <- 1 / outer(a - 1, a, "+")#
+  })[3]#
+  cumulate <- cumulate + timing#
+}#
+timing <- cumulate/runs#
+times[2, 3] <- timing#
+cat(c("Creation of a 3000x3000 Hilbert matrix (matrix calc) (sec): ", timing, "\n"))#
+remove("a", "b")#
+if (R.Version()$os == "Win32" || R.Version()$os == "mingw32") flush.console()#
+#
+# (3)#
+cumulate <- 0; c <- 0#
+gcd2 <- function(x, y) {if (sum(y > 1.0E-4) == 0) x else {y[y == 0] <- x[y == 0]; Recall(y, x %% y)}}#
+for (i in 1:runs) {#
+  a <- ceiling(Runif(400000)*1000)#
+  b <- ceiling(Runif(400000)*1000)#
+  invisible(gc())#
+  timing <- system.time({	  #
+    c <- gcd2(a, b)                            # gcd2 is a recursive function#
+  })[3]#
+  cumulate <- cumulate + timing#
+}#
+timing <- cumulate/runs#
+times[3, 3] <- timing#
+cat(c("Grand common divisors of 400,000 pairs (recursion)__ (sec): ", timing, "\n"))#
+remove("a", "b", "c", "gcd2")#
+if (R.Version()$os == "Win32" || R.Version()$os == "mingw32") flush.console()#
+#
+# (4)#
+cumulate <- 0; b <- 0#
+for (i in 1:runs) {#
+  b <- rep(0, 500*500); dim(b) <- c(500, 500)#
+  invisible(gc())#
+  timing <- system.time({#
+  	# Rem: there are faster ways to do this#
+  	# but here we want to time loops (220*220 'for' loops)! #
+    for (j in 1:500) {#
+      for (k in 1:500) {#
+        b[k,j] <- abs(j - k) + 1#
+      }#
+    }#
+  })[3]#
+  cumulate <- cumulate + timing#
+}#
+timing <- cumulate/runs#
+times[4, 3] <- timing#
+cat(c("Creation of a 500x500 Toeplitz matrix (loops)_______ (sec): ", timing, "\n"))#
+remove("b", "j", "k")#
+if (R.Version()$os == "Win32" || R.Version()$os == "mingw32") flush.console()#
+#
+# (5)#
+cumulate <- 0; p <- 0; vt <- 0; vr <- 0; vrt <- 0; rvt <- 0; RV <- 0; j <- 0; k <- 0;#
+x2 <- 0; R <- 0; Rxx <- 0; Ryy <- 0; Rxy <- 0; Ryx <- 0; Rvmax <- 0#
+# Calculate the trace of a matrix (sum of its diagonal elements)#
+Trace <- function(y) {sum(c(y)[1 + 0:(min(dim(y)) - 1) * (dim(y)[1] + 1)], na.rm=FALSE)}#
+for (i in 1:runs) {#
+  x <- abs(Rnorm(45*45)); dim(x) <- c(45, 45)#
+  invisible(gc())#
+  timing <- system.time({#
+    # Calculation of Escoufier's equivalent vectors#
+    p <- ncol(x)#
+    vt <- 1:p                                  # Variables to test#
+    vr <- NULL                                 # Result: ordered variables#
+    RV <- 1:p                                  # Result: correlations#
+    vrt <- NULL#
+    for (j in 1:p) {                           # loop on the variable number#
+      Rvmax <- 0#
+      for (k in 1:(p-j+1)) {                   # loop on the variables#
+        x2 <- cbind(x, x[,vr], x[,vt[k]])#
+        R <- cor(x2)                           # Correlations table#
+        Ryy <- R[1:p, 1:p]#
+        Rxx <- R[(p+1):(p+j), (p+1):(p+j)]#
+        Rxy <- R[(p+1):(p+j), 1:p]#
+        Ryx <- t(Rxy)#
+        rvt <- Trace(Ryx %*% Rxy) / sqrt(Trace(Ryy %*% Ryy) * Trace(Rxx %*% Rxx)) # RV calculation#
+        if (rvt > Rvmax) {#
+          Rvmax <- rvt                         # test of RV#
+          vrt <- vt[k]                         # temporary held variable#
+        }#
+      }#
+      vr[j] <- vrt                             # Result: variable#
+      RV[j] <- Rvmax                           # Result: correlation#
+      vt <- vt[vt!=vr[j]]                      # reidentify variables to test#
+    }#
+  })[3]#
+  cumulate <- cumulate + timing#
+}#
+times[5, 3] <- timing#
+cat(c("Escoufier's method on a 45x45 matrix (mixed)________ (sec): ", timing, "\n"))#
+remove("x", "p", "vt", "vr", "vrt", "rvt", "RV", "j", "k")#
+remove("x2", "R", "Rxx", "Ryy", "Rxy", "Ryx", "Rvmax", "Trace") #
+if (R.Version()$os == "Win32" || R.Version()$os == "mingw32") flush.console()#
+#
+times[ , 3] <- sort(times[ , 3])#
+cat("                      --------------------------------------------\n")#
+cat(c("                Trimmed geom. mean (2 extremes eliminated): ", exp(mean(log(times[2:4, 3]))), "\n\n\n"))#
+#
+cat(c("Total time for all 15 tests_________________________ (sec): ", sum(times), "\n"))#
+cat(c("Overall mean (sum of I, II and III trimmed means/3)_ (sec): ", exp(mean(log(times[2:4, ]))), "\n"))#
+remove("cumulate", "timing", "times", "runs", "i")#
+cat("                      --- End of test ---\n\n")
+80000*.65
+52000*3
+66.300*.65*3
+72000*3
+66.300*3
+66300*3
+66300*3*.65
+230000*2/3
+300000*2/3
+library(RSA)
+plotRSA(x=.2, y=.15, xy=.1)
+plotRSA(x=.2, y=.15, xy=.0)
+plotRSA(x=.2, y=.15, xy=.1)
+28+19
+setwd('/Users/felix/LRZ Sync+Share/DFG_Motive (Caroline Zygar)/Papers/Was schnelles von Felix 2019/paper_reliability')
+library(knitr);knit2pdf('/Users/felix/LRZ Sync+Share/DFG_Motive (Caroline Zygar)/Papers/Was schnelles von Felix 2019/paper_reliability/paper.Rnw')
+setwd('/Users/felix/LRZ Sync+Share/DFG_Motive (Caroline Zygar)/Papers/Was schnelles von Felix 2019/paper_reliability')
+library(knitr);knit2pdf('/Users/felix/LRZ Sync+Share/DFG_Motive (Caroline Zygar)/Papers/Was schnelles von Felix 2019/paper_reliability/paper.Rnw')
+setwd('/Users/felix/LRZ Sync+Share/DFG_Motive (Caroline Zygar)/Papers/Was schnelles von Felix 2019/paper_reliability')
+library(knitr);knit2pdf('/Users/felix/LRZ Sync+Share/DFG_Motive (Caroline Zygar)/Papers/Was schnelles von Felix 2019/paper_reliability/paper.Rnw')
+setwd('/Users/felix/LRZ Sync+Share/DFG_Motive (Caroline Zygar)/Papers/Was schnelles von Felix 2019/paper_reliability')
+library(knitr);knit2pdf('/Users/felix/LRZ Sync+Share/DFG_Motive (Caroline Zygar)/Papers/Was schnelles von Felix 2019/paper_reliability/paper.Rnw')
+setwd('/Users/felix/LRZ Sync+Share/DFG_Motive (Caroline Zygar)/Papers/Was schnelles von Felix 2019/paper_reliability')
+library(knitr);knit2pdf('/Users/felix/LRZ Sync+Share/DFG_Motive (Caroline Zygar)/Papers/Was schnelles von Felix 2019/paper_reliability/paper.Rnw')
+setwd('/Users/felix/LRZ Sync+Share/DFG_Motive (Caroline Zygar)/Papers/Was schnelles von Felix 2019/paper_reliability')
+library(knitr);knit2pdf('/Users/felix/LRZ Sync+Share/DFG_Motive (Caroline Zygar)/Papers/Was schnelles von Felix 2019/paper_reliability/paper.Rnw')
+setwd('/Users/felix/LRZ Sync+Share/DFG_Motive (Caroline Zygar)/Papers/Was schnelles von Felix 2019/paper_reliability')
+library(knitr);knit2pdf('/Users/felix/LRZ Sync+Share/DFG_Motive (Caroline Zygar)/Papers/Was schnelles von Felix 2019/paper_reliability/paper.Rnw')
+setwd('/Users/felix/LRZ Sync+Share/DFG_Motive (Caroline Zygar)/Papers/Was schnelles von Felix 2019/paper_reliability')
+library(knitr);knit2pdf('/Users/felix/LRZ Sync+Share/DFG_Motive (Caroline Zygar)/Papers/Was schnelles von Felix 2019/paper_reliability/paper.Rnw')
+VDC.table
+setwd('/Users/felix/LRZ Sync+Share/DFG_Motive (Caroline Zygar)/Papers/Was schnelles von Felix 2019')
+load(file="cache/varDecomp.RData")
+VDC.table
+VDC_table
+names(VDC_table)
+setwd('/Users/felix/LRZ Sync+Share/DFG_Motive (Caroline Zygar)/Papers/Was schnelles von Felix 2019')
+VAR.S1.rel
+setwd('/Users/felix/LRZ Sync+Share/DFG_Motive (Caroline Zygar)/Papers/Was schnelles von Felix 2019')
+library(dplyr)#
+library(ascii)#
+options(scipen=999)#
+load(file="cache/VDC.S1.RData")#
+load(file="cache/VDC.S2.RData")#
+#
+# load all files in the /helpers directory#
+R.utils::sourceDirectory("helpers/", modifiedOnly=TRUE)#
+#
+# varDecomp1 function from /helpers directory#
+VAR.S1.abs <- sapply(#
+	list(VDC.S1.RS, VDC.S1.Ind, VDC.S1.Pow, VDC.S1.A, VDC.S1.C),#
+	varDecomp1,#
+	digits=5, include_error = TRUE, relative=FALSE, add_overall=FALSE#
+) %>% as.data.frame()#
+#
+VAR.S2.abs <- sapply(#
+	list(VDC.S2.RS, VDC.S2.Ind, VDC.S2.Pow, VDC.S2.A, VDC.S2.C),#
+	varDecomp1,#
+	digits=5, include_error = TRUE, relative=FALSE, add_overall=FALSE#
+) %>% as.data.frame()#
+#
+# a1 <- varDecomp1(model=VDC.S2.RS, digits=5, include_error = TRUE, relative=FALSE, add_overall=FALSE)#
+# a2 <- varDecomp1(model=VDC.S2.C, digits=5, include_error = TRUE, relative=FALSE, add_overall=FALSE)#
+# a3 <- varDecomp1(model=VDC.S1.A, digits=5, include_error = TRUE, relative=FALSE, add_overall=FALSE)#
+# a4 <- varDecomp1(model=VDC.S1.A, digits=5, include_error = FALSE, relative=TRUE, add_overall=FALSE)#
+# all.equal(names(a1), names(a2))#
+# model=VDC.S2.RS; digits=5; include_error = TRUE; relative=FALSE; add_overall=FALSE#
+#
+colnames(VAR.S1.abs) <- colnames(VAR.S2.abs) <- c("RS", "Ind", "Pow", "A", "C")#
+VAR.S1.rel <- sapply(#
+	list(VDC.S1.RS, VDC.S1.Ind, VDC.S1.Pow, VDC.S1.A, VDC.S1.C),#
+	varDecomp1,#
+	digits=5, include_error = FALSE, relative=TRUE, add_overall=FALSE#
+) %>% as.data.frame()#
+#
+VAR.S2.rel <- sapply(#
+	list(VDC.S2.RS, VDC.S2.Ind, VDC.S2.Pow, VDC.S2.A, VDC.S2.C),#
+	varDecomp1,#
+	digits=5, include_error = FALSE, relative=TRUE, add_overall=FALSE#
+) %>% as.data.frame()#
+#
+colnames(VAR.S1.rel) <- colnames(VAR.S2.rel) <- c("RS", "Ind", "Pow", "A", "C")
+VAR.S1.rel
+rowMeans(VAR.S1.rel)
+rowMeans(VAR.S2.rel)
+sort(rowMeans(VAR.S2.rel))
+sort(rowMeans(VAR.S1.rel))
+(7.4+8.3)/2
+9.3+14.4
+23.7/2
+(157+134)/2
+(rowMeans(VAR.S1.rel) + rowMeans(VAR.S1.rel))/2 %>% sort
+(rowMeans(VAR.S1.rel) + rowMeans(VAR.S1.rel))/2
+((rowMeans(VAR.S1.rel) + rowMeans(VAR.S1.rel))/2) %>% sort
+((rowMeans(VAR.S1.rel) + rowMeans(VAR.S2.rel))/2) %>% sort
+setwd('/Users/felix/LRZ Sync+Share/DFG_Motive (Caroline Zygar)/Papers/Was schnelles von Felix 2019/paper_reliability')
+\parencite{adolf_ErgodicitySufficientNot_2019,medaglia_ReplyAdolfFried_2019,fisher_LackGrouptoindividualGeneralizability_2018}.
+setwd('/Users/felix/LRZ Sync+Share/DFG_Motive (Caroline Zygar)/Papers/Was schnelles von Felix 2019/paper_reliability')
+library(knitr);knit2pdf('/Users/felix/LRZ Sync+Share/DFG_Motive (Caroline Zygar)/Papers/Was schnelles von Felix 2019/paper_reliability/paper.Rnw')
+7329*12
+5863*12
+71770*1.25
+732190
+73210*1.25
+library(BFDA)#
+#
+bfh1 <- BFDA.sim(.45,type="t.paired", design="fixed.n",n.min=10, alternative="greater")#
+bfh0 <- BFDA.sim(0,type="t.paired", design="fixed.n",n.min=10, alternative="greater")#
+#
+evDens(bfh1, bfh0, n=50, xlim=20)
+bfh0
+bfh1
+BFDA.H1 <- bfh1
+BFDA.H0 <- bfh0
+n=50
+xlim020
+xlim=20
+evDens(bfh1, bfh0, n=50, xlim=c(0.1, 20))
+xlim=c(0.1, 20)
+setwd('/Users/felix/Github/BFDA/package/R')
+boundary=c(1/6, 6)
+setwd('/Users/felix/Github/BFDA/package/R')
+noSplit=FALSE
+setwd('/Users/felix/Github/BFDA/package/R')
+cex=1.2
+setwd('/Users/felix/Github/BFDA/package/R')
+cex.axis=1
+setwd('/Users/felix/Github/BFDA/package/R')
+bw=FALSE
+setwd('/Users/felix/Github/BFDA/package/R')
+N <- n	# rename, otherwise dplyr breaks ...#
+	# reduce data set to relevant sample size#
+	logBF.H0 <-  BFDA.H0$sim %>% filter(n==N) %>% .$logBF#
+	logBF.H1 <-  BFDA.H1$sim %>% filter(n==N) %>% .$logBF
+setwd('/Users/felix/Github/BFDA/package/R')
+logBF.H0
+bfh1
+unique(bfh1$sim$n)
+unique(bfh1$sim)
+str(bfh1)
+setwd('/Users/felix/Github/BFDA/package/R')
+n.min=10
+setwd('/Users/felix/Github/BFDA/package/R')
+n.max=500
+type="t.paired"
+evDens(bfh1, bfh0, n=500, xlim=c(0.1, 20))
+setwd('/Users/felix/Github/BFDA/package/R')
+logBF.H0
+nrow(logBF.H0)
+setwd('/Users/felix/Github/BFDA/package/R')
+is.null(logBF.H0) | nrow(logBF.H0) == 0)
+setwd('/Users/felix/Github/BFDA/package/R')
+is.null(logBF.H0) | nrow(logBF.H0) == 0
+setwd('/Users/felix/Github/BFDA/package/R')
+is.null(logBF.H0)
+setwd('/Users/felix/Github/BFDA/package/R')
+logBF.H0
+setwd('/Users/felix/Github/BFDA/package/R')
+length(logBF.H0)
+setwd('/Users/felix/Github/BFDA/package/R')
+evDens <- function(BFDA.H1, BFDA.H0, n, boundary=c(1/6, 6), xlim=NA, noSplit=FALSE, cex=1.2, cex.axis=1, bw=FALSE) {#
+	N <- n	# rename, otherwise dplyr breaks ...#
+	# reduce data set to relevant sample size#
+	logBF.H0 <-  BFDA.H0$sim %>% filter(n==N) %>% .$logBF#
+	logBF.H1 <-  BFDA.H1$sim %>% filter(n==N) %>% .$logBF	#
+	if (length(logBF.H0) == 0 | length(logBF.H1) == 0) {#
+		stop(paste0("No data available at n=", N, ". Did you simulate that n?"))#
+	}#
+#
+	# define scale range#
+	ylim <- c(0, 1)#
+	if (all(is.na(xlim))) {#
+		allBF <- c(logBF.H0, logBF.H1)#
+		MAX <- quantile(allBF, prob=.95)#
+		xlim <- exp(c(min(allBF), MAX))#
+	}#
+	logBoundary <- log(boundary)#
+	logXlim <- log(xlim)	#
+	# compute densities of Bayes factors#
+	dens.H0 <- density(logBF.H0, from=logXlim[1], to=logXlim[2])#
+	dens.H1 <- density(logBF.H1, from=logXlim[1], to=logXlim[2])#
+	# normalize densities to max=1#
+	maxDens <- max(c(dens.H0$y, dens.H1$y))#
+	dens.H0$y <- dens.H0$y/maxDens#
+	dens.H1$y <- dens.H1$y/maxDens#
+#
+	# split screen for two plots - omit for special layouts!#
+	if (noSplit==FALSE) par(mfrow=c(2, 1), mar=c(4, 2.3, 1.8, 1))#
 #
 	# ---------------------------------------------------------------------#
-	# Plot: x-axis = n, y-axis = error rate, fixed boundary#
-	# WE = weak evidence#
-	underH1 <- BPA.H1$sim %>% group_by(n) %>% summarize(#
-		FNE = sum(logBF < logCriterion[1])/n(),#
-		WE  = sum(logBF > logCriterion[1] & logBF < logCriterion[2])/n(),#
-		CE  = sum(logBF > logCriterion[2])/n()#
-	)#
-	underH0 <- BPA.H0$sim %>% group_by(n) %>% summarize(#
-		FPE = sum(logBF > logCriterion[2])/n(),#
-		WE  = sum(logBF > logCriterion[1] & logBF < logCriterion[2])/n(),#
-		CE  = sum(logBF < logCriterion[1])/n()#
-	)	#
+	# H1#
+	suppressWarnings(evDens.plot(dens.H1, n=N, boundary=boundary, xlim=xlim, ylim=ylim, cex=cex, cex.axis=cex.axis, bw=bw, largeIsGreen=TRUE, main=expression(Under~H[1])))#
 #
-	p0 <- ggplot(underH0, aes(x=n, y=FPE)) + geom_smooth(span=.2, se=FALSE, linetype="dotted", color="darkred") + theme_bw()#
-	pWE <- ggplot(underH1, aes(x=n, y=WE)) + geom_smooth(span=.2, se=FALSE, linetype="dotted", color="darkgreen") + geom_smooth(data=underH0, aes(y=WE), span=.2, se=FALSE, linetype="dotted", color="darkred") + theme_bw()#
-	pCE <- ggplot(underH1, aes(x=n, y=WE)) + geom_smooth(span=.2, se=FALSE, linetype="dotted", color="darkgreen") + geom_smooth(data=underH0, aes(y=WE), span=.2, se=FALSE, linetype="dotted", color="darkred") + theme_bw()#
-	p1 <- ggplot(underH1, aes(x=n, y=FNE)) + geom_smooth(span=.2, se=FALSE, linetype="dotted", color="darkgreen") + theme_bw()#
-	library(gridExtra)#
-	grid.arrange(p0, p1, pWE)
-setwd('/Users/Felix/Documents/R/Funktionen/GitHub/BPA/package/R')
-p0 <- ggplot(underH0, aes(x=n, y=FPE)) + geom_smooth(span=.2, se=FALSE, color="darkred") + theme_bw()#
-	pWE <- ggplot(underH1, aes(x=n, y=WE)) + geom_smooth(span=.2, se=FALSE, color="darkgreen") + geom_smooth(data=underH0, aes(y=WE), span=.2, se=FALSE, color="darkred") + theme_bw()#
-	pCE <- ggplot(underH1, aes(x=n, y=WE)) + geom_smooth(span=.2, se=FALSE, color="darkgreen") + geom_smooth(data=underH0, aes(y=WE), span=.2, se=FALSE, color="darkred") + theme_bw()#
-	p1 <- ggplot(underH1, aes(x=n, y=FNE)) + geom_smooth(span=.2, se=FALSE, color="darkgreen") + theme_bw()#
-	library(gridExtra)#
-	grid.arrange(p0, p1, pWE)
+	# ---------------------------------------------------------------------#
+	# Under H0#
+	suppressWarnings(evDens.plot(dens.H0, n=N, boundary=boundary, xlim=xlim, ylim=ylim, cex=cex, cex.axis=cex.axis, bw=bw, largeIsGreen=FALSE, main=expression(Under~H[0])))#
+}#
+evDens.plot <- function(dens, n, boundary=c(1/6, 6), xlim=NA, ylim=c(0, 1), cex=1.2, cex.axis=1, bw=FALSE, largeIsGreen=TRUE, main="") {#
+#
+	logBoundary <- log(boundary)#
+	logXlim <- log(xlim)#
+	if (all(is.na(xlim))) xlim <- c(1/10, 1000)#
+#
+	plot(NA, xlim=logXlim, ylim=ylim, xlab="", ylab="", bty="n", axes=FALSE, main=main)#
+	mtext("Density", side=2, line=1, cex=cex)#
+#
+	# axes#
+	# automatic labeling of y-axis#
+	xaxis.at <- c(-log(30), -log(10), -log(3), log(1), log(3), log(10), log(30))#
+	xaxis.labels <- c("1/30", "1/10", "1/3", "1", "3", "10", "30")#
+	i <- 2#
+	repeat {#
+		if (logXlim[2] >= log(10^i)) {#
+			xaxis.at <- c(xaxis.at, log(10^i))#
+			xaxis.labels <- c(xaxis.labels, as.character(10^i))#
+			i <- i+1#
+		} else {break;}#
+	}#
+#
+	# set scale ticks#
+	axis(1, at = xaxis.at[inside(xaxis.at, c(-Inf, logXlim[2]))],  labels=xaxis.labels[inside(xaxis.at, c(-Inf, logXlim[2]))], las=1, cex.axis=cex.axis)	#
+	abline(v=logBoundary, lty="dashed")#
+	abline(v=log(1), lty="dotted")#
+#
+	# Get the axis ranges, draw y-axis with arrow#
+	u <- par("usr")#
+	points(u[1], u[4], pch=17, xpd = TRUE)#
+	lines(c(u[1], u[1]), c(u[3], u[4]), xpd = TRUE)#
+#
+	lines(dens)#
+#
+	if (bw==FALSE) {#
+		colors <- c("green4", "orange1", "red3")#
+	} else {#
+		colors <- c("grey80", "grey50", "grey10")#
+	}#
+	if (largeIsGreen==FALSE) colors <- rev(colors)#
+	drawpoly(dens, -Inf, logBoundary[1], col=scales::alpha(colors[3], 0.4))	#
+	if (length(logBoundary) == 2) {#
+		drawpoly(dens, logBoundary[1], logBoundary[2], col=scales::alpha(colors[2], 0.4))#
+		drawpoly(dens, logBoundary[2], Inf, col=scales::alpha(colors[1], 0.4))#
+	} else {#
+		drawpoly(dens, logBoundary[1], Inf, col=scales::alpha(colors[1], 0.4))#
+	}#
+}
+evDens(bfh1, bfh0, n=50, xlim=c(0.1, 20))
+evDens(bfh1, bfh0, n=500, xlim=c(0.1, 20))
