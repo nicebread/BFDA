@@ -4,7 +4,9 @@
 .RData
 .Rapp*
 .DS*
+.Rapp.history
 FS_*
+
 
 
 *.RData
