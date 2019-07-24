@@ -50,7 +50,7 @@ test_that("AB test works", {
   # Alternative = two.sided
   # Compare internal functions
   
-  bf1.1 <- BFDA:::ab_test(data = data, prior_par = prior_par)$bf
+  bf1.1 <- abtest:::ab_test(data = data, prior_par = prior_par)$bf
   bf1.2 <- exp(BFDA:::BF.test.abtest(SAMP = SAMP, alternative="two.sided", freq.test=freq.test, prior=list("normal", list(prior.mean = 0, prior.variance = 1))))
   
   expect_equal(bf1.1$bf10, bf1.2, tolerance = 0.01) # internal functions doing the same?

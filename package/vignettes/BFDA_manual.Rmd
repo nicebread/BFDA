@@ -2,7 +2,7 @@
 title: "Bayes factor design analysis: Manual for the BFDA package"
 author: "Felix Schönbrodt, Angelika Stefan"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output: rmarkdown::pdf_document
 vignette: >
   %\VignetteIndexEntry{BFDA Manual}
   %\VignetteEngine{knitr::rmarkdown}
@@ -12,9 +12,9 @@ vignette: >
 This document demonstrates how to do a design analysis (aka. power analysis) for studies which use Bayes factors as index of evidence.
 For more details about Bayes Factor Design Analysis (BFDA), see our papers:
 
-> Schönbrodt, F. D. & Wagenmakers, E.-J. (2017). Bayes Factor Design Analysis: Planning for compelling evidence. *Psychonomic Bulletin & Review*. doi:10.3758/s13423-017-1230-y. [[PDF](https://osf.io/d4dcu)][[OSF project with reproducible code](https://osf.io/v7yxp/)]
+> Schönbrodt, F. D. & Wagenmakers, E.-J. (2017). Bayes Factor Design Analysis: Planning for compelling evidence. *Psychonomic Bulletin & Review*, 128-142. doi:10.3758/s13423-017-1230-y. [[PDF](https://osf.io/d4dcu)][[OSF project with reproducible code](https://osf.io/v7yxp/)]
 
-> Stefan, A. M., Gronau, Q. F., Schönbrodt, F. D., & Wagenmakers, E. (2018). A Tutorial on Bayes Factor Design Analysis with Informed Priors. [PsyArXiv Preprint](https://doi.org/10.31234/osf.io/aqr79)
+> Stefan, A. M., Gronau, Q. F., Schönbrodt, F. D., & Wagenmakers, E. (2018). A tutorial on Bayes Factor Design Analysis using an informed prior. *Behavior Research Methods*, 1042-1058. doi:10.3758/s13428-018-01189-8. [[PDF](https://psyarxiv.com/aqr79/)][[OSF project with reproducible code](https://osf.io/n8m4e/)]
 
 If you use this package to compute and report your design analysis, please cite it as:
 
@@ -81,7 +81,7 @@ sim.H0 <- BFDA.sim(expected.ES=0, type="t.between",
 
 Let's go through the parameters of the simulation function:
 
-  - `expected.ES`: The assumed population effect size (design prior). In a classical power analysis, this is a fixed number. Here, you can also provide a vector, which quantifies the uncertainty about the true ES. For example: `expected.ES=rnorm(100000, 0.5, 0.1)`. If a vector is provided, a new ES is drawn from this vector for each simulated study. The metric for `expected.ES` depends on the type of design (see next bullet  point):
+  - `expected.ES`: The simulated population effect size (design prior) which can either be a smallest effect size of interest or an expected effect size. In a classical power analysis, this would be a fixed number. Here, you can also provide a vector, which quantifies the uncertainty about the true ES. For example: `expected.ES=rnorm(100000, 0.5, 0.1)`. If a vector is provided, a new ES is drawn from this vector for each simulated study. The metric for `expected.ES` depends on the type of design (see next bullet  point):
 
     - `type = "t.between"` or `type = "t.paired"`: expected.ES has to be provided as Cohen's *d*
     
@@ -89,11 +89,11 @@ Let's go through the parameters of the simulation function:
     
     - `type = "abtest"`: expected.ES can be either an odds ratio, log odds ratio, relative risk, or absolute risk (depending on the argument `options.sample`)
     
-  - `type`: Type of design. Currently, 4 designs are implemented: A between-group t-test ("t.between"), a paired t-test ("t.paired"), a correlation test ("correlation"), and an AB test ("abtest")
+  - `type`: Type of design. Currently, 4 designs are implemented: A between-group t-test (`"t.between"`), a paired t-test (`"t.paired"`), a correlation test (`"correlation"`), and an AB test (`"abtest"`)
 
   - `prior`: This argument specifies the prior distribution under the alternative hypothesis. It consists of a list with two elements: The first element is a character vector which specifies the type of the prior distribution. The second element is a list which contains the hyperparameters of the prior distribution. For example, the prior distribution for t-tests could be defined as `prior = list("Cauchy", prior.location = 0, prior.scale = 1))`. The choice of prior distributions and the default prior settings depend on the type of design (see next bullet point)
 
-    - `type = "t.between"` or `type = "t.paired"`: There are 3 distribution types you can choose from (see list below). The default prior for t-tests is a zero-centered Cauchy distribution with a scale parameter of $\sqrt(2)/2$ which is equivalent to the default setting in the *BayesFactor* package. 
+    - `type = "t.between"` or `type = "t.paired"`: You can choose from 3 families of prior distributions on the effect size Cohen's d. The default prior is a zero-centered Cauchy distribution with a scale parameter of $\sqrt(2)/2$ which is equivalent to the default setting in the *BayesFactor* package. 
         - A Cauchy distribution (`"Cauchy"`) with the hyperparameters `prior.location` (non-centrality parameter) and `prior.scale` (scale parameter)
         
         - A t distribution (`"t"`) with the hyperparameters `prior.location`, (non-centrality parameter) `prior.scale`, (scale parameter) and `prior.df`(degrees of freedom)
@@ -105,9 +105,9 @@ Let's go through the parameters of the simulation function:
     
   - `n.min` and `n.max`: The initial sample size and the maximum sample size that is tested in the sequential procedure. If the `design` argument is set to `fixed.n`, only the argument `n.max` will be considered.
   
-  - `design`: This argument specifies the experimental design which can either be a fixed-N design (`fixed.n`) or a sequential design (`sequential`). In the case of a sequential design, the arguments `n.min` and `boundary` are disregarded because they are irrelevant in this kind of design.
+  - `design`: This argument specifies the experimental design which can either be a fixed-N design (`fixed.n`) or a sequential design (`sequential`). In the case of a fixed-N design, the arguments `n.min` and `boundary` are disregarded because they are irrelevant in this kind of design.
   
-  - `boundary`: The Bayes factor where a sequential run is stopped. For a fixed-N design, `boundary` is automatically set to Inf. You can either provide two values for a lower and an upper boundary in a vector (e.g., `c(1/3, 6)`) or only one value (e.g., `6`). If only one value is provided, the function automatically uses its reciprocal (e.g., `1/6`) for the other boundary.
+  - `boundary`: The Bayes factor where a sequential run is stopped. For a fixed-N design, `boundary` is automatically set to *Inf*. You can either provide two values for a lower and an upper boundary in a vector (e.g., `c(1/3, 6)`) or only one value (e.g., `6`). If only one value is provided, the function automatically uses its reciprocal (e.g., `1/6`) for the other boundary.
   
   - `B`: Number of simulated studies. Aim for B >= 10,000 for stable results (in this document we use B=1000 to save some computation time).
   
@@ -121,7 +121,7 @@ Let's go through the parameters of the simulation function:
   
   - `options.sample`: Further parameters passed to the data generating function in a list object. Currently only implemented for the AB test to define the type of effect size which is defined in the argument `expected.ES`. The possible parameters for the type of effect size (`list(effecttype=...)`) are `"OR"` (odds ratio), `"logOR"` (log odds ratio), `"RR"` (relative risk), and `"AR"` (absolute risk).
   
-  - `seed`: Seed that ensures reproducibility with parallel processing. If the parameter is set to `NULL`, a new seed is chosen at each run.
+  - `seed`: Seed that ensures reproducibility with parallel processing. If the parameter is set to `NULL`, a new seed is chosen at each run. The default seed is `1234`.
 
 The simulations of the "H1 world" and a "H0 world" should have the same parameters except of the `expected.ES`. This means that in the actual data analysis, we will apply the same test to the data set, regardless whether data came from H0 or H1 (what we wouldn't know anyway in practice).
 
@@ -215,7 +215,7 @@ Note: The SSD function automatically detects whether a H1 or a H0 simulation is 
 
 # Paired t-test: A complete example #
 
-The BFDA uses informed t-test functions by [Gronau, Ly, & Wagenmakers (2017)](https://arxiv.org/abs/1704.02479) to compute the between and paired t-test. By default, it uses a central Cauchy distribution with a scale parameter of sqrt(2)/2 as a prior on effect size under H1 as it is used in the *BayesFactor* package. The effect size metric is Cohen's d (standardized difference of means).
+The BFDA uses informed t-test functions by [Gronau, Ly, & Wagenmakers (2019)](https://doi.org/10.1080/00031305.2018.1562983) to compute the between and paired t-test. By default, the prior on effect size under H1 is defined as a central Cauchy distribution with a scale parameter of sqrt(2)/2 as it is used in the *BayesFactor* package. The effect size metric is Cohen's d (standardized difference of means).
 
 ```{r paired.t, warning=FALSE, fig.width=7, fig.height=4}
 #devtools::install_github("nicebread/BFDA", subdir="package")
@@ -247,7 +247,7 @@ plot(s1)
 
 The BFDA uses the source code of the statistics software JASP [(available on Github)](https://github.com/jasp-stats/jasp-desktop/blob/development/JASP-Engine/JASP/R/correlationbayesian.R) which is based on a paper by [Ly, Verhagen & Wagenmakers (2016)](https://www.sciencedirect.com/science/article/pii/S0022249615000383) and a paper by [Ly, Marsman, & Wagenmakers](https://onlinelibrary.wiley.com/doi/full/10.1111/stan.12111). The kappa parameter which can be passed to the BFDA.sim function as part of the "prior" argument, corresponds to the "beta prior width" parameter in JASP. By default, the BFDA uses a $\kappa$ parameter of 1, which is equivalent to a uniform prior distribution over the possible correlations. 
 
-A short explanation of the stretched beta prior: First, the correlation is rescaled to lie between 0 and 1, then a beta distribution with the parameters $\alpha = \beta = 1/\kappa$ is assigned to it. Then, the beta distribution is transformed back to the $(−1, 1)$ scale and the Bayes factors are calculated as a function of $\kappa$. When $\kappa = 1$, this corresponds to a uniform prior on the correlation coefficient, as in Jeffreys's default analysis. When $\kappa \rightarrow 0$, H1 becomes indistinguishable from H0 and consequently the Bayes factor is 1. Values of $\kappa$ in between 0 and $\infty$ define an continuous range of different alternative hypotheses that represent different beliefs about the extent to which large values for the correlation are plausible.
+A short explanation of the stretched beta prior: First, the correlation is rescaled to lie between 0 and 1, then a beta distribution with the parameters $\alpha = \beta = 1/\kappa$ is assigned to it. Then, the beta distribution is transformed to the (-1, 1) scale and the Bayes factors are calculated as a function of $\kappa$. When $\kappa = 1$, this corresponds to a uniform prior on the correlation coefficient, as in Jeffreys's default analysis. When $\kappa \rightarrow 0$, H1 becomes indistinguishable from H0 and consequently the Bayes factor is 1. Values of $\kappa$ in between 0 and $\infty$ define an continuous range of different alternative hypotheses that represent different beliefs about the extent to which large values for the correlation are plausible.
 
 Here are some plots for different settings of kappa for the two-sided case:
 
@@ -319,7 +319,7 @@ plot(c1, boundary=c(1/10, 20), n.max=150)
 
 # AB test: A complete example
 
-The Bayesian AB test in the BFDA package is based on functions by Quentin Gronau (no paper/preprint available online yet). The test uses a normal prior on the difference of log odds as an analysis prior. The default is a standard normal distribution (mean = 0, variance = 1). In the BFDA, you can use an odds ratio, a log odds ratio, a relative risk, or an absolute risk as define a design prior on the population effect size (arguments `expected.ES` and `options.sample`).
+The Bayesian AB test in the BFDA package is based on the *abtest* [R-package (Gronau, Raj & Wagenmakers, 2019)](https://cran.r-project.org/web/packages/abtest/index.html). The test uses a normal prior on the difference of log odds as an analysis prior. The default is a standard normal distribution (mean = 0, variance = 1). In the BFDA, you can use an odds ratio, a log odds ratio, a relative risk, or an absolute risk to define a design prior on the population effect size (arguments `expected.ES` and `options.sample`).
 
 $Odds\,Ratio = \frac{p2}{1-p2}/\frac{p1}{1-p1} \\$
 

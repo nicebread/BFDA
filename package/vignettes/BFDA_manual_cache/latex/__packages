@@ -11,3 +11,4 @@ pkgmaker
 rngtools
 doRNG
 bindrcpp
+testthat

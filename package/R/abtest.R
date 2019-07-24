@@ -28,6 +28,10 @@ findp2 <- function(ES, p1, effecttype){
 #' 
 sample.abtest <- function(n, ES, options.sample=NULL) {
   
+  if(is.null(options.sample[["effecttype"]])){
+    stop("Please define the type of effect size in the argument options.sample.")
+  }
+  
   effecttype <- options.sample[["effecttype"]]
   
   if(effecttype == "OR" | effecttype == "logOR"){
@@ -165,7 +169,7 @@ BF.test.abtest <- function(SAMP, alternative=NULL, freq.test=NULL, prior=NULL, .
                     mu_beta = 0,
                     sigma_beta = 1)
   
-  t1 <- as.numeric(ab_test(data = testdat, prior_par = testprior)$bf[[alt2]])
+  t1 <- as.numeric(abtest::ab_test(data = testdat, prior_par = testprior)$bf[[alt2]])
   
   return(as.numeric(log(t1)))
   

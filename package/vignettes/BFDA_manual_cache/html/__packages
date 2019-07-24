@@ -12,3 +12,4 @@ rngtools
 doRNG
 bindrcpp
 NCmisc
+testthat

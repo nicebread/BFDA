@@ -8,3 +8,5 @@ LICENSE
 checks
 .Rapp.history
 .travis.yml
+^doc$
+^Meta$

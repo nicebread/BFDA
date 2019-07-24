@@ -3,7 +3,7 @@ Package: BFDA
 Type: Package
 Title: Bayes Factor Design Analysis
 Version: 0.4.0
-Date: 2018-11-06
+Date: 2019-05-28
 Authors@R: c(
 		person(c("Felix", "D."), "Schönbrodt", email = "felix@nicebread.de", role = c("aut", "cre")),
 		person(c("Angelika", "M."), "Stefan", email = "angelika.stefan@gmx.de", role = c("aut"))
@@ -25,13 +25,14 @@ Imports:
     methods,
     VGAM,
     mvtnorm,
-    sn
+    sn,
+    abtest
 LinkingTo: Rcpp
 Description: Compute and visualize design analyses for Bayes factors. Handles
     fixed-n and sequential designs.
 License: GPL (>= 2)
 LazyData: TRUE
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 Suggests: testthat,
           BayesFactor,
 	  knitr,

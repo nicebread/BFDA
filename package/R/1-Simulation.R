@@ -4,6 +4,7 @@
 #' @import dplyr
 #' @import doParallel
 #' @importFrom doRNG %dorng%
+#' @importFrom abtest ab_test
 #'
 #' @param n.min Minimum n before optional stopping is started
 #' @param n.max Maximum n - if that is reached without hitting a boundary, the run is aborted
