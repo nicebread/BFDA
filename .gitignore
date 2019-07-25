@@ -4,6 +4,10 @@
 .RData
 .Rapp*
 .DS*
+.Rapp.history
 FS_*
 
+*.RData
+tests
 
+vignette/BFDA_manual_cache

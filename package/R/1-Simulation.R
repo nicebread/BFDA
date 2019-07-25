@@ -190,9 +190,12 @@ print.BFDA <- function(x, ...) {
 
 	versionCheck(x)
 
-	ES.VAR <- var(x$sim$true.ES)
+	# from each trajectory: only take the first instance to retrieve the true ES in this run
+	sampled.true.ES <- x$sim %>% group_by(id) %>% slice(1) %>% pull("true.ES")
+	
+	ES.VAR <- var(sampled.true.ES)
 	if (nrow(x$sim) > 1 && ES.VAR > 0) {
-		QU <- paste0("; 25%/75% quantile = [", round(quantile(x$sim$true.ES, prob=.25), 2), "; ", round(quantile(x$sim$true.ES, prob=.75), 2), "]")
+		QU <- paste0("; 25%/75% quantile = [", round(quantile(sampled.true.ES, prob=.25), 2), "; ", round(quantile(sampled.true.ES, prob=.75), 2), "]")
 	} else {QU <- ""}
 	
 	ES.type <- switch(x$settings$type,
@@ -214,7 +217,7 @@ Directionality of H1 analysis prior: ", x$settings$alternative, "
 Minimum n: ", x$settings$n.min, "
 Maximum n: ", x$settings$n.max, "
 Design: ", x$settings$design, "
-Simulated true effect size (", ifelse(nrow(x$sim) > 1 && ES.VAR > 0, "random", "fixed"), "): ", ES.type, " = ", round(mean(x$sim$true.ES), 3), QU,
+Simulated true effect size (", ifelse(nrow(x$sim) > 1 && ES.VAR > 0, "random", "fixed"), "): ", ES.type, " = ", round(mean(sampled.true.ES), 3), QU,
 "\n"
 	))
 }
