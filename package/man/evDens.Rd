@@ -4,8 +4,9 @@
 \alias{evDens}
 \title{Plot a BFDA object for fixed n: Two densities for H1 and H0}
 \usage{
-evDens(BFDA.H1, BFDA.H0, n, boundary = c(1/6, 6), xlim = NA,
-  noSplit = FALSE, cex = 1.2, cex.axis = 1, bw = FALSE)
+evDens(BFDA.H1 = NA, BFDA.H0 = NA, n, boundary = c(1/6, 6),
+  xlim = NA, noSplit = FALSE, cex = 1.2, cex.axis = 1,
+  bw = FALSE)
 }
 \arguments{
 \item{BFDA.H1}{A BFDA simulation object for H1, resulting from the \code{BFDA.sim} function}
@@ -14,11 +15,11 @@ evDens(BFDA.H1, BFDA.H0, n, boundary = c(1/6, 6), xlim = NA,
 
 \item{n}{Fixed n at which BF distribution is evaluated}
 
-\item{boundary}{Critical BF boundaries for H0 and H1}
+\item{boundary}{Critical BF boundaries for H0 and H1, e.g. \code{c(1/3, 6)}. If only one value is provided, the second boundary will be defined as the reciprocal.}
 
 \item{xlim}{limits on xaxis}
 
-\item{noSplit}{If TRUE, the par(mfcol=...) command is skipped}
+\item{noSplit}{If TRUE, the par(mfcol=...) command is skipped. Set to TRUE if only one BFDA result should be plotted.}
 
 \item{cex}{Zoom factor for axes labels}
 
@@ -28,4 +29,7 @@ evDens(BFDA.H1, BFDA.H0, n, boundary = c(1/6, 6), xlim = NA,
 }
 \description{
 Plot a BFDA object for fixed n: Two densities for H1 and H0
+}
+\details{
+Either the argument \code{BFDA.H1} or the argument \code{BFDA.H0} or both can be used.
 }
