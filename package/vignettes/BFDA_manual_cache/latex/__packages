@@ -1,0 +1,14 @@
+base
+tint
+foreach
+iterators
+doParallel
+dplyr
+ggplot2
+BFDA
+registry
+pkgmaker
+rngtools
+doRNG
+bindrcpp
+testthat

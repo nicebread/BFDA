@@ -46,7 +46,7 @@ select.correlation <- function(MAXSAMP, n) {
 # ---------------------------------------------------------------------
 # freq.test.function: return p.value, test statistic, and empirical ES
 
-freq.test.correlation <- function(SAMP, alternative=NULL) {
+freq.test.correlation <- function(SAMP, alternative=NULL, options.sample=NULL) {
 
 	t1 <- cor.test(SAMP[, 1], SAMP[, 2], alternative=alternative)
 

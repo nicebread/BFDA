@@ -7,8 +7,6 @@
 .Rapp.history
 FS_*
 
-
-
 *.RData
 tests
 
