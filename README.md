@@ -24,7 +24,7 @@ If you use this package to compute and report your design analysis, please cite 
 > Schönbrodt, F. D. & Stefan, A. M. (2018). BFDA: An R package for Bayes factor design analysis (version 0.4.0). Retrieved from https://github.com/nicebread/BFDA
 
 
-2. Read the additional [manual](https://rawgit.com/nicebread/BFDA/master/vignette/BFDA_manual.html).
+2. Read the additional [manual](https://rawgit.com/nicebread/BFDA/master/package/doc/BFDA_manual.html).
 
 ![Sequential Design](https://github.com/nicebread/BFDA/blob/master/movies/GIF1/BFDA1.gif)
 
@@ -48,4 +48,4 @@ Replace "function" with the test name, e.g.: sample.ANOVA etc.
 
 Probably it is easiest to take one of the existing test implementations (e.g., `R/t.between.R` or `R/correlation.R`)  and replace the name and the content of the functions.
 
-If you implement a new test, please let me know. The preferred workflow would be that you fork the Github project, implement the test, and send me a pull request. If everything works as intended, we can add the test to the main project.
+If you implement a new test, please let us know. The preferred workflow would be that you fork the Github project, implement the test, do a lot of testing, and send us a pull request. If everything works as intended, we can add the test to the main project.
