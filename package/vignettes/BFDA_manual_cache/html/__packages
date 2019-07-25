@@ -13,3 +13,5 @@ doRNG
 bindrcpp
 NCmisc
 testthat
+exams
+rmarkdown

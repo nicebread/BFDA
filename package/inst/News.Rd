@@ -2,7 +2,7 @@
 \title{News for package 'BFDA'}
 \encoding{UTF-8}
 
-\section{Version 0.4}{
+\section{Version 0.5}{
 
 Thanks to Tom Heyman for many helpful suggestions!
 

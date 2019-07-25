@@ -2,8 +2,8 @@ Encoding: UTF-8
 Package: BFDA
 Type: Package
 Title: Bayes Factor Design Analysis
-Version: 0.4.0
-Date: 2019-05-28
+Version: 0.5.0
+Date: 2019-07-25
 Authors@R: c(
 		person(c("Felix", "D."), "Schönbrodt", email = "felix@nicebread.de", role = c("aut", "cre")),
 		person(c("Angelika", "M."), "Stefan", email = "angelika.stefan@gmx.de", role = c("aut"))
