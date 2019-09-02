@@ -8,7 +8,8 @@ Thanks to Tom Heyman for many helpful suggestions!
 
 \subsection{New features}{
 	\itemize{
-		\item 
+		\item Added BFDA for Bayesian A/B tests (see argument type = "abtest" in the BFDA.sim() function)
+		\item Plot for fixed-N design can now be drawn separately for H0 and H1 (see evDens() function: only one out of the arguments BFDA.H1 and BFDA.H0 has to be defined)
 	}
 }
 
@@ -19,4 +20,5 @@ Thanks to Tom Heyman for many helpful suggestions!
 }
 
 }
+
 
