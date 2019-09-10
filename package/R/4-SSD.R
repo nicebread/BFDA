@@ -1,6 +1,6 @@
 #' SSD = sample size determination
 #' @details
-#' Finds the optimal fixed sample size to achieve desired level of power.
+#' Finds the optimal fixed sample size to achieve desired level of power. (Note: this function does *not* assume optional stopping, but checks all simulated fixed sample sizes).
 
 #' @export
 #' @importFrom reshape2 melt
@@ -22,7 +22,10 @@ SSD <- function(BFDA, boundary=c(1/3, 3), power=0.90, alpha=.025, plot=TRUE) {
 	
 	# sanity check: only valid, if same numbers of replications at each n.
 	var.ns <- BFDA$sim %>% group_by(n) %>% summarize(ns=n()) %>% summarise(var(.$ns))
-	if (var.ns>0) {stop("Not numbers of replications at each n - consider setting boundary=Inf in your BFDA.sim function.")}
+	if (var.ns>0) {stop("Not the same number of replications at each n - please set `boundary=Inf` in your BFDA.sim function.")}
+	
+	# retrieve n.max from simulation object	
+	n.max <- max(BFDA$sim$n)
 	
 	# categorize trajectories according to critical boundary
 	if (length(logBoundary) == 1 && logBoundary == 1) {
@@ -30,14 +33,12 @@ SSD <- function(BFDA, boundary=c(1/3, 3), power=0.90, alpha=.025, plot=TRUE) {
 			BF.positive = sum(logBF > 1)/n(),
 			BF.negative = sum(logBF < 1)/n()
 		)
-	}
-	if (length(logBoundary) == 1) {
+	} else if (length(logBoundary) == 1) {
 		categories <- BFDA$sim %>% group_by(n) %>% summarize(
 			positive.results = sum(logBF > logBoundary)/n(),
 			negative.results = sum(logBF <= logBoundary)/n()
 		)
-	}
-	if (length(logBoundary) == 2) {
+	} else if (length(logBoundary) == 2) {
 		categories <- BFDA$sim %>% group_by(n) %>% summarize(
 			positive.results = sum(logBF > logBoundary[2])/n(),
 			inconclusive.results = sum(logBF <= logBoundary[2] & logBF > logBoundary[1])/n(),
@@ -49,13 +50,20 @@ SSD <- function(BFDA, boundary=c(1/3, 3), power=0.90, alpha=.025, plot=TRUE) {
 	
 	if (analysis.mode == "H1") {
 		n.crit <- categories$n[which(categories$positive.results >= power)[1]]
-	} else {
+	} else if (analysis.mode == "H0") {
 		n.crit <- categories$n[which(categories$positive.results <= alpha)[1]]
-	}
-	positive.results <- categories$positive.results[which(categories$n == n.crit)[1]]
-	inconclusive.results <- categories$inconclusive.results[which(categories$n == n.crit)[1]]
-	negative.results <- categories$negative.results[which(categories$n == n.crit)[1]]
+	}	
 	
+	
+	if (is.na(n.crit)) {  # desired power has NOT been achieved
+		positive.results <- categories$positive.results[nrow(categories)]
+		inconclusive.results <- categories$inconclusive.results[nrow(categories)]
+		negative.results <- categories$negative.results[nrow(categories)]
+	} else {  # desired power has been achieved at a specific n
+		positive.results <- categories$positive.results[which(categories$n == n.crit)[1]]
+		inconclusive.results <- categories$inconclusive.results[which(categories$n == n.crit)[1]]
+		negative.results <- categories$negative.results[which(categories$n == n.crit)[1]]
+	}
 	
 	# ---------------------------------------------------------------------
 	# The verbal output
@@ -63,24 +71,38 @@ SSD <- function(BFDA, boundary=c(1/3, 3), power=0.90, alpha=.025, plot=TRUE) {
 	# If delta==0, show output for H0 studies, else: output for H1 studies
 		if (analysis.mode == "H0") {
 			# output for null effect
-			cat(paste0("A <= ", round(alpha*100, 1), "% (actual: ", round(positive.results*100, 1), "%) long-term rate of Type-I errors is achieved at n = ", n.crit, "\n",
-			"This setting implies long-term rates of:\n", 
-			"   ", 
-			ifelse(length(logBoundary) == 2, 
-				paste0(round(inconclusive.results*100, 1), "% inconclusive results and\n"),
-				""),
-			"   ", round(negative.results*100, 1), "% true-negative results."
-			))
-		} else {
-			# output for true effect
-			cat(paste0("A >= ", round(power*100, 1), "% (actual: ", round(positive.results*100, 1), "%) power achieved at n = ", n.crit, "\n",
-			"This setting implies long-term rates of:\n", 
-			ifelse(length(logBoundary) == 2, 
+			
+			if (is.na(n.crit)) {
+				res <- paste0("Even at the maximal simulated n = ", n.max,", the achieved false positive error rate (", round(positive.results*100, 1), "%) did not reach the desired level of ", round(alpha*100, 1), "%\n", "\nThe maximal n has long-term rates of:\n")
+			} else {
+				res <- paste0("A >= ", round(alpha*100, 1), "% (actual: ", round(positive.results*100, 1), "%) long-term rate of Type-I errors is achieved at n = ", n.crit, "\nThis setting implies long-term rates of:\n")
+			}
+						
+			res <- paste0(res, ifelse(length(logBoundary) == 2, 
 				paste0(round(inconclusive.results*100, 1), "% inconclusive results and\n"), ""),
-			"   ", round(negative.results*100, 1), "% false-negative results."
-			))
+				"   ", round(negative.results*100, 1), "% true-negative results."
+			)
+			
+			cat(res)
+			
+			
+		} else if (analysis.mode == "H1") {
+			# output for true effect
+			if (is.na(n.crit)) {
+				res <- paste0("Even at the maximal simulated n = ", n.max,", the achieved power (", round(positive.results*100, 1), "%) did not reach the desired level of ", round(power*100, 1), "%\n", "\nThe maximal n has long-term rates of:\n")
+			} else {
+				res <- paste0("A >= ", round(power*100, 1), "% (actual: ", round(positive.results*100, 1), "%) power achieved at n = ", n.crit, "\nThis setting implies long-term rates of:\n")
+			}
+						
+			res <- paste0(res, ifelse(length(logBoundary) == 2, 
+				paste0(round(inconclusive.results*100, 1), "% inconclusive results and\n"), ""),
+				"   ", round(negative.results*100, 1), "% false-negative results."
+			)
+			
+			cat(res)
 		}	
-	
+			
+		
 	# ---------------------------------------------------------------------
 	# The plot
 	
@@ -110,6 +132,7 @@ SSD <- function(BFDA, boundary=c(1/3, 3), power=0.90, alpha=.025, plot=TRUE) {
 			n.display.max <- which(categories$negative.results==1)[1]
 			if (!is.na(n.display.max)) categories <- categories[1:n.display.max, ]
 		}
+		if (is.na(n.crit)) n.display.max <- n.max
 	
 		# Compute some variables to allow stacked rects
 		if (length(logBoundary) == 1) {
