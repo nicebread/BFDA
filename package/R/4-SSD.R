@@ -68,6 +68,8 @@ SSD <- function(BFDA, boundary=c(1/3, 3), power=0.90, alpha=.025, plot=TRUE) {
 	# ---------------------------------------------------------------------
 	# The verbal output
 	
+	cat("Sample size determination for a fixed-n design:\n---------------------------------------\n\n")
+	
 	# If delta==0, show output for H0 studies, else: output for H1 studies
 		if (analysis.mode == "H0") {
 			# output for null effect
