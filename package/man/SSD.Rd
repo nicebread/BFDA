@@ -22,5 +22,5 @@ SSD(BFDA, boundary = c(1/3, 3), power = 0.9, alpha = 0.025,
 SSD = sample size determination
 }
 \details{
-Finds the optimal fixed sample size to achieve desired level of power.
+Finds the optimal fixed sample size to achieve desired level of power. (Note: this function does *not* assume optional stopping, but checks all simulated fixed sample sizes).
 }

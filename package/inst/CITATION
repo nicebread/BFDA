@@ -7,17 +7,25 @@ title <- paste("BFDA: An R package for Bayes factor design analysis (version ",m
     
 citEntry(entry = "Manual",
   title = title.bibtex,
-  author = personList(as.person("Felix D. Schönbrodt")),
+  author = personList(as.person("Felix D. Schönbrodt"), as.person("Angelika M. Stefan")),
   year = year,
   url = "https://github.com/nicebread/BFDA",
 
   textVersion =
-  paste("Schönbrodt, F. D.",
+  paste("Schönbrodt, F. D. & Stefan, A. M.",
        sprintf("(%s).", year),
        title,
         "Retrieved from https://github.com/nicebread/BFDA")
 )
 
-# print("
-# @article{Schönbrodt_Wagenmakers_2018, title={Bayes factor design analysis: Planning for compelling evidence}, volume={25}, ISSN={1069-9384, 1531-5320}, DOI={10.3758/s13423-017-1230-y}, number={1}, journal={Psychonomic Bulletin & Review}, author={Schönbrodt, Felix D. and Wagenmakers, Eric-Jan}, year={2018}, month={Feb}, pages={128–142}}
-# ")
+citEntry(entry = "Article",
+  title = "Bayes factor design analysis: Planning for compelling evidence",
+  author = personList(as.person("Felix D. Schönbrodt"), as.person("Eric-Jan Wagenmakers")),
+  year = 2018,
+	DOI="10.3758/s13423-017-1230-y",
+	volume=25,
+	number=1,
+	journal="Psychonomic Bulletin & Review",
+	pages="128–142",
+	textVersion = "Schönbrodt, F. D. & Wagenmakers, E.-J. (2018). Bayes Factor Design Analysis: Planning for compelling evidence. Psychonomic Bulletin & Review, 25, 128-142. doi:10.3758/s13423-017-1230-y"
+)
