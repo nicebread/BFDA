@@ -20,5 +20,11 @@ r_binary_packages:
  - rcppeigen
 r_packages:
  - BayesFactor  
+ - covr
 
 warnings_are_errors: false
+
+# only report coverage after build is successful
+# not yet - takes too long
+#after_success:
+#  - Rscript -e 'covr::codecov()'
