@@ -24,6 +24,7 @@ Please note that this package is still a development version; take the results w
 
 ```{r setup, include=FALSE}
 	library(tint)
+	library(registry)
 	knitr::opts_chunk$set(cache=TRUE, warnings = FALSE, messages=FALSE)
 	# load all functions
 	devtools::load_all()
@@ -34,8 +35,8 @@ Please note that this package is still a development version; take the results w
 The BFDA package is not on CRAN yet, but you can install the development version from Github:
 
 ```{r eval=FALSE}
-# library(devtools)
-# install_github("nicebread/BFDA", subdir="package")
+library(devtools)
+install_github("nicebread/BFDA", subdir="package")
 ```
 
 

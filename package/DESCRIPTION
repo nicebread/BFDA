@@ -35,8 +35,9 @@ LazyData: TRUE
 RoxygenNote: 7.0.0
 Suggests: testthat,
           BayesFactor,
-	  knitr,
-	  rmarkdown,
+	  			knitr,
+	 			 	rmarkdown,
           tint,
+					registry,
           devtools
 VignetteBuilder: knitr
