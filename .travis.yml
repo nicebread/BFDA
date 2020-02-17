@@ -1,11 +1,17 @@
 language: r
+cache: packages
+warnings_are_errors: false
 
 # http://docs.travis-ci.com/user/languages/r/
+
+r:
+ - release
 
 before_install:
  - cd package
 
 sudo: required
+
 r_binary_packages:
  - doparallel 
  - dplyr 
@@ -18,11 +24,15 @@ r_binary_packages:
  - gtools
  - matrixmodels
  - rcppeigen
+ 
 r_packages:
  - BayesFactor  
  - covr
+ 
+# do not build vignettes...takes too long and times out on travis
+r_build_args: --no-build-vignettes --no-manual
+r_check_args: --no-build-vignettes --no-manual --timings
 
-warnings_are_errors: false
 
 # only report coverage after build is successful
 # not yet - takes too long

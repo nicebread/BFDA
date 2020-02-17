@@ -38,7 +38,5 @@ Suggests: testthat,
 	  			knitr,
 	 			 	rmarkdown,
           tint,
-					registry,
-					pkgmaker,
           devtools
 VignetteBuilder: knitr
