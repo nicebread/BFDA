@@ -4,7 +4,7 @@ rmarkdown::render("README.rmd")
 
 [![Build
 Status](https://travis-ci.org/nicebread/BFDA.svg?branch=master)](https://travis-ci.org/nicebread/BFDA)
-[![Last-changedate](https://img.shields.io/badge/last%20change-2020--02--03-yellowgreen.svg)](/commits/master)
+[![Last-changedate](https://img.shields.io/badge/last%20change-2020--02--17-yellowgreen.svg)](/commits/master)
 
 [![packageversion](https://img.shields.io/badge/Package%20version-0.5.0-orange.svg?style=flat-square)](commits/master)
 
@@ -25,32 +25,32 @@ version from Github:
 For installations on Windows the package requires R version 3.3.1 or
 higher.
 
-### How to use the BFDA package?
+## How to use the BFDA package?
 
-1.  Read our papers:
+### 1\. Read our papers:
 
-> Schönbrodt, F. D. & Wagenmakers, E.-J. (2018). Bayes Factor Design
-> Analysis: Planning for compelling evidence. *Psychonomic Bulletin &
-> Review*, 25, 128-142. <doi:10.3758/s13423-017-1230-y>.
-> \[[PDF](https://osf.io/d4dcu)\]\[[OSF project with reproducible
-> code](https://osf.io/v7yxp/)\]
-
-> Stefan, A. M., Gronau, Q. F., Schönbrodt, F. D., & Wagenmakers, E.
-> (2018). A Tutorial on Bayes Factor Design Analysis with Informed
-> Priors. [PsyArXiv Preprint](https://doi.org/10.31234/osf.io/aqr79)
+  - Schönbrodt, F. D. & Wagenmakers, E.-J. (2018). Bayes Factor Design
+    Analysis: Planning for compelling evidence. *Psychonomic Bulletin &
+    Review*, 25, 128-142. <doi:10.3758/s13423-017-1230-y>.
+    \[[PDF](https://osf.io/d4dcu)\]\[[OSF project with reproducible
+    code](https://osf.io/v7yxp/)\]
+  - Stefan, A. M., Gronau, Q. F., Schönbrodt, F. D., & Wagenmakers, E.
+    (2018). A Tutorial on Bayes Factor Design Analysis with Informed
+    Priors. [PsyArXiv Preprint](https://doi.org/10.31234/osf.io/aqr79)
 
 If you use this package to compute and report your design analysis,
 please cite it as:
 
-> Schönbrodt, F. D. & Stefan, A. M. (2018). BFDA: An R package for Bayes
-> factor design analysis (version 0.4.0). Retrieved from
-> <https://github.com/nicebread/BFDA>
+  - Schönbrodt, F. D. & Stefan, A. M. (2018). BFDA: An R package for
+    Bayes factor design analysis (version 0.4.0). Retrieved from
+    <https://github.com/nicebread/BFDA>
 
-2.  Read the additional
-    [manual](https://rawgit.com/nicebread/BFDA/master/package/doc/BFDA_manual.html).
+### 2\. Read the additional [manual](https://rawgit.com/nicebread/BFDA/master/package/doc/BFDA_manual.html).
 
 ![Sequential
 Design](https://github.com/nicebread/BFDA/blob/master/movies/GIF1/BFDA1.gif)
+
+## [BFDA in practice: A list of published examples](BFDA_examples.md)
 
 ## Extending the BFDA package
 

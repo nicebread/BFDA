@@ -4,9 +4,17 @@
 \alias{evDens}
 \title{Plot a BFDA object for fixed n: Two densities for H1 and H0}
 \usage{
-evDens(BFDA.H1 = NA, BFDA.H0 = NA, n, boundary = c(1/6, 6),
-  xlim = NA, noSplit = FALSE, cex = 1.2, cex.axis = 1,
-  bw = FALSE)
+evDens(
+  BFDA.H1 = NA,
+  BFDA.H0 = NA,
+  n,
+  boundary = c(1/6, 6),
+  xlim = NA,
+  noSplit = FALSE,
+  cex = 1.2,
+  cex.axis = 1,
+  bw = FALSE
+)
 }
 \arguments{
 \item{BFDA.H1}{A BFDA simulation object for H1, resulting from the \code{BFDA.sim} function}

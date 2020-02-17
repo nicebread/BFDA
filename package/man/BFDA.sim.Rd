@@ -5,12 +5,24 @@
 \title{Create a BFDA object
 Conduct simulations for a BFDA}
 \usage{
-BFDA.sim(expected.ES, type = c("t.between", "t.paired", "correlation",
-  "abtest"), prior = NULL, n.min = 10, n.max = 500,
-  design = c("sequential", "fixed.n"), boundary = Inf, B = 1000,
-  stepsize = NA, alternative = c("two.sided", "greater", "less"),
-  verbose = TRUE, cores = 1, ETA = FALSE, options.sample = list(),
-  seed = 1234, ...)
+BFDA.sim(
+  expected.ES,
+  type = c("t.between", "t.paired", "correlation", "abtest"),
+  prior = NULL,
+  n.min = 10,
+  n.max = 500,
+  design = c("sequential", "fixed.n"),
+  boundary = Inf,
+  B = 1000,
+  stepsize = NA,
+  alternative = c("two.sided", "greater", "less"),
+  verbose = TRUE,
+  cores = 1,
+  ETA = FALSE,
+  options.sample = list(),
+  seed = 1234,
+  ...
+)
 }
 \arguments{
 \item{expected.ES}{The assumed true effect size. This can be a single number (this leads to a fixed assumed effect size, as in a classical power analysis) or a vector of numbers (e.g., \code{rnorm(100000, 0.5, 0.1)}). If it is a vector, the sampler draws a new effect size from this vector at each step. In this case, the provided distribution represents the uncertainty about the true effect size.}

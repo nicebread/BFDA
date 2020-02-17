@@ -5,12 +5,28 @@
 \alias{plot.BFDA}
 \title{Plot a BFDA object}
 \usage{
-plotBFDA(BFDA, boundary = 10, n.trajectories = 60, n.min = NA,
-  n.max = NA, dens.amplification = 1, cat = 3, bw = FALSE,
-  dens.right.offset = 2, xlim = NA, ylim = NA, xextension = 1.5,
-  traj.selection = "proportional", yaxis.at = NA, yaxis.labels = NA,
-  forH1 = TRUE, n.max.label.position = "dynamic", cex.labels = 1,
-  cex.annotations = 0.85, ...)
+plotBFDA(
+  BFDA,
+  boundary = 10,
+  n.trajectories = 60,
+  n.min = NA,
+  n.max = NA,
+  dens.amplification = 1,
+  cat = 3,
+  bw = FALSE,
+  dens.right.offset = 2,
+  xlim = NA,
+  ylim = NA,
+  xextension = 1.5,
+  traj.selection = "proportional",
+  yaxis.at = NA,
+  yaxis.labels = NA,
+  forH1 = TRUE,
+  n.max.label.position = "dynamic",
+  cex.labels = 1,
+  cex.annotations = 0.85,
+  ...
+)
 }
 \arguments{
 \item{BFDA}{A BFDA simulation object, resulting from the \code{\link{BFDA.sim}} function}
