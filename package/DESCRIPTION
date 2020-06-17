@@ -32,7 +32,7 @@ Description: Compute and visualize design analyses for Bayes factors. Handles
     fixed-n and sequential designs.
 License: GPL (>= 2)
 LazyData: TRUE
-RoxygenNote: 7.0.0
+RoxygenNote: 7.0.2
 Suggests: testthat,
           BayesFactor,
 	  			knitr,

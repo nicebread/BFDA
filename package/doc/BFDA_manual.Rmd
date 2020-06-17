@@ -71,12 +71,12 @@ As we do not know in advance whether H1 or H0 provide a better predictive perfor
 sim.H1 <- BFDA.sim(expected.ES=0.5, type="t.between",
                    prior=list("Cauchy",list(prior.location=0, prior.scale=sqrt(2)/2)),
                    n.min=20, n.max=300, alternative="greater", boundary=Inf, B=1000,
-                   verbose=TRUE, cores=4, stepsize = 10)
+                   verbose=TRUE, cores=2, stepsize = 10)
 
 sim.H0 <- BFDA.sim(expected.ES=0, type="t.between",
                    prior=list("Cauchy", list(prior.location=0, prior.scale=sqrt(2)/2)),
                    n.min=20, n.max=300, alternative="greater", boundary=Inf, B=1000,
-                   verbose=TRUE, cores=4, stepsize = 10)
+                   verbose=TRUE, cores=2, stepsize = 10)
 ```
 
 Let's go through the parameters of the simulation function:
@@ -103,7 +103,7 @@ Let's go through the parameters of the simulation function:
     
     - `type = "abtest"`: The prior distribution on $\psi$ (which is equivalent to the difference in log-odds) is a normal distribution (`"normal"`) with the hyperparameters `prior.mean` (mean) and `prior.variance` (variance). The default setting is a standard normal distribution (`list("normal", list(prior.mean = 0, prior.variance = 1))`). The prior on the noise parameter $\beta$ is fixed to a standard normal distribution and cannot be changed.
     
-  - `n.min` and `n.max`: The initial sample size and the maximum sample size that is tested in the sequential procedure. If the `design` argument is set to `fixed.n`, only the argument `n.max` will be considered.
+  - `n.min` and `n.max`: The initial sample size and the maximum sample size that is tested in the sequential procedure. If the `design` argument is set to `fixed.n`, only the argument `n.max` will be considered. When multiple groups are considered, the sample size specified here refers to the sample size per group. 
   
   - `design`: This argument specifies the experimental design which can either be a fixed-N design (`fixed.n`) or a sequential design (`sequential`). In the case of a fixed-N design, the arguments `n.min` and `boundary` are disregarded because they are irrelevant in this kind of design.
   
@@ -225,11 +225,11 @@ The BFDA uses informed t-test functions by [Gronau, Ly, & Wagenmakers (2019)](ht
 s1 <- BFDA.sim(expected.ES=0.4,
                prior=list("t", list(prior.location=0, prior.scale=sqrt(2)/2, prior.df=1)),
                n.min=50, stepsize=5, n.max=300, type="t.paired", design="sequential",
-               alternative="greater", B=1000, cores=4, verbose=FALSE)
+               alternative="greater", B=1000, cores=2, verbose=FALSE)
 s0 <- BFDA.sim(expected.ES=0,
                prior=list("t", list(prior.location=0, prior.scale=sqrt(2)/2, prior.df=1)),
                n.min=50, stepsize=5, n.max=300, type="t.paired", design="sequential",
-               alternative="greater", B=1000, cores=4, verbose=FALSE)
+               alternative="greater", B=1000, cores=2, verbose=FALSE)
 
 # if no n.min and n.max is provided in the `BFDA.analyze` function,
 # the values from the simulation are taken
@@ -299,10 +299,10 @@ Here is a complete walkthrough for a one-sided (positive directional) correlatio
 # do a sequential design analysis
 c1 <- BFDA.sim(expected.ES=0.21, prior=list("stretchedbeta",list(prior.kappa=2)),
                n.min=50, stepsize=10, n.max=300, B=1000, type="correlation",
-               design="sequential", alternative="greater", cores=4, verbose=FALSE)
+               design="sequential", alternative="greater", cores=2, verbose=FALSE)
 c0 <- BFDA.sim(expected.ES=0, prior=list("stretchedbeta", list(prior.kappa=2)),
                n.min=50, stepsize=10, n.max=300, B=1000, type="correlation",
-               design="sequential", alternative="greater", cores=4, verbose=FALSE)
+               design="sequential", alternative="greater", cores=2, verbose=FALSE)
 
 # if no n.min and n.max is provided in the `BFDA.analyze` function,
 # the values from the simulation are taken
@@ -336,11 +336,11 @@ $Absolute\,Risk = p2-p1$
 # do a sequential design analysis
 ab1 <- BFDA.sim(expected.ES=2, prior=list("normal", list(prior.mean=0.5, prior.variance = 1)),
                 n.min=50, stepsize=10, n.max=300, B=1000, type="abtest",
-                design="sequential", alternative="two.sided", cores=4, verbose=FALSE,
+                design="sequential", alternative="two.sided", cores=2, verbose=FALSE,
                 options.sample = list(effecttype = "OR"))
 ab0 <- BFDA.sim(expected.ES=0, prior=list("normal", list(prior.mean=0.5, prior.variance = 1)),
                 n.min=50, stepsize=10, n.max=300, B=1000, type="abtest",
-                design="sequential", alternative="two.sided", cores=4, verbose=FALSE,
+                design="sequential", alternative="two.sided", cores=2, verbose=FALSE,
                 options.sample = list(effecttype = "OR"))
 
 # if no n.min and n.max is provided in the `BFDA.analyze` function,

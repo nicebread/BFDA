@@ -6,8 +6,8 @@
 #' @importFrom doRNG %dorng%
 #' @importFrom abtest ab_test
 #'
-#' @param n.min Minimum n before optional stopping is started
-#' @param n.max Maximum n - if that is reached without hitting a boundary, the run is aborted
+#' @param n.min Minimum n (per group) before optional stopping is started
+#' @param n.max Maximum n (per group). If this sample size is reached without hitting a boundary, the run is aborted
 #' @param boundary The Bayes factor where a sequential run is stopped. For a fixed-n design, \code{boundary} is automatically set to Inf. Provide either two values for lower and upper boundary (e.g., c(1/3, 6). If only one value is provided, it automatically uses its reciprocal for the other boundary.
 #' @param B Number of bootstrap samples; should be dividable by the numbers of \code{cores} (see also \code{getDoParWorkers()})
 #' @param design "fixed.n" or "sequential". If design=="fixed.n", \code{n.min} and \code{boundary} are irrelevant, and all samples are drawn with n=n.max.

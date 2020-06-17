@@ -31,9 +31,9 @@ BFDA.sim(
 
 \item{prior}{Define the prior distribution of your alternative hypothesis. Argument takes a list as an input: The first element of the list should be a character string defining the type of the distribution (e.g., "t", "Cauchy", or "normal" for t-tests). The second element of the list is another list containing the parameters of the distribution. For example: \code{prior = list("Cauchy", list(prior.location = 0, prior.scale = 1))}. For available distributions, see the BFDA manual \code{vignette("BFDA_manual", package = "BFDA")}. If prior is NA, default values are applied.}
 
-\item{n.min}{Minimum n before optional stopping is started}
+\item{n.min}{Minimum n (per group) before optional stopping is started}
 
-\item{n.max}{Maximum n - if that is reached without hitting a boundary, the run is aborted}
+\item{n.max}{Maximum n (per group). If this sample size is reached without hitting a boundary, the run is aborted}
 
 \item{design}{"fixed.n" or "sequential". If design=="fixed.n", \code{n.min} and \code{boundary} are irrelevant, and all samples are drawn with n=n.max.}
 
