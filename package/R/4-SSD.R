@@ -12,6 +12,9 @@
 #' @param alpha The desired rate of false-positive results (in case of reality=H0)
 #' @param plot Display plot? (TRUE/FALSE)
 SSD <- function(BFDA, boundary=c(1/3, 3), power=0.90, alpha=.025, plot=TRUE) {
+  
+  # check if BFDA object is sequential
+  if(BFDA$settings$design != "sequential") stop("Error: SSD function can only evaluate BFDA objects based on sequential design.")
 
 	# just in case: order boundary
 	boundary <- sort(boundary)
